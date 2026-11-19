@@ -386,16 +386,27 @@
             <section id="tab-admin" class="tab-content space-y-4">
                 <div class="bg-gradient-to-r from-amber-500/20 to-slate-900 border border-amber-500/40 rounded-3xl p-5 space-y-1">
                     <h3 class="font-black text-base text-amber-400"><i class="fa-solid fa-crown ml-1"></i> لوحة تحكم المدير العام</h3>
-                    <p class="text-xs text-slate-300">مراجعة واعتماد طلبات الإيداع والسحب والاستثمار لجميع المستخدمين.</p>
+                    <p class="text-xs text-slate-300">مراجعة واعتماد الطلبات، وإدارة صرف العوائد اليومية للعقود النشطة.</p>
                 </div>
 
+                <!-- الطلبات المعلقة والحديثة -->
                 <div class="glass-card rounded-3xl p-5 space-y-3">
                     <div class="flex items-center justify-between">
                         <h4 class="font-black text-sm text-white">الطلبات المعلقة والحديثة</h4>
-                        <button type="button" onclick="loadAdminRequests()" class="text-xs text-amber-400 font-bold cursor-pointer"><i class="fa-solid fa-rotate"></i> تحديث</button>
+                        <button type="button" onclick="refreshAdminPanel()" class="text-xs text-amber-400 font-bold cursor-pointer"><i class="fa-solid fa-rotate"></i> تحديث الكل</button>
                     </div>
                     <div id="adminRequestsList" class="space-y-3 text-xs text-slate-400">
                         جاري تحميل الطلبات...
+                    </div>
+                </div>
+
+                <!-- إدارة العقود وصرف العائد اليومي -->
+                <div class="glass-card rounded-3xl p-5 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-black text-sm text-emerald-400"><i class="fa-solid fa-coins ml-1"></i> العقود الاستثمارية وصرف العائد اليومي</h4>
+                    </div>
+                    <div id="adminInvestmentsList" class="space-y-3 text-xs text-slate-400">
+                        جاري تحميل العقود...
                     </div>
                 </div>
             </section>
@@ -460,7 +471,7 @@
             measurementId: "G-W9F5K6P98X"
         };
 
-        // بريد الأدمن المسؤول عن الموافقة على كل العمليات
+        // بريد الأدمن المسؤول عن الموافقة وصرف العوائد
         const ADMIN_EMAIL = "hossamsalah7112@gmail.com";
 
         // عناوين الدفع الخاصة بك (عدلها بأرقامك وعناوينك الحقيقية)
@@ -487,6 +498,10 @@
         const authError = document.getElementById("authError");
         const authSubmitBtn = document.getElementById("authSubmitBtn");
         const toggleAuthModeBtn = document.getElementById("toggleAuthModeBtn");
+
+        function getTodayKey() {
+            return new Date().toISOString().slice(0, 10);
+        }
 
         function updateBalancesUI(totalInvested = 0) {
             const formatted = "$" + currentBalance.toFixed(2);
@@ -600,7 +615,6 @@
             document.getElementById("gatewayAddressText").textContent = PAYMENT_ADDRESSES[selectedPayMethod];
             document.getElementById("paymentGatewayBox").classList.remove("hidden");
 
-            // تشغيل عداد 15 دقيقة
             if (timerInterval) clearInterval(timerInterval);
             let secondsLeft = 15 * 60;
             const timerEl = document.getElementById("depositTimer");
@@ -623,7 +637,7 @@
             alert("تم نسخ عنوان التحويل بنجاح!");
         };
 
-        // إرسال طلب الإيداع للمراجعة (لا يضاف للرصيد إلا بموافقة الأدمن)
+        // إرسال طلب الإيداع للمراجعة
         window.submitDepositRequest = async function () {
             const user = auth.currentUser;
             const amount = parseFloat(document.getElementById("depositAmountInput").value);
@@ -657,7 +671,7 @@
                 statusEl.textContent = "تم استلام طلب الإيداع وهو الآن قيد المراجعة من الإدارة.";
                 statusEl.className = "text-xs font-bold text-emerald-400";
                 await loadUserRequests(user.uid);
-                if (user.email === ADMIN_EMAIL) await loadAdminRequests();
+                if (user.email === ADMIN_EMAIL) await refreshAdminPanel();
             } catch (err) {
                 statusEl.textContent = "حدث خطأ: " + err.message;
                 statusEl.className = "text-xs font-bold text-rose-400";
@@ -690,7 +704,6 @@
             }
 
             try {
-                // حجز المبلغ من الرصيد لحين موافقة الأدمن
                 await setDoc(doc(db, "users", user.uid), { balance: increment(-amount) }, { merge: true });
                 await addDoc(collection(db, "requests"), {
                     userId: user.uid,
@@ -711,14 +724,14 @@
                 statusEl.textContent = "تم إرسال طلب السحب وهو قيد المراجعة والتنفيذ.";
                 statusEl.className = "text-xs font-bold text-emerald-400";
                 await loadUserRequests(user.uid);
-                if (user.email === ADMIN_EMAIL) await loadAdminRequests();
+                if (user.email === ADMIN_EMAIL) await refreshAdminPanel();
             } catch (err) {
                 statusEl.textContent = "حدث خطأ: " + err.message;
                 statusEl.className = "text-xs font-bold text-rose-400";
             }
         };
 
-        // طلب استثمار جديد (يحتاج موافقة الأدمن لتفعيل العقد)
+        // طلب استثمار جديد
         window.handleInvestRequest = async function (planName, rate, days, inputId, minAmount) {
             const user = auth.currentUser;
             const amount = parseFloat(document.getElementById(inputId).value);
@@ -757,7 +770,7 @@
                 statusEl.textContent = `تم إرسال طلب الاشتراك في (${planName}) وبانتظار اعتماد الإدارة.`;
                 statusEl.className = "text-xs font-bold text-emerald-400 px-1";
                 await loadUserRequests(user.uid);
-                if (user.email === ADMIN_EMAIL) await loadAdminRequests();
+                if (user.email === ADMIN_EMAIL) await refreshAdminPanel();
             } catch (err) {
                 statusEl.textContent = "حدث خطأ: " + err.message;
                 statusEl.className = "text-xs font-bold text-rose-400 px-1";
@@ -780,29 +793,145 @@
                     } else if (data.type === "استثمار") {
                         await addDoc(collection(db, "investments"), {
                             userId: data.userId,
+                            userEmail: data.userEmail || "",
                             planName: data.planDetails.planName,
-                            rate: data.planDetails.rate,
-                            days: data.planDetails.days,
-                            amount: data.amount,
+                            rate: Number(data.planDetails.rate),
+                            days: Number(data.planDetails.days),
+                            daysPaid: 0,
+                            lastPayoutDate: "",
+                            totalProfitPaid: 0,
+                            amount: Number(data.amount),
                             status: "نشط",
                             createdAt: new Date().toISOString()
                         });
                     }
                     await updateDoc(reqRef, { status: "approved" });
                 } else if (action === "reject") {
-                    // إرجاع المبلغ للمستخدم لو كان سحب أو استثمار مرفوض
                     if (data.type === "سحب" || data.type === "استثمار") {
                         await setDoc(doc(db, "users", data.userId), { balance: increment(data.amount) }, { merge: true });
                     }
                     await updateDoc(reqRef, { status: "rejected" });
                 }
 
-                await loadAdminRequests();
+                await refreshAdminPanel();
                 if (auth.currentUser) await loadUserData(auth.currentUser);
             } catch (err) {
                 alert("خطأ في تنفيذ أمر الأدمن: " + err.message);
             }
         };
+
+        // دالة الأدمن: صرف العائد اليومي لعقد استثماري نشط
+        window.payDailyProfit = async function (invId) {
+            try {
+                const invRef = doc(db, "investments", invId);
+                const invSnap = await getDoc(invRef);
+                if (!invSnap.exists()) return alert("العقد غير موجود.");
+
+                const inv = invSnap.data();
+                const totalDays = Number(inv.days || 0);
+                const daysPaid = Number(inv.daysPaid || 0);
+                const rate = Number(inv.rate || 0);
+                const amount = Number(inv.amount || 0);
+                const todayKey = getTodayKey();
+
+                if (inv.status !== "نشط" || daysPaid >= totalDays) {
+                    return alert("هذا العقد مكتمل بالفعل.");
+                }
+
+                if (inv.lastPayoutDate === todayKey) {
+                    return alert("تم صرف عائد اليوم لهذا العقد بالفعل.");
+                }
+
+                const dailyProfit = Number(((amount * rate) / 100).toFixed(2));
+                const nextDaysPaid = daysPaid + 1;
+                const nextStatus = nextDaysPaid >= totalDays ? "مكتمل" : "نشط";
+
+                // إضافة الربح اليومي لرصيد صاحب العقد
+                await setDoc(doc(db, "users", inv.userId), {
+                    balance: increment(dailyProfit)
+                }, { merge: true });
+
+                // تحديث بيانات العقد الاستثماري
+                await updateDoc(invRef, {
+                    daysPaid: nextDaysPaid,
+                    lastPayoutDate: todayKey,
+                    totalProfitPaid: increment(dailyProfit),
+                    status: nextStatus
+                });
+
+                // تسجيل إشعار/عملية للمستخدم
+                await addDoc(collection(db, "requests"), {
+                    userId: inv.userId,
+                    userEmail: inv.userEmail || "مستثمر",
+                    type: "عائد يومي",
+                    method: inv.planName,
+                    amount: dailyProfit,
+                    reference: `يوم ${nextDaysPaid} من ${totalDays} (${rate}%)`,
+                    status: "approved",
+                    createdAt: new Date().toISOString()
+                });
+
+                alert(`تم صرف عائد يومي بقيمة $${dailyProfit.toFixed(2)} للعقد (${inv.planName}).`);
+                await refreshAdminPanel();
+                if (auth.currentUser) await loadUserData(auth.currentUser);
+            } catch (err) {
+                alert("خطأ أثناء صرف العائد اليومي: " + err.message);
+            }
+        };
+
+        // تحميل العقود للأدمن مع زر صرف العائد اليومي
+        async function loadAdminInvestments() {
+            const listEl = document.getElementById("adminInvestmentsList");
+            try {
+                const snap = await getDocs(collection(db, "investments"));
+                if (snap.empty) {
+                    listEl.innerHTML = "<p class='text-xs text-slate-500'>لا توجد عقود استثمارية مسجلة حتى الآن.</p>";
+                    return;
+                }
+
+                const todayKey = getTodayKey();
+                listEl.innerHTML = snap.docs.map((d) => {
+                    const inv = d.data();
+                    const totalDays = Number(inv.days || 0);
+                    const daysPaid = Number(inv.daysPaid || 0);
+                    const rate = Number(inv.rate || 0);
+                    const amount = Number(inv.amount || 0);
+                    const dailyProfit = ((amount * rate) / 100).toFixed(2);
+                    const paidToday = inv.lastPayoutDate === todayKey;
+                    const isCompleted = inv.status === "مكتمل" || daysPaid >= totalDays;
+
+                    const statusBadge = isCompleted
+                        ? `<span class="px-2 py-0.5 rounded bg-slate-700 text-slate-300 font-bold">مكتمل</span>`
+                        : `<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold">نشط</span>`;
+
+                    let actionBtn = "";
+                    if (isCompleted) {
+                        actionBtn = `<button type="button" disabled class="w-full mt-2 py-2 rounded-xl bg-slate-800 text-slate-500 font-bold text-xs cursor-not-allowed">اكتملت مدة العقد</button>`;
+                    } else if (paidToday) {
+                        actionBtn = `<button type="button" disabled class="w-full mt-2 py-2 rounded-xl bg-amber-500/10 text-amber-300 font-bold text-xs cursor-not-allowed">تم صرف عائد اليوم</button>`;
+                    } else {
+                        actionBtn = `<button type="button" onclick="payDailyProfit('${d.id}')" class="w-full mt-2 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition cursor-pointer">
+                            <i class="fa-solid fa-sack-dollar ml-1"></i> صرف عائد اليوم ($${dailyProfit})
+                        </button>`;
+                    }
+
+                    return `
+                        <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-3.5 space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <span class="font-black text-white">${inv.planName}</span>
+                                ${statusBadge}
+                            </div>
+                            <p class="text-[11px] text-slate-400">المستخدم: <span class="text-slate-200">${inv.userEmail || inv.userId}</span></p>
+                            <p class="text-[11px] text-slate-400">رأس المال: <span class="font-black text-amber-400">$${amount.toFixed(2)}</span> • العائد اليومي: <span class="font-black text-emerald-400">$${dailyProfit} (${rate}%)</span></p>
+                            <p class="text-[11px] text-slate-400">الأيام المصروفة: <span class="text-white font-bold">${daysPaid} / ${totalDays} يوم</span> • إجمالي الأرباح المصروفة: <span class="text-emerald-400 font-bold">$${Number(inv.totalProfitPaid || 0).toFixed(2)}</span></p>
+                            ${actionBtn}
+                        </div>
+                    `;
+                }).join("");
+            } catch (err) {
+                listEl.innerHTML = `<p class="text-xs text-rose-400">تعذر تحميل العقود: ${err.message}</p>`;
+            }
+        }
 
         // تحميل كل الطلبات للأدمن
         window.loadAdminRequests = async function () {
@@ -813,6 +942,7 @@
 
                 if (snap.empty) {
                     listEl.innerHTML = "<p class='text-xs text-slate-500'>لا توجد أي طلبات من المستخدمين حتى الآن.</p>";
+                    document.getElementById("pendingCountBadge").textContent = "0";
                     return;
                 }
 
@@ -850,6 +980,11 @@
             } catch (err) {
                 listEl.innerHTML = `<p class="text-xs text-rose-400">تأكد من تحديث قواعد Firestore: ${err.message}</p>`;
             }
+        };
+
+        window.refreshAdminPanel = async function () {
+            await loadAdminRequests();
+            await loadAdminInvestments();
         };
 
         async function loadUserRequests(uid) {
@@ -894,11 +1029,13 @@
                     listEl.innerHTML = snap.docs.map((d) => {
                         const inv = d.data();
                         sum += Number(inv.amount || 0);
+                        const daysPaid = Number(inv.daysPaid || 0);
+                        const totalDays = Number(inv.days || 0);
                         return `
                             <div class="flex items-center justify-between bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5">
                                 <div>
-                                    <p class="font-black text-white">${inv.planName}</p>
-                                    <p class="text-[11px] text-emerald-400">عائد يومي ${inv.rate}% • المدة ${inv.days} يوم</p>
+                                    <p class="font-black text-white">${inv.planName} <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 mr-1">${inv.status || "نشط"}</span></p>
+                                    <p class="text-[11px] text-emerald-400">عائد يومي ${inv.rate}% • المصروف: ${daysPaid}/${totalDays} يوم • أرباح مستلمة: $${Number(inv.totalProfitPaid || 0).toFixed(2)}</p>
                                 </div>
                                 <span class="font-black text-amber-400">$${Number(inv.amount).toFixed(2)}</span>
                             </div>
@@ -929,10 +1066,9 @@
             document.getElementById("userEmailDisplay").textContent = user.email;
             document.getElementById("accountEmailText").textContent = user.email;
 
-            // إظهار لوحة الأدمن لحسابك فقط
             if (user.email === ADMIN_EMAIL) {
                 document.getElementById("adminHeaderBadge").classList.remove("hidden");
-                await loadAdminRequests();
+                await refreshAdminPanel();
             } else {
                 document.getElementById("adminHeaderBadge").classList.add("hidden");
             }
