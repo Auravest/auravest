@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AuraVest - منصة الاستثمار الذكي</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #090d16;
+            color: #f8fafc;
+            padding-bottom: 84px;
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.2s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen w-full overflow-x-hidden">
+
+    <!-- شاشة تسجيل الدخول / إنشاء حساب -->
+    <div id="authScreen" class="fixed inset-0 z-50 bg-[#090d16] flex items-center justify-center p-4">
+        <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-5 shadow-2xl">
+            <div class="flex flex-col items-center text-center space-y-2">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center text-slate-950 font-black text-3xl shadow-lg shadow-amber-500/20">
+                    A
+                </div>
+                <h1 class="font-black text-2xl bg-gradient-to-r from-amber-400 to-yellow-200 bg-clip-text text-transparent">
+                    AuraVest
+                </h1>
+                <p id="authSubtitle" class="text-xs text-slate-400">سجل دخولك لمتابعة محفظتك واستثماراتك</p>
+            </div>
+
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">البريد الإلكتروني</label>
+                    <input id="authEmail" type="email" placeholder="name@example.com" class="w-full px-4 py-3 rounded-2xl bg-slate-950 border border-slate-800 text-white text-sm focus:outline-none focus:border-amber-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">كلمة المرور</label>
+                    <input id="authPassword" type="password" placeholder="6 أحرف أو أكثر" class="w-full px-4 py-3 rounded-2xl bg-slate-950 border border-slate-800 text-white text-sm focus:outline-none focus:border-amber-500">
+                </div>
+                <p id="authError" class="text-xs text-rose-400 font-bold hidden"></p>
+                <button id="authSubmitBtn" onclick="handleAuthSubmit()" class="w-full py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm transition">
+                    تسجيل الدخول
+                </button>
+            </div>
+
+            <div class="text-center pt-2 border-t border-slate-800">
+                <button id="toggleAuthModeBtn" onclick="toggleAuthMode()" class="text-xs font-bold text-amber-400 hover:underline">
+                    ليس لديك حساب؟ إنشاء حساب جديد
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- التطبيق الرئيسي بعد تسجيل الدخول -->
+    <div id="appShell" class="hidden">
+        <header class="sticky top-0 z-40 bg-slate-900/95 backdrop-blur border-b border-slate-800 px-4 py-3.5 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-2xl bg
