@@ -3,215 +3,406 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AuraVest - منصة الاستثمار الذكي</title>
+    <title>AuraVest - منصة إدارة الأصول والاستثمار الذكي</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
         body {
             font-family: 'Tajawal', sans-serif;
-            background-color: #090d16;
+            background-color: #060911;
             color: #f8fafc;
-            padding-bottom: 92px;
+            padding-bottom: 95px;
         }
         .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.2s ease-in-out; }
+        .tab-content.active { display: block; animation: fadeIn 0.25s ease-out; }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(4px); }
+            from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(51, 65, 85, 0.6);
         }
     </style>
 </head>
 <body class="min-h-screen w-full overflow-x-hidden">
 
     <!-- شاشة تسجيل الدخول / إنشاء حساب -->
-    <div id="authScreen" class="fixed inset-0 z-50 bg-[#090d16] flex items-center justify-center p-4">
-        <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-5 shadow-2xl">
+    <div id="authScreen" class="fixed inset-0 z-50 bg-[#060911] flex items-center justify-center p-4">
+        <div class="w-full max-w-md glass-card rounded-3xl p-7 space-y-6 shadow-2xl">
             <div class="flex flex-col items-center text-center space-y-2">
-                <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center text-slate-950 font-black text-3xl shadow-lg shadow-amber-500/20">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center text-slate-950 font-black text-3xl shadow-lg shadow-amber-500/20">
                     A
                 </div>
-                <h1 class="font-black text-2xl bg-gradient-to-r from-amber-400 to-yellow-200 bg-clip-text text-transparent">
-                    AuraVest
+                <h1 class="font-black text-2xl tracking-wide bg-gradient-to-r from-amber-400 to-yellow-200 bg-clip-text text-transparent">
+                    AuraVest Global
                 </h1>
-                <p id="authSubtitle" class="text-xs text-slate-400">سجل دخولك لمتابعة محفظتك واستثماراتك</p>
+                <p id="authSubtitle" class="text-xs text-slate-400">بوابة الاستثمار المؤسسي وإدارة المحافظ الرقمية</p>
             </div>
 
-            <div class="space-y-3">
+            <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-300 mb-1">البريد الإلكتروني</label>
-                    <input id="authEmail" type="email" placeholder="name@example.com" class="w-full px-4 py-3 rounded-2xl bg-slate-950 border border-slate-800 text-white text-sm focus:outline-none focus:border-amber-500">
+                    <label class="block text-xs font-bold text-slate-300 mb-1.5">البريد الإلكتروني</label>
+                    <input id="authEmail" type="email" placeholder="investor@domain.com" class="w-full px-4 py-3.5 rounded-2xl bg-slate-950/90 border border-slate-800 text-white text-sm focus:outline-none focus:border-amber-500 transition">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-300 mb-1">كلمة المرور</label>
-                    <input id="authPassword" type="password" placeholder="6 أحرف أو أكثر" class="w-full px-4 py-3 rounded-2xl bg-slate-950 border border-slate-800 text-white text-sm focus:outline-none focus:border-amber-500">
+                    <label class="block text-xs font-bold text-slate-300 mb-1.5">كلمة المرور</label>
+                    <input id="authPassword" type="password" placeholder="••••••••" class="w-full px-4 py-3.5 rounded-2xl bg-slate-950/90 border border-slate-800 text-white text-sm focus:outline-none focus:border-amber-500 transition">
                 </div>
-                <p id="authError" class="text-xs text-rose-400 font-bold hidden"></p>
-                <button id="authSubmitBtn" type="button" onclick="handleAuthSubmit()" class="w-full py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm transition cursor-pointer">
-                    تسجيل الدخول
+                <p id="authError" class="text-xs text-rose-400 font-bold hidden bg-rose-500/10 p-3 rounded-xl border border-rose-500/20"></p>
+                <button id="authSubmitBtn" type="button" onclick="handleAuthSubmit()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-black text-sm shadow-lg shadow-amber-500/20 transition cursor-pointer">
+                    تسجيل الدخول الآمن
                 </button>
             </div>
 
-            <div class="text-center pt-2 border-t border-slate-800">
+            <div class="text-center pt-3 border-t border-slate-800/80 space-y-2">
                 <button id="toggleAuthModeBtn" type="button" onclick="toggleAuthMode()" class="text-xs font-bold text-amber-400 hover:underline cursor-pointer">
-                    ليس لديك حساب؟ إنشاء حساب جديد
+                    مستثمر جديد؟ افتح محفظتك الآن
                 </button>
+                <div class="flex items-center justify-center gap-3 text-[10px] text-slate-500 pt-1">
+                    <span><i class="fa-solid fa-shield-halved text-emerald-500"></i> تشفير 256-Bit</span>
+                    <span>•</span>
+                    <span><i class="fa-solid fa-lock text-amber-500"></i> حماية الأصول</span>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- التطبيق الرئيسي -->
     <div id="appShell" class="hidden">
-        <header class="sticky top-0 z-40 bg-slate-900/95 backdrop-blur border-b border-slate-800 px-4 py-3.5 flex items-center justify-between">
+        <header class="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-slate-800/80 px-4 py-3.5 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center text-slate-950 font-black text-xl shadow-md shadow-amber-500/20">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center text-slate-950 font-black text-lg shadow-md">
                     A
                 </div>
                 <div>
-                    <h2 class="font-black text-base text-white">AuraVest</h2>
-                    <p id="userEmailDisplay" class="text-[11px] text-slate-400">مرحباً بك</p>
+                    <div class="flex items-center gap-1.5">
+                        <h2 class="font-black text-base text-white">AuraVest</h2>
+                        <i class="fa-solid fa-circle-check text-sky-400 text-xs" title="منصة موثقة"></i>
+                    </div>
+                    <p id="userEmailDisplay" class="text-[11px] text-slate-400">جاري التحميل...</p>
                 </div>
             </div>
-            <button type="button" onclick="handleLogout()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-rose-400 transition cursor-pointer">
-                <i class="fa-solid fa-right-from-bracket ml-1"></i> خروج
-            </button>
+            <div class="flex items-center gap-2">
+                <button id="adminHeaderBadge" type="button" onclick="switchTab('admin')" class="hidden px-3 py-1.5 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-black animate-pulse cursor-pointer">
+                    <i class="fa-solid fa-bell ml-1"></i> الإدارة (<span id="pendingCountBadge">0</span>)
+                </button>
+                <button type="button" onclick="handleLogout()" class="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-bold text-slate-400 hover:text-rose-400 transition cursor-pointer" title="تسجيل الخروج">
+                    <i class="fa-solid fa-power-off"></i>
+                </button>
+            </div>
         </header>
 
         <main class="max-w-3xl mx-auto p-4 space-y-5">
             <!-- الرئيسية -->
-            <section id="tab-home" class="tab-content active space-y-4">
-                <div class="bg-gradient-to-br from-amber-500/20 via-slate-900 to-slate-950 border border-amber-500/30 rounded-3xl p-5 space-y-4">
+            <section id="tab-home" class="tab-content active space-y-5">
+                <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-amber-950/30 border border-slate-800 rounded-3xl p-6 space-y-5 shadow-xl relative overflow-hidden">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold text-amber-300">نظرة عامة على المحفظة</span>
-                        <span class="text-[11px] px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-400 font-bold">متصل بـ Firebase</span>
+                        <span class="text-xs font-bold text-slate-400">إجمالي رصيد المحفظة</span>
+                        <span class="text-[11px] px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold">
+                            <i class="fa-solid fa-shield-check ml-1"></i> محفظة نشطة ومؤمنة
+                        </span>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-400">الرصيد المتاح</p>
-                        <h3 id="homeBalanceDisplay" class="text-3xl font-black text-white mt-1">$0.00</h3>
+                        <h3 id="homeBalanceDisplay" class="text-4xl font-black text-white tracking-tight">$0.00</h3>
+                        <p class="text-[11px] text-slate-400 mt-1">متاح للسحب الفوري أو الاستثمار في الصناديق</p>
                     </div>
                     <div class="grid grid-cols-2 gap-3 pt-2">
-                        <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3">
-                            <p class="text-[11px] text-slate-400">إجمالي المستثمر</p>
-                            <p id="totalInvestedDisplay" class="text-base font-black text-amber-400 mt-0.5">$0.00</p>
+                        <div class="bg-slate-950/80 border border-slate-800/90 rounded-2xl p-3.5">
+                            <p class="text-[11px] text-slate-400">رأس المال المستثمر</p>
+                            <p id="totalInvestedDisplay" class="text-lg font-black text-amber-400 mt-0.5">$0.00</p>
                         </div>
-                        <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3">
-                            <p class="text-[11px] text-slate-400">عدد الاستثمارات</p>
-                            <p id="activeInvestmentsCount" class="text-base font-black text-emerald-400 mt-0.5">0</p>
+                        <div class="bg-slate-950/80 border border-slate-800/90 rounded-2xl p-3.5">
+                            <p class="text-[11px] text-slate-400">العقود الاستثمارية</p>
+                            <p id="activeInvestmentsCount" class="text-lg font-black text-emerald-400 mt-0.5">0 عقود</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- أزرار تنقل سريعة -->
+                <!-- إجراءات سريعة -->
                 <div class="grid grid-cols-3 gap-3">
-                    <button type="button" onclick="switchTab('wallet')" class="bg-slate-900 hover:bg-slate-800/80 border border-slate-800 rounded-2xl p-3.5 text-center space-y-1.5 transition cursor-pointer">
-                        <i class="fa-solid fa-plus-circle text-amber-400 text-lg"></i>
-                        <p class="text-xs font-bold">إيداع / سحب</p>
+                    <button type="button" onclick="switchTab('wallet')" class="glass-card hover:border-amber-500/50 rounded-2xl p-4 text-center space-y-2 transition cursor-pointer">
+                        <div class="w-10 h-10 mx-auto rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center">
+                            <i class="fa-solid fa-wallet text-lg"></i>
+                        </div>
+                        <p class="text-xs font-bold text-slate-200">إيداع وسحب</p>
                     </button>
-                    <button type="button" onclick="switchTab('invest')" class="bg-slate-900 hover:bg-slate-800/80 border border-slate-800 rounded-2xl p-3.5 text-center space-y-1.5 transition cursor-pointer">
-                        <i class="fa-solid fa-seedling text-emerald-400 text-lg"></i>
-                        <p class="text-xs font-bold">خطط الاستثمار</p>
+                    <button type="button" onclick="switchTab('invest')" class="glass-card hover:border-emerald-500/50 rounded-2xl p-4 text-center space-y-2 transition cursor-pointer">
+                        <div class="w-10 h-10 mx-auto rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                            <i class="fa-solid fa-chart-pie text-lg"></i>
+                        </div>
+                        <p class="text-xs font-bold text-slate-200">صناديق الاستثمار</p>
                     </button>
-                    <button type="button" onclick="switchTab('portfolio')" class="bg-slate-900 hover:bg-slate-800/80 border border-slate-800 rounded-2xl p-3.5 text-center space-y-1.5 transition cursor-pointer">
-                        <i class="fa-solid fa-briefcase text-sky-400 text-lg"></i>
-                        <p class="text-xs font-bold">استثماراتي</p>
+                    <button type="button" onclick="switchTab('portfolio')" class="glass-card hover:border-sky-500/50 rounded-2xl p-4 text-center space-y-2 transition cursor-pointer">
+                        <div class="w-10 h-10 mx-auto rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center">
+                            <i class="fa-solid fa-file-contract text-lg"></i>
+                        </div>
+                        <p class="text-xs font-bold text-slate-200">عقودي النشطة</p>
                     </button>
+                </div>
+
+                <!-- شريط إحصائيات الثقة -->
+                <div class="glass-card rounded-3xl p-4 grid grid-cols-3 divide-x divide-x-reverse divide-slate-800 text-center">
+                    <div>
+                        <p class="text-sm font-black text-white">+14,200</p>
+                        <p class="text-[10px] text-slate-400">مستثمر نشط</p>
+                    </div>
+                    <div>
+                        <p class="text-sm font-black text-amber-400">$4.8M</p>
+                        <p class="text-[10px] text-slate-400">حجم السيولة</p>
+                    </div>
+                    <div>
+                        <p class="text-sm font-black text-emerald-400">99.9%</p>
+                        <p class="text-[10px] text-slate-400">نسبة الاستقرار</p>
+                    </div>
                 </div>
             </section>
 
-            <!-- المحفظة -->
+            <!-- المحفظة (الإيداع والسحب الاحترافي) -->
             <section id="tab-wallet" class="tab-content space-y-4">
-                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-4">
-                    <div class="flex items-center justify-between">
+                <div class="glass-card rounded-3xl p-5 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-4">
                         <div>
-                            <p class="text-xs text-slate-400 font-bold">رصيد المحفظة الحالي</p>
+                            <p class="text-xs text-slate-400">الرصيد المتاح حالياً</p>
                             <h3 id="balanceDisplay" class="text-3xl font-black text-amber-400 mt-1">$0.00</h3>
                         </div>
-                        <i class="fa-solid fa-wallet text-2xl text-amber-400/70"></i>
+                        <div class="flex gap-2">
+                            <button type="button" id="modeDepositBtn" onclick="setWalletMode('deposit')" class="px-3.5 py-2 rounded-xl bg-amber-500 text-slate-950 font-black text-xs cursor-pointer">إيداع</button>
+                            <button type="button" id="modeWithdrawBtn" onclick="setWalletMode('withdraw')" class="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs cursor-pointer">سحب</button>
+                        </div>
                     </div>
 
-                    <div class="pt-3 border-t border-slate-800 space-y-3">
-                        <input id="walletAmount" type="number" min="1" step="any" placeholder="أدخل المبلغ بالدولار (مثال: 100)" class="w-full px-4 py-3 rounded-2xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-amber-500">
-                        <div class="grid grid-cols-2 gap-2.5">
-                            <button type="button" onclick="handleDeposit()" class="py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition cursor-pointer">
-                                <i class="fa-solid fa-arrow-down ml-1"></i> إيداع رصيد
-                            </button>
-                            <button type="button" onclick="handleWithdraw()" class="py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-black text-xs transition cursor-pointer">
-                                <i class="fa-solid fa-arrow-up ml-1"></i> سحب رصيد
+                    <!-- نموذج الإيداع -->
+                    <div id="depositSection" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-2">1. اختر وسيلة الدفع</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button type="button" onclick="selectPaymentMethod('USDT (TRC20)')" class="pay-method-btn border border-amber-500 bg-amber-500/10 rounded-xl p-2.5 text-center space-y-1 cursor-pointer" data-method="USDT (TRC20)">
+                                    <i class="fa-solid fa-coins text-emerald-400 text-sm"></i>
+                                    <p class="text-[11px] font-bold text-white">USDT TRC20</p>
+                                </button>
+                                <button type="button" onclick="selectPaymentMethod('Vodafone Cash')" class="pay-method-btn border border-slate-800 bg-slate-950 rounded-xl p-2.5 text-center space-y-1 cursor-pointer" data-method="Vodafone Cash">
+                                    <i class="fa-solid fa-mobile-screen text-rose-500 text-sm"></i>
+                                    <p class="text-[11px] font-bold text-slate-300">فودافون كاش</p>
+                                </button>
+                                <button type="button" onclick="selectPaymentMethod('InstaPay')" class="pay-method-btn border border-slate-800 bg-slate-950 rounded-xl p-2.5 text-center space-y-1 cursor-pointer" data-method="InstaPay">
+                                    <i class="fa-solid fa-building-columns text-purple-400 text-sm"></i>
+                                    <p class="text-[11px] font-bold text-slate-300">إنستا باي</p>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1.5">2. المبلغ المراد إيداعه ($)</label>
+                            <input id="depositAmountInput" type="number" min="10" placeholder="الحد الأدنى 10$" class="w-full px-4 py-3 rounded-2xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-amber-500">
+                        </div>
+
+                        <button type="button" id="startDepositBtn" onclick="initiateDepositGateway()" class="w-full py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm transition cursor-pointer">
+                            متابعة وإظهار بيانات التحويل
+                        </button>
+
+                        <!-- بوابة الدفع والعداد الزمني -->
+                        <div id="paymentGatewayBox" class="hidden bg-slate-950 border border-amber-500/40 rounded-2xl p-4 space-y-3.5">
+                            <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+                                <span class="text-xs font-bold text-amber-400"><i class="fa-solid fa-clock ml-1"></i> بوابة الدفع المؤقتة</span>
+                                <span id="depositTimer" class="font-mono text-sm font-black text-rose-400 bg-rose-500/10 px-2.5 py-1 rounded-lg">15:00</span>
+                            </div>
+                            <p class="text-xs text-slate-300">قم بتحويل مبلغ <span id="gatewayAmountLabel" class="font-black text-white">$0</span> عبر <span id="gatewayMethodLabel" class="font-black text-amber-400"></span> إلى العنوان التالي:</p>
+                            
+                            <div class="flex items-center justify-between bg-slate-900 border border-slate-800 rounded-xl p-3">
+                                <code id="gatewayAddressText" class="text-xs text-emerald-400 font-mono break-all select-all"></code>
+                                <button type="button" onclick="copyGatewayAddress()" class="mr-2 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] font-bold text-white shrink-0 cursor-pointer">
+                                    نسخ
+                                </button>
+                            </div>
+
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-400 mb-1">رقم العملية / رقم المحفظة المحول منها (للتأكيد)</label>
+                                <input id="depositTxReference" type="text" placeholder="مثال: 010xxxxxxx أو TxID" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-amber-500">
+                            </div>
+
+                            <button type="button" onclick="submitDepositRequest()" class="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition cursor-pointer">
+                                <i class="fa-solid fa-check-circle ml-1"></i> تم التحويل، أرسل الطلب للمراجعة
                             </button>
                         </div>
                     </div>
-                    <p id="walletStatus" class="text-xs text-slate-400"></p>
+
+                    <!-- نموذج السحب -->
+                    <div id="withdrawSection" class="hidden space-y-3.5">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1.5">وسيلة استلام الأرباح</label>
+                            <select id="withdrawMethodSelect" class="w-full px-4 py-3 rounded-2xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-amber-500">
+                                <option value="USDT (TRC20)">USDT (TRC20)</option>
+                                <option value="Vodafone Cash">فودافون كاش (Vodafone Cash)</option>
+                                <option value="InstaPay">إنستا باي (InstaPay)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1.5">عنوان المحفظة أو رقم الحساب</label>
+                            <input id="withdrawAddressInput" type="text" placeholder="أدخل عنوان المحفظة أو رقم الهاتف" class="w-full px-4 py-3 rounded-2xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-amber-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1.5">المبلغ المراد سحبه ($)</label>
+                            <input id="withdrawAmountInput" type="number" min="10" placeholder="الحد الأدنى للسحب 10$" class="w-full px-4 py-3 rounded-2xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-amber-500">
+                        </div>
+                        <button type="button" onclick="submitWithdrawRequest()" class="w-full py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm transition cursor-pointer">
+                            تأكيد طلب السحب
+                        </button>
+                    </div>
+
+                    <p id="walletStatus" class="text-xs font-bold"></p>
                 </div>
 
-                <!-- سجل المعاملات -->
-                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-3">
-                    <h4 class="font-black text-sm text-white">سجل المعاملات الأخيرة</h4>
-                    <div id="transactionsList" class="space-y-2 text-xs text-slate-400">
-                        لا توجد معاملات مسجلة بعد.
+                <!-- سجل الطلبات -->
+                <div class="glass-card rounded-3xl p-5 space-y-3">
+                    <h4 class="font-black text-sm text-white">سجل العمليات والطلبات</h4>
+                    <div id="userRequestsList" class="space-y-2.5 text-xs text-slate-400">
+                        لا توجد عمليات مسجلة بعد.
                     </div>
                 </div>
             </section>
 
-            <!-- خطط الاستثمار -->
+            <!-- خطط الاستثمار الاحترافية -->
             <section id="tab-invest" class="tab-content space-y-4">
-                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-2">
-                    <h3 class="font-black text-base text-amber-400">خطط الاستثمار المتاحة</h3>
-                    <p class="text-xs text-slate-400">اختر خطة وأدخل المبلغ ليتم خصمه من رصيدك وتسجيله ضمن استثماراتك.</p>
+                <div class="glass-card rounded-3xl p-5 space-y-1.5">
+                    <h3 class="font-black text-base text-amber-400">صناديق الاستثمار المُدارة</h3>
+                    <p class="text-xs text-slate-400">استثمارات مدعومة بعقود ذكية وعوائد يومية ثابتة تُضاف لمحفظتك.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-3">
+                    <!-- الخطة 1 -->
+                    <div class="glass-card rounded-3xl p-5 space-y-3.5 border-t-2 border-t-emerald-500">
                         <div class="flex items-center justify-between">
-                            <span class="font-black text-white">الخطة اليومية السريعة</span>
-                            <span class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-400 font-bold">+3.5% / يوم</span>
+                            <div>
+                                <span class="text-[10px] font-bold text-emerald-400 uppercase">الأكثر طلباً</span>
+                                <h4 class="font-black text-base text-white">محفظة السيولة اليومية</h4>
+                            </div>
+                            <div class="text-left">
+                                <span class="text-lg font-black text-emerald-400">3.5%</span>
+                                <p class="text-[10px] text-slate-400">عائد يومي</p>
+                            </div>
                         </div>
-                        <p class="text-xs text-slate-400">المدة: 7 أيام • الحد الأدنى: $10</p>
-                        <input id="planDailyAmount" type="number" min="10" step="any" placeholder="مبلغ الاستثمار ($)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-amber-500">
-                        <button type="button" onclick="handleInvest('الخطة اليومية السريعة', 3.5, 'planDailyAmount', 10)" class="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition cursor-pointer">
-                            استثمر الآن
+                        <div class="bg-slate-950/80 rounded-2xl p-3 space-y-1.5 text-xs">
+                            <div class="flex justify-between"><span class="text-slate-400">مدة العقد:</span><span class="font-bold text-white">10 أيام</span></div>
+                            <div class="flex justify-between"><span class="text-slate-400">الحد الأدنى / الأقصى:</span><span class="font-bold text-white">$20 - $499</span></div>
+                            <div class="flex justify-between"><span class="text-slate-400">إجمالي العائد المتوقع:</span><span class="font-bold text-emerald-400">135% (شامل رأس المال)</span></div>
+                        </div>
+                        <input id="plan1Amount" type="number" min="20" placeholder="أدخل مبلغ الاستثمار ($)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-emerald-500">
+                        <button type="button" onclick="handleInvestRequest('محفظة السيولة اليومية', 3.5, 10, 'plan1Amount', 20)" class="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition cursor-pointer">
+                            تفعيل العقد الاستثماري
                         </button>
                     </div>
 
-                    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-3">
+                    <!-- الخطة 2 -->
+                    <div class="glass-card rounded-3xl p-5 space-y-3.5 border-t-2 border-t-amber-500">
                         <div class="flex items-center justify-between">
-                            <span class="font-black text-white">خطة النمو الذكي</span>
-                            <span class="text-xs px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-300 font-bold">+18% / شهر</span>
+                            <div>
+                                <span class="text-[10px] font-bold text-amber-400 uppercase">نمو متوازن</span>
+                                <h4 class="font-black text-base text-white">صندوق الذهب والعملات</h4>
+                            </div>
+                            <div class="text-left">
+                                <span class="text-lg font-black text-amber-400">4.2%</span>
+                                <p class="text-[10px] text-slate-400">عائد يومي</p>
+                            </div>
                         </div>
-                        <p class="text-xs text-slate-400">المدة: 30 يوماً • الحد الأدنى: $50</p>
-                        <input id="planGrowthAmount" type="number" min="50" step="any" placeholder="مبلغ الاستثمار ($)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-amber-500">
-                        <button type="button" onclick="handleInvest('خطة النمو الذكي', 18, 'planGrowthAmount', 50)" class="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition cursor-pointer">
-                            استثمر الآن
+                        <div class="bg-slate-950/80 rounded-2xl p-3 space-y-1.5 text-xs">
+                            <div class="flex justify-between"><span class="text-slate-400">مدة العقد:</span><span class="font-bold text-white">20 يوماً</span></div>
+                            <div class="flex justify-between"><span class="text-slate-400">الحد الأدنى / الأقصى:</span><span class="font-bold text-white">$500 - $2,499</span></div>
+                            <div class="flex justify-between"><span class="text-slate-400">إجمالي العائد المتوقع:</span><span class="font-bold text-amber-400">184% (شامل رأس المال)</span></div>
+                        </div>
+                        <input id="plan2Amount" type="number" min="500" placeholder="أدخل مبلغ الاستثمار ($)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-amber-500">
+                        <button type="button" onclick="handleInvestRequest('صندوق الذهب والعملات', 4.2, 20, 'plan2Amount', 500)" class="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition cursor-pointer">
+                            تفعيل العقد الاستثماري
+                        </button>
+                    </div>
+
+                    <!-- الخطة 3 -->
+                    <div class="glass-card rounded-3xl p-5 space-y-3.5 border-t-2 border-t-sky-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-[10px] font-bold text-sky-400 uppercase">كبار المستثمرين</span>
+                                <h4 class="font-black text-base text-white">محفظة التداول الخوارزمي</h4>
+                            </div>
+                            <div class="text-left">
+                                <span class="text-lg font-black text-sky-400">5.0%</span>
+                                <p class="text-[10px] text-slate-400">عائد يومي</p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-950/80 rounded-2xl p-3 space-y-1.5 text-xs">
+                            <div class="flex justify-between"><span class="text-slate-400">مدة العقد:</span><span class="font-bold text-white">30 يوماً</span></div>
+                            <div class="flex justify-between"><span class="text-slate-400">الحد الأدنى / الأقصى:</span><span class="font-bold text-white">$2,500 - $10,000</span></div>
+                            <div class="flex justify-between"><span class="text-slate-400">إجمالي العائد المتوقع:</span><span class="font-bold text-sky-400">250% (شامل رأس المال)</span></div>
+                        </div>
+                        <input id="plan3Amount" type="number" min="2500" placeholder="أدخل مبلغ الاستثمار ($)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-sky-500">
+                        <button type="button" onclick="handleInvestRequest('محفظة التداول الخوارزمي', 5.0, 30, 'plan3Amount', 2500)" class="w-full py-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-xs transition cursor-pointer">
+                            تفعيل العقد الاستثماري
                         </button>
                     </div>
                 </div>
-                <p id="investStatus" class="text-xs text-slate-400 px-1"></p>
+                <p id="investStatus" class="text-xs font-bold px-1"></p>
             </section>
 
-            <!-- استثماراتي -->
+            <!-- عقودي الاستثمارية -->
             <section id="tab-portfolio" class="tab-content space-y-4">
-                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-3">
-                    <h3 class="font-black text-base text-amber-400">استثماراتي النشطة</h3>
+                <div class="glass-card rounded-3xl p-5 space-y-3">
+                    <h3 class="font-black text-base text-amber-400">عقودي الاستثمارية</h3>
                     <div id="investmentsList" class="space-y-2.5 text-xs text-slate-400">
-                        لا توجد استثمارات مسجلة حتى الآن.
+                        لا توجد عقود استثمارية نشطة حالياً.
                     </div>
                 </div>
             </section>
 
             <!-- الحساب -->
             <section id="tab-account" class="tab-content space-y-4">
-                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-3">
-                    <h3 class="font-black text-base text-white">بيانات الحساب</h3>
-                    <p class="text-xs text-slate-400">البريد الإلكتروني: <span id="accountEmailText" class="text-amber-400 font-bold"></span></p>
-                    <p class="text-xs text-slate-400">المشروع المرتبط: <span class="text-slate-200 font-bold">auravest-7b7e6</span></p>
-                    <button type="button" onclick="handleLogout()" class="w-full py-3 rounded-2xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 font-black text-xs transition cursor-pointer">
-                        تسجيل الخروج من الحساب
+                <div class="glass-card rounded-3xl p-5 space-y-4">
+                    <div class="flex items-center gap-3 border-b border-slate-800 pb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-amber-400 font-black text-xl">
+                            <i class="fa-solid fa-user-shield"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-black text-sm text-white" id="accountEmailText"></h3>
+                            <span class="text-[11px] text-emerald-400 font-bold"><i class="fa-solid fa-badge-check"></i> حساب مستثمر موثق (KYC Verified)</span>
+                        </div>
+                    </div>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex justify-between py-2 border-b border-slate-800/60">
+                            <span class="text-slate-400">حالة الأمان:</span>
+                            <span class="text-white font-bold">مفعّل (2FA / SSL)</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-b border-slate-800/60">
+                            <span class="text-slate-400">الدعم الفني المباشر:</span>
+                            <span class="text-amber-400 font-bold">متاح 24/7</span>
+                        </div>
+                    </div>
+                    <button type="button" onclick="handleLogout()" class="w-full py-3.5 rounded-2xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 font-black text-xs transition cursor-pointer">
+                        تسجيل الخروج الآمن
                     </button>
+                </div>
+            </section>
+
+            <!-- لوحة تحكم الأدمن (تظهر لحسابك فقط) -->
+            <section id="tab-admin" class="tab-content space-y-4">
+                <div class="bg-gradient-to-r from-amber-500/20 to-slate-900 border border-amber-500/40 rounded-3xl p-5 space-y-1">
+                    <h3 class="font-black text-base text-amber-400"><i class="fa-solid fa-crown ml-1"></i> لوحة تحكم المدير العام</h3>
+                    <p class="text-xs text-slate-300">مراجعة واعتماد طلبات الإيداع والسحب والاستثمار لجميع المستخدمين.</p>
+                </div>
+
+                <div class="glass-card rounded-3xl p-5 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-black text-sm text-white">الطلبات المعلقة والحديثة</h4>
+                        <button type="button" onclick="loadAdminRequests()" class="text-xs text-amber-400 font-bold cursor-pointer"><i class="fa-solid fa-rotate"></i> تحديث</button>
+                    </div>
+                    <div id="adminRequestsList" class="space-y-3 text-xs text-slate-400">
+                        جاري تحميل الطلبات...
+                    </div>
                 </div>
             </section>
         </main>
 
         <!-- شريط التنقل السفلي -->
-        <nav class="fixed bottom-0 inset-x-0 z-40 bg-slate-900/95 backdrop-blur border-t border-slate-800 px-2 py-2 flex justify-around">
+        <nav class="fixed bottom-0 inset-x-0 z-40 bg-slate-950/95 backdrop-blur-md border-t border-slate-800 px-2 py-2.5 flex justify-around">
             <button type="button" data-nav="home" onclick="switchTab('home')" class="nav-btn flex flex-col items-center gap-1 text-amber-400 text-[11px] font-bold cursor-pointer">
                 <i class="fa-solid fa-house text-sm"></i>
                 <span>الرئيسية</span>
@@ -222,15 +413,15 @@
             </button>
             <button type="button" data-nav="invest" onclick="switchTab('invest')" class="nav-btn flex flex-col items-center gap-1 text-slate-400 hover:text-white text-[11px] font-bold cursor-pointer">
                 <i class="fa-solid fa-chart-line text-sm"></i>
-                <span>الاستثمار</span>
+                <span>الصناديق</span>
             </button>
             <button type="button" data-nav="portfolio" onclick="switchTab('portfolio')" class="nav-btn flex flex-col items-center gap-1 text-slate-400 hover:text-white text-[11px] font-bold cursor-pointer">
                 <i class="fa-solid fa-briefcase text-sm"></i>
-                <span>استثماراتي</span>
+                <span>عقودي</span>
             </button>
             <button type="button" data-nav="account" onclick="switchTab('account')" class="nav-btn flex flex-col items-center gap-1 text-slate-400 hover:text-white text-[11px] font-bold cursor-pointer">
                 <i class="fa-solid fa-user text-sm"></i>
-                <span>الحساب</span>
+                <span>حسابي</span>
             </button>
         </nav>
     </div>
@@ -249,10 +440,12 @@
             doc,
             getDoc,
             setDoc,
+            updateDoc,
             collection,
             addDoc,
             getDocs,
             query,
+            where,
             orderBy,
             increment
         } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -267,13 +460,24 @@
             measurementId: "G-W9F5K6P98X"
         };
 
+        // بريد الأدمن المسؤول عن الموافقة على كل العمليات
+        const ADMIN_EMAIL = "hossamsalah7112@gmail.com";
+
+        // عناوين الدفع الخاصة بك (عدلها بأرقامك وعناوينك الحقيقية)
+        const PAYMENT_ADDRESSES = {
+            "USDT (TRC20)": "TQn9Y2khEsLJW1ChVWFMSMeRDow5KcbLSE",
+            "Vodafone Cash": "01000000000",
+            "InstaPay": "auravest@instapay"
+        };
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
         let isRegisterMode = false;
         let currentBalance = 0;
-        let totalInvested = 0;
+        let selectedPayMethod = "USDT (TRC20)";
+        let timerInterval = null;
 
         const authScreen = document.getElementById("authScreen");
         const appShell = document.getElementById("appShell");
@@ -283,22 +487,12 @@
         const authError = document.getElementById("authError");
         const authSubmitBtn = document.getElementById("authSubmitBtn");
         const toggleAuthModeBtn = document.getElementById("toggleAuthModeBtn");
-        const userEmailDisplay = document.getElementById("userEmailDisplay");
-        const accountEmailText = document.getElementById("accountEmailText");
-        const balanceDisplay = document.getElementById("balanceDisplay");
-        const homeBalanceDisplay = document.getElementById("homeBalanceDisplay");
-        const totalInvestedDisplay = document.getElementById("totalInvestedDisplay");
-        const activeInvestmentsCount = document.getElementById("activeInvestmentsCount");
-        const walletStatus = document.getElementById("walletStatus");
-        const investStatus = document.getElementById("investStatus");
-        const transactionsList = document.getElementById("transactionsList");
-        const investmentsList = document.getElementById("investmentsList");
 
-        function updateBalancesUI() {
+        function updateBalancesUI(totalInvested = 0) {
             const formatted = "$" + currentBalance.toFixed(2);
-            balanceDisplay.textContent = formatted;
-            homeBalanceDisplay.textContent = formatted;
-            totalInvestedDisplay.textContent = "$" + totalInvested.toFixed(2);
+            document.getElementById("balanceDisplay").textContent = formatted;
+            document.getElementById("homeBalanceDisplay").textContent = formatted;
+            document.getElementById("totalInvestedDisplay").textContent = "$" + totalInvested.toFixed(2);
         }
 
         function showError(msg) {
@@ -315,13 +509,13 @@
             isRegisterMode = !isRegisterMode;
             clearError();
             if (isRegisterMode) {
-                authSubtitle.textContent = "أنشئ حساباً جديداً للبدء في AuraVest";
-                authSubmitBtn.textContent = "إنشاء حساب جديد";
-                toggleAuthModeBtn.textContent = "لديك حساب بالفعل؟ تسجيل الدخول";
+                authSubtitle.textContent = "أنشئ حساباً استثمارياً جديداً في خطوات بسيطة";
+                authSubmitBtn.textContent = "إنشاء المحفظة الآن";
+                toggleAuthModeBtn.textContent = "لديك محفظة بالفعل؟ تسجيل الدخول";
             } else {
-                authSubtitle.textContent = "سجل دخولك لمتابعة محفظتك واستثماراتك";
-                authSubmitBtn.textContent = "تسجيل الدخول";
-                toggleAuthModeBtn.textContent = "ليس لديك حساب؟ إنشاء حساب جديد";
+                authSubtitle.textContent = "بوابة الاستثمار المؤسسي وإدارة المحافظ الرقمية";
+                authSubmitBtn.textContent = "تسجيل الدخول الآمن";
+                toggleAuthModeBtn.textContent = "مستثمر جديد؟ افتح محفظتك الآن";
             }
         };
 
@@ -330,17 +524,11 @@
             const email = authEmail.value.trim();
             const password = authPassword.value;
 
-            if (!email || !password) {
-                showError("يرجى إدخال البريد الإلكتروني وكلمة المرور.");
-                return;
-            }
-            if (password.length < 6) {
-                showError("كلمة المرور يجب أن تكون 6 أحرف أو أكثر.");
-                return;
-            }
+            if (!email || !password) return showError("يرجى إدخال البريد الإلكتروني وكلمة المرور.");
+            if (password.length < 6) return showError("كلمة المرور يجب أن تكون 6 أحرف أو أكثر.");
 
             authSubmitBtn.disabled = true;
-            authSubmitBtn.textContent = "جاري المعالجة...";
+            authSubmitBtn.textContent = "جاري التحقق...";
 
             try {
                 if (isRegisterMode) {
@@ -354,122 +542,372 @@
                     await signInWithEmailAndPassword(auth, email, password);
                 }
             } catch (err) {
-                showError("تعذر إتمام العملية: " + err.message);
+                showError("خطأ في المصادقة: " + err.message);
             } finally {
                 authSubmitBtn.disabled = false;
-                authSubmitBtn.textContent = isRegisterMode ? "إنشاء حساب جديد" : "تسجيل الدخول";
+                authSubmitBtn.textContent = isRegisterMode ? "إنشاء المحفظة الآن" : "تسجيل الدخول الآمن";
             }
         };
 
-        window.handleLogout = async function () {
-            await signOut(auth);
+        window.handleLogout = async () => await signOut(auth);
+
+        // التبديل بين الإيداع والسحب
+        window.setWalletMode = function (mode) {
+            const depSec = document.getElementById("depositSection");
+            const witSec = document.getElementById("withdrawSection");
+            const depBtn = document.getElementById("modeDepositBtn");
+            const witBtn = document.getElementById("modeWithdrawBtn");
+
+            if (mode === "deposit") {
+                depSec.classList.remove("hidden");
+                witSec.classList.add("hidden");
+                depBtn.className = "px-3.5 py-2 rounded-xl bg-amber-500 text-slate-950 font-black text-xs cursor-pointer";
+                witBtn.className = "px-3.5 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs cursor-pointer";
+            } else {
+                witSec.classList.remove("hidden");
+                depSec.classList.add("hidden");
+                witBtn.className = "px-3.5 py-2 rounded-xl bg-amber-500 text-slate-950 font-black text-xs cursor-pointer";
+                depBtn.className = "px-3.5 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs cursor-pointer";
+            }
         };
 
-        async function recordTransaction(uid, type, amount, note) {
-            await addDoc(collection(db, "users", uid, "transactions"), {
-                type,
-                amount,
-                note,
-                createdAt: new Date().toISOString()
+        // اختيار وسيلة الدفع
+        window.selectPaymentMethod = function (method) {
+            selectedPayMethod = method;
+            document.querySelectorAll(".pay-method-btn").forEach((btn) => {
+                if (btn.dataset.method === method) {
+                    btn.className = "pay-method-btn border border-amber-500 bg-amber-500/10 rounded-xl p-2.5 text-center space-y-1 cursor-pointer";
+                } else {
+                    btn.className = "pay-method-btn border border-slate-800 bg-slate-950 rounded-xl p-2.5 text-center space-y-1 cursor-pointer";
+                }
             });
-        }
+        };
 
-        window.handleDeposit = async function () {
+        // بدء بوابة الدفع وتشغيل العداد
+        window.initiateDepositGateway = function () {
+            const amount = parseFloat(document.getElementById("depositAmountInput").value);
+            const statusEl = document.getElementById("walletStatus");
+
+            if (isNaN(amount) || amount < 10) {
+                statusEl.textContent = "الحد الأدنى للإيداع هو 10 دولار.";
+                statusEl.className = "text-xs font-bold text-rose-400";
+                return;
+            }
+            statusEl.textContent = "";
+
+            document.getElementById("gatewayAmountLabel").textContent = "$" + amount.toFixed(2);
+            document.getElementById("gatewayMethodLabel").textContent = selectedPayMethod;
+            document.getElementById("gatewayAddressText").textContent = PAYMENT_ADDRESSES[selectedPayMethod];
+            document.getElementById("paymentGatewayBox").classList.remove("hidden");
+
+            // تشغيل عداد 15 دقيقة
+            if (timerInterval) clearInterval(timerInterval);
+            let secondsLeft = 15 * 60;
+            const timerEl = document.getElementById("depositTimer");
+
+            timerInterval = setInterval(() => {
+                secondsLeft--;
+                const mins = String(Math.floor(secondsLeft / 60)).padStart(2, "0");
+                const secs = String(secondsLeft % 60).padStart(2, "0");
+                timerEl.textContent = `${mins}:${secs}`;
+                if (secondsLeft <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById("paymentGatewayBox").classList.add("hidden");
+                }
+            }, 1000);
+        };
+
+        window.copyGatewayAddress = function () {
+            const addr = document.getElementById("gatewayAddressText").textContent;
+            navigator.clipboard.writeText(addr);
+            alert("تم نسخ عنوان التحويل بنجاح!");
+        };
+
+        // إرسال طلب الإيداع للمراجعة (لا يضاف للرصيد إلا بموافقة الأدمن)
+        window.submitDepositRequest = async function () {
             const user = auth.currentUser;
-            const input = document.getElementById("walletAmount");
-            const amount = parseFloat(input.value);
+            const amount = parseFloat(document.getElementById("depositAmountInput").value);
+            const txRef = document.getElementById("depositTxReference").value.trim();
+            const statusEl = document.getElementById("walletStatus");
 
             if (!user) return;
-            if (isNaN(amount) || amount <= 0) {
-                walletStatus.textContent = "أدخل مبلغاً صحيحاً أكبر من صفر.";
-                walletStatus.className = "text-xs text-rose-400";
+            if (!txRef) {
+                statusEl.textContent = "يرجى كتابة رقم العملية أو رقم المحفظة المحول منها للتأكيد.";
+                statusEl.className = "text-xs font-bold text-rose-400";
                 return;
             }
 
             try {
-                await setDoc(doc(db, "users", user.uid), { email: user.email, balance: increment(amount) }, { merge: true });
-                await recordTransaction(user.uid, "إيداع", amount, "إيداع رصيد في المحفظة");
-                currentBalance += amount;
-                updateBalancesUI();
-                input.value = "";
-                walletStatus.textContent = "تم إيداع المبلغ بنجاح.";
-                walletStatus.className = "text-xs text-emerald-400";
-                await loadUserActivity(user.uid);
+                await addDoc(collection(db, "requests"), {
+                    userId: user.uid,
+                    userEmail: user.email,
+                    type: "إيداع",
+                    method: selectedPayMethod,
+                    amount: amount,
+                    reference: txRef,
+                    status: "pending",
+                    createdAt: new Date().toISOString()
+                });
+
+                if (timerInterval) clearInterval(timerInterval);
+                document.getElementById("paymentGatewayBox").classList.add("hidden");
+                document.getElementById("depositAmountInput").value = "";
+                document.getElementById("depositTxReference").value = "";
+
+                statusEl.textContent = "تم استلام طلب الإيداع وهو الآن قيد المراجعة من الإدارة.";
+                statusEl.className = "text-xs font-bold text-emerald-400";
+                await loadUserRequests(user.uid);
+                if (user.email === ADMIN_EMAIL) await loadAdminRequests();
             } catch (err) {
-                walletStatus.textContent = "خطأ أثناء الإيداع: " + err.message;
-                walletStatus.className = "text-xs text-rose-400";
+                statusEl.textContent = "حدث خطأ: " + err.message;
+                statusEl.className = "text-xs font-bold text-rose-400";
             }
         };
 
-        window.handleWithdraw = async function () {
+        // إرسال طلب السحب للمراجعة
+        window.submitWithdrawRequest = async function () {
             const user = auth.currentUser;
-            const input = document.getElementById("walletAmount");
-            const amount = parseFloat(input.value);
+            const amount = parseFloat(document.getElementById("withdrawAmountInput").value);
+            const method = document.getElementById("withdrawMethodSelect").value;
+            const address = document.getElementById("withdrawAddressInput").value.trim();
+            const statusEl = document.getElementById("walletStatus");
 
             if (!user) return;
-            if (isNaN(amount) || amount <= 0) {
-                walletStatus.textContent = "أدخل مبلغاً صحيحاً للسحب.";
-                walletStatus.className = "text-xs text-rose-400";
+            if (isNaN(amount) || amount < 10) {
+                statusEl.textContent = "الحد الأدنى للسحب هو 10 دولار.";
+                statusEl.className = "text-xs font-bold text-rose-400";
                 return;
             }
             if (amount > currentBalance) {
-                walletStatus.textContent = "الرصيد الحالي غير كافٍ لإتمام السحب.";
-                walletStatus.className = "text-xs text-rose-400";
+                statusEl.textContent = "رصيدك الحالي غير كافٍ لإتمام السحب.";
+                statusEl.className = "text-xs font-bold text-rose-400";
+                return;
+            }
+            if (!address) {
+                statusEl.textContent = "يرجى إدخال عنوان المحفظة أو رقم الاستلام.";
+                statusEl.className = "text-xs font-bold text-rose-400";
                 return;
             }
 
             try {
+                // حجز المبلغ من الرصيد لحين موافقة الأدمن
                 await setDoc(doc(db, "users", user.uid), { balance: increment(-amount) }, { merge: true });
-                await recordTransaction(user.uid, "سحب", amount, "سحب رصيد من المحفظة");
+                await addDoc(collection(db, "requests"), {
+                    userId: user.uid,
+                    userEmail: user.email,
+                    type: "سحب",
+                    method: method,
+                    amount: amount,
+                    reference: address,
+                    status: "pending",
+                    createdAt: new Date().toISOString()
+                });
+
                 currentBalance -= amount;
                 updateBalancesUI();
-                input.value = "";
-                walletStatus.textContent = "تم تنفيذ طلب السحب وتحديث الرصيد.";
-                walletStatus.className = "text-xs text-emerald-400";
-                await loadUserActivity(user.uid);
+                document.getElementById("withdrawAmountInput").value = "";
+                document.getElementById("withdrawAddressInput").value = "";
+
+                statusEl.textContent = "تم إرسال طلب السحب وهو قيد المراجعة والتنفيذ.";
+                statusEl.className = "text-xs font-bold text-emerald-400";
+                await loadUserRequests(user.uid);
+                if (user.email === ADMIN_EMAIL) await loadAdminRequests();
             } catch (err) {
-                walletStatus.textContent = "خطأ أثناء السحب: " + err.message;
-                walletStatus.className = "text-xs text-rose-400";
+                statusEl.textContent = "حدث خطأ: " + err.message;
+                statusEl.className = "text-xs font-bold text-rose-400";
             }
         };
 
-        window.handleInvest = async function (planName, returnRate, inputId, minAmount) {
+        // طلب استثمار جديد (يحتاج موافقة الأدمن لتفعيل العقد)
+        window.handleInvestRequest = async function (planName, rate, days, inputId, minAmount) {
             const user = auth.currentUser;
-            const input = document.getElementById(inputId);
-            const amount = parseFloat(input.value);
+            const amount = parseFloat(document.getElementById(inputId).value);
+            const statusEl = document.getElementById("investStatus");
 
             if (!user) return;
             if (isNaN(amount) || amount < minAmount) {
-                investStatus.textContent = `الحد الأدنى للاستثمار في ${planName} هو $${minAmount}.`;
-                investStatus.className = "text-xs text-rose-400 px-1";
+                statusEl.textContent = `الحد الأدنى للدخول في ${planName} هو $${minAmount}.`;
+                statusEl.className = "text-xs font-bold text-rose-400 px-1";
                 return;
             }
             if (amount > currentBalance) {
-                investStatus.textContent = "رصيدك الحالي لا يكفي لهذا الاستثمار.";
-                investStatus.className = "text-xs text-rose-400 px-1";
+                statusEl.textContent = "رصيد محفظتك الحالي غير كافٍ. يرجى الإيداع أولاً.";
+                statusEl.className = "text-xs font-bold text-rose-400 px-1";
                 return;
             }
 
             try {
                 await setDoc(doc(db, "users", user.uid), { balance: increment(-amount) }, { merge: true });
-                await addDoc(collection(db, "users", user.uid, "investments"), {
-                    planName,
-                    returnRate,
-                    amount,
-                    status: "نشط",
+                await addDoc(collection(db, "requests"), {
+                    userId: user.uid,
+                    userEmail: user.email,
+                    type: "استثمار",
+                    method: planName,
+                    amount: amount,
+                    reference: `عائد ${rate}% لمدة ${days} يوم`,
+                    planDetails: { planName, rate, days },
+                    status: "pending",
                     createdAt: new Date().toISOString()
                 });
-                await recordTransaction(user.uid, "استثمار", amount, planName);
+
                 currentBalance -= amount;
-                input.value = "";
-                investStatus.textContent = `تم بدء الاستثمار في ${planName} بمبلغ $${amount.toFixed(2)}.`;
-                investStatus.className = "text-xs text-emerald-400 px-1";
-                await loadUserActivity(user.uid);
+                updateBalancesUI();
+                document.getElementById(inputId).value = "";
+
+                statusEl.textContent = `تم إرسال طلب الاشتراك في (${planName}) وبانتظار اعتماد الإدارة.`;
+                statusEl.className = "text-xs font-bold text-emerald-400 px-1";
+                await loadUserRequests(user.uid);
+                if (user.email === ADMIN_EMAIL) await loadAdminRequests();
             } catch (err) {
-                investStatus.textContent = "تعذر تنفيذ الاستثمار: " + err.message;
-                investStatus.className = "text-xs text-rose-400 px-1";
+                statusEl.textContent = "حدث خطأ: " + err.message;
+                statusEl.className = "text-xs font-bold text-rose-400 px-1";
             }
         };
+
+        // دوال الأدمن: الموافقة أو الرفض على أي طلب
+        window.adminAction = async function (reqId, action) {
+            try {
+                const reqRef = doc(db, "requests", reqId);
+                const reqSnap = await getDoc(reqRef);
+                if (!reqSnap.exists()) return;
+                const data = reqSnap.data();
+
+                if (data.status !== "pending") return alert("تم التعامل مع هذا الطلب مسبقاً.");
+
+                if (action === "approve") {
+                    if (data.type === "إيداع") {
+                        await setDoc(doc(db, "users", data.userId), { balance: increment(data.amount) }, { merge: true });
+                    } else if (data.type === "استثمار") {
+                        await addDoc(collection(db, "investments"), {
+                            userId: data.userId,
+                            planName: data.planDetails.planName,
+                            rate: data.planDetails.rate,
+                            days: data.planDetails.days,
+                            amount: data.amount,
+                            status: "نشط",
+                            createdAt: new Date().toISOString()
+                        });
+                    }
+                    await updateDoc(reqRef, { status: "approved" });
+                } else if (action === "reject") {
+                    // إرجاع المبلغ للمستخدم لو كان سحب أو استثمار مرفوض
+                    if (data.type === "سحب" || data.type === "استثمار") {
+                        await setDoc(doc(db, "users", data.userId), { balance: increment(data.amount) }, { merge: true });
+                    }
+                    await updateDoc(reqRef, { status: "rejected" });
+                }
+
+                await loadAdminRequests();
+                if (auth.currentUser) await loadUserData(auth.currentUser);
+            } catch (err) {
+                alert("خطأ في تنفيذ أمر الأدمن: " + err.message);
+            }
+        };
+
+        // تحميل كل الطلبات للأدمن
+        window.loadAdminRequests = async function () {
+            const listEl = document.getElementById("adminRequestsList");
+            try {
+                const snap = await getDocs(query(collection(db, "requests"), orderBy("createdAt", "desc")));
+                let pendingCount = 0;
+
+                if (snap.empty) {
+                    listEl.innerHTML = "<p class='text-xs text-slate-500'>لا توجد أي طلبات من المستخدمين حتى الآن.</p>";
+                    return;
+                }
+
+                listEl.innerHTML = snap.docs.map((d) => {
+                    const r = d.data();
+                    if (r.status === "pending") pendingCount++;
+
+                    const statusBadge = r.status === "pending"
+                        ? `<span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-bold">قيد المراجعة</span>`
+                        : r.status === "approved"
+                        ? `<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold">تمت الموافقة</span>`
+                        : `<span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 font-bold">مرفوض</span>`;
+
+                    const actionButtons = r.status === "pending" ? `
+                        <div class="grid grid-cols-2 gap-2 pt-2">
+                            <button type="button" onclick="adminAction('${d.id}', 'approve')" class="py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs cursor-pointer">موافقة واعتماد</button>
+                            <button type="button" onclick="adminAction('${d.id}', 'reject')" class="py-2 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 font-bold text-xs cursor-pointer">رفض الطلب</button>
+                        </div>
+                    ` : "";
+
+                    return `
+                        <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-3.5 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="font-black text-white">${r.type} (${r.method})</span>
+                                ${statusBadge}
+                            </div>
+                            <p class="text-[11px] text-slate-400">المستخدم: <span class="text-slate-200">${r.userEmail}</span></p>
+                            <p class="text-[11px] text-slate-400">المبلغ: <span class="font-black text-amber-400">$${Number(r.amount).toFixed(2)}</span> • البيان: <span class="text-slate-200">${r.reference}</span></p>
+                            ${actionButtons}
+                        </div>
+                    `;
+                }).join("");
+
+                document.getElementById("pendingCountBadge").textContent = String(pendingCount);
+            } catch (err) {
+                listEl.innerHTML = `<p class="text-xs text-rose-400">تأكد من تحديث قواعد Firestore: ${err.message}</p>`;
+            }
+        };
+
+        async function loadUserRequests(uid) {
+            const listEl = document.getElementById("userRequestsList");
+            try {
+                const snap = await getDocs(query(collection(db, "requests"), where("userId", "==", uid)));
+                if (snap.empty) {
+                    listEl.innerHTML = "<p class='text-xs text-slate-500'>لا توجد عمليات مسجلة بعد.</p>";
+                    return;
+                }
+                const docs = snap.docs.map(d => d.data()).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+                listEl.innerHTML = docs.map((r) => {
+                    const statusText = r.status === "pending"
+                        ? `<span class="text-amber-400">قيد المراجعة</span>`
+                        : r.status === "approved"
+                        ? `<span class="text-emerald-400">مكتمل</span>`
+                        : `<span class="text-rose-400">مرفوض</span>`;
+
+                    return `
+                        <div class="flex items-center justify-between bg-slate-950/80 border border-slate-800/80 rounded-2xl px-3.5 py-2.5">
+                            <div>
+                                <p class="font-bold text-white">${r.type} - ${r.method}</p>
+                                <p class="text-[10px] text-slate-400">${statusText} • ${r.reference}</p>
+                            </div>
+                            <span class="font-black text-amber-400">$${Number(r.amount).toFixed(2)}</span>
+                        </div>
+                    `;
+                }).join("");
+            } catch (e) {}
+        }
+
+        async function loadUserInvestments(uid) {
+            const listEl = document.getElementById("investmentsList");
+            try {
+                const snap = await getDocs(query(collection(db, "investments"), where("userId", "==", uid)));
+                let sum = 0;
+                document.getElementById("activeInvestmentsCount").textContent = `${snap.size} عقود`;
+
+                if (snap.empty) {
+                    listEl.innerHTML = "<p class='text-xs text-slate-500'>لا توجد عقود استثمارية نشطة حالياً.</p>";
+                } else {
+                    listEl.innerHTML = snap.docs.map((d) => {
+                        const inv = d.data();
+                        sum += Number(inv.amount || 0);
+                        return `
+                            <div class="flex items-center justify-between bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5">
+                                <div>
+                                    <p class="font-black text-white">${inv.planName}</p>
+                                    <p class="text-[11px] text-emerald-400">عائد يومي ${inv.rate}% • المدة ${inv.days} يوم</p>
+                                </div>
+                                <span class="font-black text-amber-400">$${Number(inv.amount).toFixed(2)}</span>
+                            </div>
+                        `;
+                    }).join("");
+                }
+                updateBalancesUI(sum);
+            } catch (e) {}
+        }
 
         window.switchTab = function (tabName) {
             document.querySelectorAll(".tab-content").forEach((el) => el.classList.remove("active"));
@@ -487,73 +925,33 @@
             });
         };
 
-        async function loadUserActivity(uid) {
-            try {
-                const txSnap = await getDocs(query(collection(db, "users", uid, "transactions"), orderBy("createdAt", "desc")));
-                if (txSnap.empty) {
-                    transactionsList.innerHTML = "<p class='text-xs text-slate-500'>لا توجد معاملات مسجلة بعد.</p>";
-                } else {
-                    transactionsList.innerHTML = txSnap.docs.slice(0, 10).map((d) => {
-                        const item = d.data();
-                        return `
-                            <div class="flex items-center justify-between bg-slate-950/70 border border-slate-800/80 rounded-2xl px-3.5 py-2.5">
-                                <div>
-                                    <p class="font-bold text-white">${item.type} — ${item.note || ""}</p>
-                                </div>
-                                <span class="font-black text-amber-400">$${Number(item.amount || 0).toFixed(2)}</span>
-                            </div>
-                        `;
-                    }).join("");
-                }
-            } catch (e) {}
+        async function loadUserData(user) {
+            document.getElementById("userEmailDisplay").textContent = user.email;
+            document.getElementById("accountEmailText").textContent = user.email;
 
-            try {
-                const invSnap = await getDocs(query(collection(db, "users", uid, "investments"), orderBy("createdAt", "desc")));
-                let sum = 0;
-                activeInvestmentsCount.textContent = String(invSnap.size);
+            // إظهار لوحة الأدمن لحسابك فقط
+            if (user.email === ADMIN_EMAIL) {
+                document.getElementById("adminHeaderBadge").classList.remove("hidden");
+                await loadAdminRequests();
+            } else {
+                document.getElementById("adminHeaderBadge").classList.add("hidden");
+            }
 
-                if (invSnap.empty) {
-                    investmentsList.innerHTML = "<p class='text-xs text-slate-500'>لا توجد استثمارات مسجلة حتى الآن.</p>";
-                } else {
-                    investmentsList.innerHTML = invSnap.docs.map((d) => {
-                        const inv = d.data();
-                        sum += Number(inv.amount || 0);
-                        return `
-                            <div class="flex items-center justify-between bg-slate-950/70 border border-slate-800/80 rounded-2xl px-3.5 py-2.5">
-                                <div>
-                                    <p class="font-bold text-white">${inv.planName}</p>
-                                    <p class="text-[11px] text-emerald-400">العائد: ${inv.returnRate}% • الحالة: ${inv.status || "نشط"}</p>
-                                </div>
-                                <span class="font-black text-amber-400">$${Number(inv.amount || 0).toFixed(2)}</span>
-                            </div>
-                        `;
-                    }).join("");
-                }
-                totalInvested = sum;
-                updateBalancesUI();
-            } catch (e) {}
-        }
-
-        async function loadUserWallet(user) {
-            userEmailDisplay.textContent = user.email || "مستخدم مسجل";
-            accountEmailText.textContent = user.email || "";
             try {
                 const snap = await getDoc(doc(db, "users", user.uid));
                 currentBalance = snap.exists() ? Number(snap.data().balance || 0) : 0;
-            } catch (err) {
+            } catch (e) {
                 currentBalance = 0;
-                walletStatus.textContent = "ملاحظة: تحقق من قواعد Firestore إذا ظهر خطأ صلاحيات.";
-                walletStatus.className = "text-xs text-amber-400";
             }
-            updateBalancesUI();
-            await loadUserActivity(user.uid);
+            await loadUserInvestments(user.uid);
+            await loadUserRequests(user.uid);
         }
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 authScreen.classList.add("hidden");
                 appShell.classList.remove("hidden");
-                await loadUserWallet(user);
+                await loadUserData(user);
             } else {
                 appShell.classList.add("hidden");
                 authScreen.classList.remove("hidden");
