@@ -48,10 +48,16 @@
                     <input id="authEmail" type="email" autocomplete="email" placeholder="investor@domain.com" class="w-full px-4 py-3.5 rounded-2xl bg-slate-950/90 border border-slate-800 text-white text-sm focus:outline-none focus:border-amber-500 transition">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-300 mb-1.5">كلمة المرور</label>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label class="block text-xs font-bold text-slate-300">كلمة المرور</label>
+                        <button type="button" onclick="handleForgotPassword()" class="text-[11px] font-bold text-amber-400 hover:underline cursor-pointer">
+                            نسيت كلمة المرور؟
+                        </button>
+                    </div>
                     <input id="authPassword" type="password" autocomplete="current-password" placeholder="••••••••" class="w-full px-4 py-3.5 rounded-2xl bg-slate-950/90 border border-slate-800 text-white text-sm focus:outline-none focus:border-amber-500 transition">
                 </div>
                 <p id="authError" class="text-xs text-rose-400 font-bold hidden bg-rose-500/10 p-3 rounded-xl border border-rose-500/20"></p>
+                <p id="authInfo" class="text-xs text-emerald-400 font-bold hidden bg-emerald-500/10 p-3 rounded-xl border border-emerald-500/20"></p>
                 <button id="authSubmitBtn" type="button" onclick="handleAuthSubmit()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 disabled:opacity-60 disabled:cursor-not-allowed text-slate-950 font-black text-sm shadow-lg shadow-amber-500/20 transition cursor-pointer">
                     تسجيل الدخول الآمن
                 </button>
@@ -270,9 +276,18 @@
                     <p id="walletStatus" class="text-xs font-bold"></p>
                 </div>
 
-                <!-- سجل الطلبات -->
+                <!-- سجل الطلبات + فلاتر سريعة -->
                 <div class="glass-card rounded-3xl p-4 sm:p-5 space-y-3">
-                    <h4 class="font-black text-sm text-white">سجل العمليات والطلبات</h4>
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <h4 class="font-black text-sm text-white">سجل العمليات والطلبات</h4>
+                        <div class="flex flex-wrap gap-1.5 text-[11px]">
+                            <button type="button" data-user-filter="all" onclick="setUserRequestFilter('all')" class="user-filter-btn px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 font-bold cursor-pointer">الكل</button>
+                            <button type="button" data-user-filter="إيداع" onclick="setUserRequestFilter('إيداع')" class="user-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 font-bold cursor-pointer">إيداع</button>
+                            <button type="button" data-user-filter="سحب" onclick="setUserRequestFilter('سحب')" class="user-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 font-bold cursor-pointer">سحب</button>
+                            <button type="button" data-user-filter="استثمار" onclick="setUserRequestFilter('استثمار')" class="user-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 font-bold cursor-pointer">استثمار</button>
+                            <button type="button" data-user-filter="عائد يومي" onclick="setUserRequestFilter('عائد يومي')" class="user-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 font-bold cursor-pointer">عوائد</button>
+                        </div>
+                    </div>
                     <div id="userRequestsList" class="space-y-2.5 text-xs text-slate-400">
                         لا توجد عمليات مسجلة بعد.
                     </div>
@@ -374,11 +389,11 @@
                 <p id="investStatus" class="text-xs font-bold px-1"></p>
             </section>
 
-            <!-- عقودي الاستثمارية -->
+            <!-- عقودي الاستثمارية + شريط التقدم -->
             <section id="tab-portfolio" class="tab-content space-y-4">
                 <div class="glass-card rounded-3xl p-4 sm:p-5 space-y-3">
                     <h3 class="font-black text-base text-amber-400">عقودي الاستثمارية</h3>
-                    <div id="investmentsList" class="space-y-2.5 text-xs text-slate-400">
+                    <div id="investmentsList" class="space-y-3 text-xs text-slate-400">
                         لا توجد عقود استثمارية نشطة حالياً.
                     </div>
                 </div>
@@ -455,15 +470,22 @@
             <!-- لوحة تحكم الأدمن (تظهر لحسابك فقط) -->
             <section id="tab-admin" class="tab-content space-y-4">
                 <div class="bg-gradient-to-r from-amber-500/20 to-slate-900 border border-amber-500/40 rounded-3xl p-4 sm:p-5 space-y-1">
-                    <h3 class="font-black text-base text-amber-400"><i class="fa-solid fa-crown ml-1"></i> لوحة تحكم المدير العام</h3>
+                    <div class="flex items-center justify-between gap-2">
+                        <h3 class="font-black text-base text-amber-400"><i class="fa-solid fa-crown ml-1"></i> لوحة تحكم المدير العام</h3>
+                        <span class="text-[10px] px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 font-bold">تحديث لحظي نشط</span>
+                    </div>
                     <p class="text-xs text-slate-300">مراجعة واعتماد الطلبات، صرف العوائد اليومية، والرد على تذاكر الدعم الفني.</p>
                 </div>
 
-                <!-- الطلبات المعلقة والحديثة -->
+                <!-- الطلبات المعلقة والحديثة + فلتر -->
                 <div class="glass-card rounded-3xl p-4 sm:p-5 space-y-3">
-                    <div class="flex items-center justify-between">
-                        <h4 class="font-black text-sm text-white">الطلبات المعلقة والحديثة</h4>
-                        <button type="button" onclick="refreshAdminPanel()" class="text-xs text-amber-400 font-bold cursor-pointer"><i class="fa-solid fa-rotate"></i> تحديث الكل</button>
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <h4 class="font-black text-sm text-white">الطلبات</h4>
+                        <div class="flex gap-1.5 text-[11px]">
+                            <button type="button" data-admin-filter="pending" onclick="setAdminRequestFilter('pending')" class="admin-filter-btn px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 font-bold cursor-pointer">قيد المراجعة</button>
+                            <button type="button" data-admin-filter="all" onclick="setAdminRequestFilter('all')" class="admin-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 font-bold cursor-pointer">الكل</button>
+                            <button type="button" data-admin-filter="approved" onclick="setAdminRequestFilter('approved')" class="admin-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 font-bold cursor-pointer">المقبولة</button>
+                        </div>
                     </div>
                     <div id="adminRequestsList" class="space-y-3 text-xs text-slate-400">
                         جاري تحميل الطلبات...
@@ -527,6 +549,7 @@
             getAuth,
             createUserWithEmailAndPassword,
             signInWithEmailAndPassword,
+            sendPasswordResetEmail,
             signOut,
             onAuthStateChanged
         } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -538,10 +561,9 @@
             updateDoc,
             collection,
             addDoc,
-            getDocs,
             query,
             where,
-            orderBy,
+            onSnapshot,
             increment
         } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -555,10 +577,8 @@
             measurementId: "G-W9F5K6P98X"
         };
 
-        // بريد الأدمن المسؤول عن الموافقة وصرف العوائد والدعم الفني
         const ADMIN_EMAIL = "hossamsalah7112@gmail.com";
 
-        // عناوين المحافظ الرقمية (استبدلها بعناوينك الفعلية قبل التشغيل)
         const PAYMENT_WALLETS = {
             "USDT (TRC20)": {
                 address: "TQn9Y2khEsLJW1ChVWFMSMeRDow5KcbLSE",
@@ -580,13 +600,21 @@
 
         let isRegisterMode = false;
         let currentBalance = 0;
+        let currentTotalInvested = 0;
         let selectedPayMethod = "USDT (TRC20)";
         let timerInterval = null;
+
+        let userRequestFilter = "all";
+        let adminRequestFilter = "pending";
+        let cachedUserRequests = [];
+        let cachedAdminRequests = [];
 
         let isSubmittingDeposit = false;
         let isSubmittingWithdraw = false;
         let isSubmittingInvest = false;
         let isSubmittingSupport = false;
+
+        let unsubscribeListeners = [];
 
         const authScreen = document.getElementById("authScreen");
         const appShell = document.getElementById("appShell");
@@ -594,8 +622,16 @@
         const authEmail = document.getElementById("authEmail");
         const authPassword = document.getElementById("authPassword");
         const authError = document.getElementById("authError");
+        const authInfo = document.getElementById("authInfo");
         const authSubmitBtn = document.getElementById("authSubmitBtn");
         const toggleAuthModeBtn = document.getElementById("toggleAuthModeBtn");
+
+        function cleanupRealtimeListeners() {
+            unsubscribeListeners.forEach((unsub) => {
+                try { unsub(); } catch {}
+            });
+            unsubscribeListeners = [];
+        }
 
         function escapeHtml(value) {
             return String(value ?? "")
@@ -624,7 +660,6 @@
             return err?.message || "حدث خطأ غير متوقع، حاول مرة أخرى.";
         }
 
-        // حاسبة الأرباح الفورية لخطط الاستثمار
         window.updatePlanCalculator = function (inputId, dailyRate, days, calcBoxId) {
             const raw = parseFloat(document.getElementById(inputId).value);
             const box = document.getElementById(calcBoxId);
@@ -664,26 +699,36 @@
             });
         }
 
-        function updateBalancesUI(totalInvested = 0) {
+        function updateBalancesUI(totalInvested = currentTotalInvested) {
+            currentTotalInvested = Number(totalInvested || 0);
             const formatted = "$" + Number(currentBalance || 0).toFixed(2);
             document.getElementById("balanceDisplay").textContent = formatted;
             document.getElementById("homeBalanceDisplay").textContent = formatted;
-            document.getElementById("totalInvestedDisplay").textContent = "$" + Number(totalInvested || 0).toFixed(2);
+            document.getElementById("totalInvestedDisplay").textContent = "$" + currentTotalInvested.toFixed(2);
         }
 
         function showError(msg) {
+            authInfo.classList.add("hidden");
             authError.textContent = msg;
             authError.classList.remove("hidden");
         }
 
-        function clearError() {
+        function showInfo(msg) {
+            authError.classList.add("hidden");
+            authInfo.textContent = msg;
+            authInfo.classList.remove("hidden");
+        }
+
+        function clearAuthNotices() {
             authError.textContent = "";
             authError.classList.add("hidden");
+            authInfo.textContent = "";
+            authInfo.classList.add("hidden");
         }
 
         window.toggleAuthMode = function () {
             isRegisterMode = !isRegisterMode;
-            clearError();
+            clearAuthNotices();
             if (isRegisterMode) {
                 authSubtitle.textContent = "أنشئ حساباً استثمارياً جديداً في خطوات بسيطة";
                 authSubmitBtn.textContent = "إنشاء المحفظة الآن";
@@ -695,9 +740,23 @@
             }
         };
 
+        window.handleForgotPassword = async function () {
+            clearAuthNotices();
+            const email = authEmail.value.trim();
+            if (!email) {
+                return showError("اكتب بريدك الإلكتروني أولاً ثم اضغط على نسيت كلمة المرور.");
+            }
+            try {
+                await sendPasswordResetEmail(auth, email);
+                showInfo("تم إرسال رابط استعادة كلمة المرور إلى بريدك الإلكتروني. تفقد صندوق الوارد أو الرسائل غير المرغوب فيها.");
+            } catch (err) {
+                showError("تعذر إرسال رابط الاستعادة: " + friendlyErrorMessage(err));
+            }
+        };
+
         window.handleAuthSubmit = async function () {
             if (authSubmitBtn.disabled) return;
-            clearError();
+            clearAuthNotices();
             const email = authEmail.value.trim();
             const password = authPassword.value;
 
@@ -727,7 +786,10 @@
             }
         };
 
-        window.handleLogout = async () => await signOut(auth);
+        window.handleLogout = async () => {
+            cleanupRealtimeListeners();
+            await signOut(auth);
+        };
 
         window.setWalletMode = function (mode) {
             const depSec = document.getElementById("depositSection");
@@ -862,8 +924,6 @@
 
                 statusEl.textContent = "تم استلام طلب الإيداع وصورة التحويل وهو الآن قيد المراجعة من الإدارة.";
                 statusEl.className = "text-xs font-bold text-emerald-400";
-                await loadUserRequests(user.uid);
-                if (user.email === ADMIN_EMAIL) await refreshAdminPanel();
             } catch (err) {
                 statusEl.textContent = "حدث خطأ: " + friendlyErrorMessage(err);
                 statusEl.className = "text-xs font-bold text-rose-400";
@@ -920,15 +980,11 @@
                     createdAt: new Date().toISOString()
                 });
 
-                currentBalance = Math.max(0, Number((currentBalance - roundedAmount).toFixed(2)));
-                updateBalancesUI();
                 document.getElementById("withdrawAmountInput").value = "";
                 document.getElementById("withdrawAddressInput").value = "";
 
                 statusEl.textContent = "تم إرسال طلب السحب وهو قيد المراجعة والتنفيذ.";
                 statusEl.className = "text-xs font-bold text-emerald-400";
-                await loadUserRequests(user.uid);
-                if (user.email === ADMIN_EMAIL) await refreshAdminPanel();
             } catch (err) {
                 statusEl.textContent = "حدث خطأ: " + friendlyErrorMessage(err);
                 statusEl.className = "text-xs font-bold text-rose-400";
@@ -979,8 +1035,6 @@
                     createdAt: new Date().toISOString()
                 });
 
-                currentBalance = Math.max(0, Number((currentBalance - roundedAmount).toFixed(2)));
-                updateBalancesUI();
                 document.getElementById(inputId).value = "";
                 if (inputId === "plan1Amount") updatePlanCalculator("plan1Amount", 3.5, 10, "plan1Calc");
                 if (inputId === "plan2Amount") updatePlanCalculator("plan2Amount", 4.2, 20, "plan2Calc");
@@ -988,8 +1042,6 @@
 
                 statusEl.textContent = `تم إرسال طلب الاشتراك في (${planName}) وبانتظار اعتماد الإدارة.`;
                 statusEl.className = "text-xs font-bold text-emerald-400 px-1";
-                await loadUserRequests(user.uid);
-                if (user.email === ADMIN_EMAIL) await refreshAdminPanel();
             } catch (err) {
                 statusEl.textContent = "حدث خطأ: " + friendlyErrorMessage(err);
                 statusEl.className = "text-xs font-bold text-rose-400 px-1";
@@ -1034,8 +1086,6 @@
                 document.getElementById("supportMessageInput").value = "";
                 statusEl.textContent = "تم إرسال تذكرة الدعم الفني بنجاح وسيتم الرد عليها من الإدارة.";
                 statusEl.className = "text-xs font-bold text-emerald-400";
-                await loadUserTickets(user.uid);
-                if (user.email === ADMIN_EMAIL) await loadAdminTickets();
             } catch (err) {
                 statusEl.textContent = "تعذر إرسال التذكرة: " + friendlyErrorMessage(err);
                 statusEl.className = "text-xs font-bold text-rose-400";
@@ -1046,7 +1096,6 @@
             }
         };
 
-        // دوال الأدمن: الموافقة أو الرفض مع إمكانية كتابة سبب الرفض
         window.adminAction = async function (reqId, action) {
             const label = action === "approve" ? "موافقة واعتماد" : "رفض";
             if (!confirm(`هل أنت متأكد من تنفيذ (${label}) لهذا الطلب؟`)) return;
@@ -1090,9 +1139,6 @@
                     }
                     await updateDoc(reqRef, { status: "rejected", rejectReason });
                 }
-
-                await refreshAdminPanel();
-                if (auth.currentUser) await loadUserData(auth.currentUser);
             } catch (err) {
                 alert("خطأ في تنفيذ أمر الأدمن: " + friendlyErrorMessage(err));
             }
@@ -1148,14 +1194,11 @@
                 });
 
                 alert(`تم صرف عائد يومي بقيمة $${dailyProfit.toFixed(2)} للعقد (${inv.planName}).`);
-                await refreshAdminPanel();
-                if (auth.currentUser) await loadUserData(auth.currentUser);
             } catch (err) {
                 alert("خطأ أثناء صرف العائد اليومي: " + friendlyErrorMessage(err));
             }
         };
 
-        // حفظ رد الإدارة وتحديث حالة تذكرة الدعم
         window.saveTicketReply = async function (ticketId, closeTicket = false) {
             try {
                 const replyInput = document.getElementById(`ticketReply-${ticketId}`);
@@ -1165,8 +1208,6 @@
 
                 await updateDoc(doc(db, "support_tickets", ticketId), payload);
                 alert("تم حفظ الرد وتحديث التذكرة بنجاح.");
-                await loadAdminTickets();
-                if (auth.currentUser) await loadUserTickets(auth.currentUser.uid);
             } catch (err) {
                 alert("خطأ في حفظ الرد: " + friendlyErrorMessage(err));
             }
@@ -1175,279 +1216,298 @@
         window.updateTicketStatus = async function (ticketId, newStatus) {
             try {
                 await updateDoc(doc(db, "support_tickets", ticketId), { status: newStatus });
-                await loadAdminTickets();
-                if (auth.currentUser) await loadUserTickets(auth.currentUser.uid);
             } catch (err) {
                 alert("خطأ في تحديث حالة التذكرة: " + friendlyErrorMessage(err));
             }
         };
 
-        async function loadAdminInvestments() {
+        function buildProgressBarHtml(daysPaid, totalDays) {
+            const safeTotal = Math.max(1, Number(totalDays || 1));
+            const safePaid = Math.min(safeTotal, Math.max(0, Number(daysPaid || 0)));
+            const pct = Math.round((safePaid / safeTotal) * 100);
+            return `
+                <div class="space-y-1 pt-1">
+                    <div class="flex justify-between text-[10px] text-slate-400">
+                        <span>تقدم العقد: ${safePaid} من ${safeTotal} يوم</span>
+                        <span class="font-bold text-emerald-400">${pct}%</span>
+                    </div>
+                    <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-emerald-500 to-amber-400 transition-all duration-300" style="width: ${pct}%"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAdminInvestments(docs) {
             const listEl = document.getElementById("adminInvestmentsList");
-            try {
-                const snap = await getDocs(collection(db, "investments"));
-                if (snap.empty) {
-                    listEl.innerHTML = "<p class='text-xs text-slate-500'>لا توجد عقود استثمارية مسجلة حتى الآن.</p>";
-                    return;
-                }
-
-                const todayKey = getTodayKey();
-                listEl.innerHTML = snap.docs.map((d) => {
-                    const inv = d.data();
-                    const totalDays = Number(inv.days || 0);
-                    const daysPaid = Number(inv.daysPaid || 0);
-                    const rate = Number(inv.rate || 0);
-                    const amount = Number(inv.amount || 0);
-                    const dailyProfit = ((amount * rate) / 100).toFixed(2);
-                    const paidToday = inv.lastPayoutDate === todayKey;
-                    const isCompleted = inv.status === "مكتمل" || daysPaid >= totalDays;
-
-                    const statusBadge = isCompleted
-                        ? `<span class="px-2 py-0.5 rounded bg-slate-700 text-slate-300 font-bold">مكتمل</span>`
-                        : `<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold">نشط</span>`;
-
-                    let actionBtn = "";
-                    if (isCompleted) {
-                        actionBtn = `<button type="button" disabled class="w-full mt-2 py-2 rounded-xl bg-slate-800 text-slate-500 font-bold text-xs cursor-not-allowed">اكتملت مدة العقد</button>`;
-                    } else if (paidToday) {
-                        actionBtn = `<button type="button" disabled class="w-full mt-2 py-2 rounded-xl bg-amber-500/10 text-amber-300 font-bold text-xs cursor-not-allowed">تم صرف عائد اليوم</button>`;
-                    } else {
-                        actionBtn = `<button type="button" onclick="payDailyProfit('${escapeHtml(d.id)}')" class="w-full mt-2 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition cursor-pointer">
-                            <i class="fa-solid fa-sack-dollar ml-1"></i> صرف عائد اليوم ($${dailyProfit})
-                        </button>`;
-                    }
-
-                    return `
-                        <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-3.5 space-y-1.5">
-                            <div class="flex items-center justify-between">
-                                <span class="font-black text-white">${escapeHtml(inv.planName)}</span>
-                                ${statusBadge}
-                            </div>
-                            <p class="text-[11px] text-slate-400">المستخدم: <span class="text-slate-200">${escapeHtml(inv.userEmail || inv.userId)}</span></p>
-                            <p class="text-[11px] text-slate-400">رأس المال: <span class="font-black text-amber-400">$${amount.toFixed(2)}</span> • العائد اليومي: <span class="font-black text-emerald-400">$${dailyProfit} (${rate}%)</span></p>
-                            <p class="text-[11px] text-slate-400">الأيام المصروفة: <span class="text-white font-bold">${daysPaid} / ${totalDays} يوم</span> • إجمالي الأرباح المصروفة: <span class="text-emerald-400 font-bold">$${Number(inv.totalProfitPaid || 0).toFixed(2)}</span></p>
-                            ${actionBtn}
-                        </div>
-                    `;
-                }).join("");
-            } catch (err) {
-                listEl.innerHTML = `<p class="text-xs text-rose-400">تعذر تحميل العقود: ${escapeHtml(friendlyErrorMessage(err))}</p>`;
+            if (!docs.length) {
+                listEl.innerHTML = "<p class='text-xs text-slate-500'>لا توجد عقود استثمارية مسجلة حتى الآن.</p>";
+                return;
             }
-        }
 
-        window.loadAdminRequests = async function () {
-            const listEl = document.getElementById("adminRequestsList");
-            try {
-                const snap = await getDocs(query(collection(db, "requests"), orderBy("createdAt", "desc")));
-                let pendingCount = 0;
+            const todayKey = getTodayKey();
+            listEl.innerHTML = docs.map((d) => {
+                const inv = d.data();
+                const totalDays = Number(inv.days || 0);
+                const daysPaid = Number(inv.daysPaid || 0);
+                const rate = Number(inv.rate || 0);
+                const amount = Number(inv.amount || 0);
+                const dailyProfit = ((amount * rate) / 100).toFixed(2);
+                const paidToday = inv.lastPayoutDate === todayKey;
+                const isCompleted = inv.status === "مكتمل" || daysPaid >= totalDays;
 
-                if (snap.empty) {
-                    listEl.innerHTML = "<p class='text-xs text-slate-500'>لا توجد أي طلبات من المستخدمين حتى الآن.</p>";
-                    document.getElementById("pendingCountBadge").textContent = "0";
-                    return;
-                }
+                const statusBadge = isCompleted
+                    ? `<span class="px-2 py-0.5 rounded bg-slate-700 text-slate-300 font-bold">مكتمل</span>`
+                    : `<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold">نشط</span>`;
 
-                listEl.innerHTML = snap.docs.map((d) => {
-                    const r = d.data();
-                    if (r.status === "pending") pendingCount++;
-
-                    const statusBadge = r.status === "pending"
-                        ? `<span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-bold">قيد المراجعة</span>`
-                        : r.status === "approved"
-                        ? `<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold">تمت الموافقة</span>`
-                        : `<span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 font-bold">مرفوض</span>`;
-
-                    const proofHtml = r.proofImage
-                        ? `<div class="pt-1">
-                               <a href="${escapeHtml(r.proofImage)}" target="_blank" rel="noopener noreferrer" class="block">
-                                   <img src="${escapeHtml(r.proofImage)}" alt="إثبات التحويل" class="w-full max-h-52 object-contain rounded-xl border border-slate-800 bg-slate-900">
-                               </a>
-                               <p class="text-[10px] text-slate-400 mt-1">اضغط على الصورة لفتحها بحجم أكبر</p>
-                           </div>`
-                        : `<p class="text-[11px] text-slate-400 break-all">البيان: <span class="text-slate-200">${escapeHtml(r.reference || "-")}</span></p>`;
-
-                    const reasonInfo = r.status === "rejected" && r.rejectReason
-                        ? `<p class="text-[11px] text-rose-300 bg-rose-500/10 border border-rose-500/20 rounded-lg px-2.5 py-1.5">سبب الرفض: ${escapeHtml(r.rejectReason)}</p>`
-                        : "";
-
-                    const actionButtons = r.status === "pending" ? `
-                        <div class="space-y-2 pt-2">
-                            <input id="rejectReason-${escapeHtml(d.id)}" type="text" placeholder="سبب الرفض (اختياري في حال الرفض)" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-rose-500">
-                            <div class="grid grid-cols-2 gap-2">
-                                <button type="button" onclick="adminAction('${escapeHtml(d.id)}', 'approve')" class="py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs cursor-pointer">موافقة واعتماد</button>
-                                <button type="button" onclick="adminAction('${escapeHtml(d.id)}', 'reject')" class="py-2 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 font-bold text-xs cursor-pointer">رفض الطلب</button>
-                            </div>
-                        </div>
-                    ` : "";
-
-                    return `
-                        <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-3.5 space-y-2">
-                            <div class="flex items-center justify-between">
-                                <span class="font-black text-white">${escapeHtml(r.type)} (${escapeHtml(r.method)})</span>
-                                ${statusBadge}
-                            </div>
-                            <p class="text-[11px] text-slate-400">المستخدم: <span class="text-slate-200">${escapeHtml(r.userEmail)}</span></p>
-                            <p class="text-[11px] text-slate-400">المبلغ: <span class="font-black text-amber-400">$${Number(r.amount).toFixed(2)}</span></p>
-                            ${proofHtml}
-                            ${reasonInfo}
-                            ${actionButtons}
-                        </div>
-                    `;
-                }).join("");
-
-                document.getElementById("pendingCountBadge").textContent = String(pendingCount);
-            } catch (err) {
-                listEl.innerHTML = `<p class="text-xs text-rose-400">تأكد من تحديث قواعد Firestore: ${escapeHtml(friendlyErrorMessage(err))}</p>`;
-            }
-        };
-
-        async function loadAdminTickets() {
-            const listEl = document.getElementById("adminTicketsList");
-            try {
-                const snap = await getDocs(collection(db, "support_tickets"));
-                if (snap.empty) {
-                    listEl.innerHTML = "<p class='text-xs text-slate-500'>لا توجد تذاكر دعم فني حالياً.</p>";
-                    return;
-                }
-
-                const docs = snap.docs
-                    .map(d => ({ id: d.id, ...d.data() }))
-                    .sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
-
-                listEl.innerHTML = docs.map((t) => {
-                    const isClosed = t.status === "closed";
-                    const badge = isClosed
-                        ? `<span class="px-2 py-0.5 rounded bg-slate-700 text-slate-300 font-bold">مغلقة</span>`
-                        : `<span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 font-bold">مفتوحة</span>`;
-
-                    return `
-                        <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-3.5 space-y-2">
-                            <div class="flex items-center justify-between gap-2">
-                                <span class="font-black text-white">${escapeHtml(t.topic)}</span>
-                                ${badge}
-                            </div>
-                            <p class="text-[11px] text-slate-400">المستخدم: <span class="text-slate-200">${escapeHtml(t.userEmail)}</span></p>
-                            <p class="text-xs text-slate-200 bg-slate-900/80 border border-slate-800/80 rounded-xl p-2.5 whitespace-pre-line">${escapeHtml(t.message)}</p>
-                            <textarea id="ticketReply-${escapeHtml(t.id)}" rows="2" placeholder="اكتب رد الإدارة للمستثمر..." class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-purple-500">${escapeHtml(t.adminReply || "")}</textarea>
-                            <div class="flex flex-wrap gap-2 pt-1">
-                                <button type="button" onclick="saveTicketReply('${escapeHtml(t.id)}', true)" class="px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-[11px] cursor-pointer">حفظ الرد وإغلاق</button>
-                                <button type="button" onclick="saveTicketReply('${escapeHtml(t.id)}', false)" class="px-3 py-1.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 font-bold text-[11px] cursor-pointer">حفظ الرد فقط</button>
-                                ${isClosed
-                                    ? `<button type="button" onclick="updateTicketStatus('${escapeHtml(t.id)}', 'open')" class="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-bold text-[11px] cursor-pointer">إعادة فتح</button>`
-                                    : ""
-                                }
-                            </div>
-                        </div>
-                    `;
-                }).join("");
-            } catch (err) {
-                listEl.innerHTML = `<p class="text-xs text-rose-400">تعذر تحميل تذاكر الدعم: ${escapeHtml(friendlyErrorMessage(err))}</p>`;
-            }
-        }
-
-        window.refreshAdminPanel = async function () {
-            await loadAdminRequests();
-            await loadAdminInvestments();
-            await loadAdminTickets();
-        };
-
-        async function loadUserRequests(uid) {
-            const listEl = document.getElementById("userRequestsList");
-            try {
-                const snap = await getDocs(query(collection(db, "requests"), where("userId", "==", uid)));
-                if (snap.empty) {
-                    listEl.innerHTML = "<p class='text-xs text-slate-500'>لا توجد عمليات مسجلة بعد.</p>";
-                    return;
-                }
-                const docs = snap.docs.map(d => d.data()).sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
-                listEl.innerHTML = docs.map((r) => {
-                    const statusText = r.status === "pending"
-                        ? `<span class="text-amber-400">قيد المراجعة</span>`
-                        : r.status === "approved"
-                        ? `<span class="text-emerald-400">مكتمل</span>`
-                        : `<span class="text-rose-400">مرفوض</span>`;
-
-                    const reasonHtml = r.status === "rejected" && r.rejectReason
-                        ? `<p class="text-[10px] text-rose-300 mt-1">السبب: ${escapeHtml(r.rejectReason)}</p>`
-                        : "";
-
-                    return `
-                        <div class="flex items-center justify-between gap-2 bg-slate-950/80 border border-slate-800/80 rounded-2xl px-3.5 py-2.5">
-                            <div class="min-w-0">
-                                <p class="font-bold text-white truncate">${escapeHtml(r.type)} - ${escapeHtml(r.method)}</p>
-                                <p class="text-[10px] text-slate-400 truncate">${statusText} • ${escapeHtml(r.reference || "-")}</p>
-                                ${reasonHtml}
-                            </div>
-                            <span class="font-black text-amber-400 shrink-0">$${Number(r.amount).toFixed(2)}</span>
-                        </div>
-                    `;
-                }).join("");
-            } catch (e) {}
-        }
-
-        async function loadUserTickets(uid) {
-            const listEl = document.getElementById("userTicketsList");
-            try {
-                const snap = await getDocs(query(collection(db, "support_tickets"), where("userId", "==", uid)));
-                if (snap.empty) {
-                    listEl.innerHTML = "<p class='text-xs text-slate-500'>لا توجد تذاكر دعم فني مسجلة بعد.</p>";
-                    return;
-                }
-                const docs = snap.docs.map(d => d.data()).sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
-                listEl.innerHTML = docs.map((t) => {
-                    const statusBadge = t.status === "closed"
-                        ? `<span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300">مغلقة</span>`
-                        : `<span class="text-[10px] px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">مفتوحة</span>`;
-
-                    const replyHtml = t.adminReply
-                        ? `<div class="mt-2 bg-emerald-500/10 border border-emerald-500/25 rounded-xl p-2.5 text-[11px] text-emerald-200">
-                               <p class="font-bold text-emerald-400 mb-0.5">رد الإدارة:</p>
-                               <p class="whitespace-pre-line">${escapeHtml(t.adminReply)}</p>
-                           </div>`
-                        : "";
-
-                    return `
-                        <div class="bg-slate-950/80 border border-slate-800/80 rounded-2xl p-3 space-y-1">
-                            <div class="flex items-center justify-between gap-2">
-                                <p class="font-bold text-white">${escapeHtml(t.topic)}</p>
-                                ${statusBadge}
-                            </div>
-                            <p class="text-[11px] text-slate-400 whitespace-pre-line">${escapeHtml(t.message)}</p>
-                            ${replyHtml}
-                        </div>
-                    `;
-                }).join("");
-            } catch (e) {}
-        }
-
-        async function loadUserInvestments(uid) {
-            const listEl = document.getElementById("investmentsList");
-            try {
-                const snap = await getDocs(query(collection(db, "investments"), where("userId", "==", uid)));
-                let sum = 0;
-                document.getElementById("activeInvestmentsCount").textContent = `${snap.size} عقود`;
-
-                if (snap.empty) {
-                    listEl.innerHTML = "<p class='text-xs text-slate-500'>لا توجد عقود استثمارية نشطة حالياً.</p>";
+                let actionBtn = "";
+                if (isCompleted) {
+                    actionBtn = `<button type="button" disabled class="w-full mt-2 py-2 rounded-xl bg-slate-800 text-slate-500 font-bold text-xs cursor-not-allowed">اكتملت مدة العقد</button>`;
+                } else if (paidToday) {
+                    actionBtn = `<button type="button" disabled class="w-full mt-2 py-2 rounded-xl bg-amber-500/10 text-amber-300 font-bold text-xs cursor-not-allowed">تم صرف عائد اليوم</button>`;
                 } else {
-                    listEl.innerHTML = snap.docs.map((d) => {
-                        const inv = d.data();
-                        sum += Number(inv.amount || 0);
-                        const daysPaid = Number(inv.daysPaid || 0);
-                        const totalDays = Number(inv.days || 0);
-                        return `
-                            <div class="flex items-center justify-between gap-2 bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5">
+                    actionBtn = `<button type="button" onclick="payDailyProfit('${escapeHtml(d.id)}')" class="w-full mt-2 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition cursor-pointer">
+                        <i class="fa-solid fa-sack-dollar ml-1"></i> صرف عائد اليوم ($${dailyProfit})
+                    </button>`;
+                }
+
+                return `
+                    <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-3.5 space-y-1.5">
+                        <div class="flex items-center justify-between">
+                            <span class="font-black text-white">${escapeHtml(inv.planName)}</span>
+                            ${statusBadge}
+                        </div>
+                        <p class="text-[11px] text-slate-400">المستخدم: <span class="text-slate-200">${escapeHtml(inv.userEmail || inv.userId)}</span></p>
+                        <p class="text-[11px] text-slate-400">رأس المال: <span class="font-black text-amber-400">$${amount.toFixed(2)}</span> • العائد اليومي: <span class="font-black text-emerald-400">$${dailyProfit} (${rate}%)</span></p>
+                        <p class="text-[11px] text-slate-400">الأرباح المصروفة: <span class="text-emerald-400 font-bold">$${Number(inv.totalProfitPaid || 0).toFixed(2)}</span></p>
+                        ${buildProgressBarHtml(daysPaid, totalDays)}
+                        ${actionBtn}
+                    </div>
+                `;
+            }).join("");
+        }
+
+        window.setAdminRequestFilter = function (filterKey) {
+            adminRequestFilter = filterKey;
+            document.querySelectorAll(".admin-filter-btn").forEach((btn) => {
+                if (btn.dataset.adminFilter === filterKey) {
+                    btn.className = "admin-filter-btn px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 font-bold cursor-pointer";
+                } else {
+                    btn.className = "admin-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 font-bold cursor-pointer";
+                }
+            });
+            renderAdminRequests();
+        };
+
+        function renderAdminRequests() {
+            const listEl = document.getElementById("adminRequestsList");
+            const pendingCount = cachedAdminRequests.filter(item => item.status === "pending").length;
+            document.getElementById("pendingCountBadge").textContent = String(pendingCount);
+
+            const filtered = cachedAdminRequests.filter((item) => {
+                if (adminRequestFilter === "all") return true;
+                return item.status === adminRequestFilter;
+            });
+
+            if (!filtered.length) {
+                listEl.innerHTML = "<p class='text-xs text-slate-500'>لا توجد طلبات مطابقة للفلتر المحدد حالياً.</p>";
+                return;
+            }
+
+            listEl.innerHTML = filtered.map((r) => {
+                const statusBadge = r.status === "pending"
+                    ? `<span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-bold">قيد المراجعة</span>`
+                    : r.status === "approved"
+                    ? `<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold">تمت الموافقة</span>`
+                    : `<span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 font-bold">مرفوض</span>`;
+
+                const proofHtml = r.proofImage
+                    ? `<div class="pt-1">
+                           <a href="${escapeHtml(r.proofImage)}" target="_blank" rel="noopener noreferrer" class="block">
+                               <img src="${escapeHtml(r.proofImage)}" alt="إثبات التحويل" class="w-full max-h-52 object-contain rounded-xl border border-slate-800 bg-slate-900">
+                           </a>
+                           <p class="text-[10px] text-slate-400 mt-1">اضغط على الصورة لفتحها بحجم أكبر</p>
+                       </div>`
+                    : `<p class="text-[11px] text-slate-400 break-all">البيان: <span class="text-slate-200">${escapeHtml(r.reference || "-")}</span></p>`;
+
+                const reasonInfo = r.status === "rejected" && r.rejectReason
+                    ? `<p class="text-[11px] text-rose-300 bg-rose-500/10 border border-rose-500/20 rounded-lg px-2.5 py-1.5">سبب الرفض: ${escapeHtml(r.rejectReason)}</p>`
+                    : "";
+
+                const actionButtons = r.status === "pending" ? `
+                    <div class="space-y-2 pt-2">
+                        <input id="rejectReason-${escapeHtml(r.id)}" type="text" placeholder="سبب الرفض (اختياري في حال الرفض)" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-rose-500">
+                        <div class="grid grid-cols-2 gap-2">
+                            <button type="button" onclick="adminAction('${escapeHtml(r.id)}', 'approve')" class="py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs cursor-pointer">موافقة واعتماد</button>
+                            <button type="button" onclick="adminAction('${escapeHtml(r.id)}', 'reject')" class="py-2 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 font-bold text-xs cursor-pointer">رفض الطلب</button>
+                        </div>
+                    </div>
+                ` : "";
+
+                return `
+                    <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-3.5 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="font-black text-white">${escapeHtml(r.type)} (${escapeHtml(r.method)})</span>
+                            ${statusBadge}
+                        </div>
+                        <p class="text-[11px] text-slate-400">المستخدم: <span class="text-slate-200">${escapeHtml(r.userEmail)}</span></p>
+                        <p class="text-[11px] text-slate-400">المبلغ: <span class="font-black text-amber-400">$${Number(r.amount).toFixed(2)}</span></p>
+                        ${proofHtml}
+                        ${reasonInfo}
+                        ${actionButtons}
+                    </div>
+                `;
+            }).join("");
+        }
+
+        function renderAdminTickets(docs) {
+            const listEl = document.getElementById("adminTicketsList");
+            if (!docs.length) {
+                listEl.innerHTML = "<p class='text-xs text-slate-500'>لا توجد تذاكر دعم فني حالياً.</p>";
+                return;
+            }
+
+            const sorted = docs
+                .map(d => ({ id: d.id, ...d.data() }))
+                .sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
+
+            listEl.innerHTML = sorted.map((t) => {
+                const isClosed = t.status === "closed";
+                const badge = isClosed
+                    ? `<span class="px-2 py-0.5 rounded bg-slate-700 text-slate-300 font-bold">مغلقة</span>`
+                    : `<span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 font-bold">مفتوحة</span>`;
+
+                return `
+                    <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-3.5 space-y-2">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="font-black text-white">${escapeHtml(t.topic)}</span>
+                            ${badge}
+                        </div>
+                        <p class="text-[11px] text-slate-400">المستخدم: <span class="text-slate-200">${escapeHtml(t.userEmail)}</span></p>
+                        <p class="text-xs text-slate-200 bg-slate-900/80 border border-slate-800/80 rounded-xl p-2.5 whitespace-pre-line">${escapeHtml(t.message)}</p>
+                        <textarea id="ticketReply-${escapeHtml(t.id)}" rows="2" placeholder="اكتب رد الإدارة للمستثمر..." class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-purple-500">${escapeHtml(t.adminReply || "")}</textarea>
+                        <div class="flex flex-wrap gap-2 pt-1">
+                            <button type="button" onclick="saveTicketReply('${escapeHtml(t.id)}', true)" class="px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-[11px] cursor-pointer">حفظ الرد وإغلاق</button>
+                            <button type="button" onclick="saveTicketReply('${escapeHtml(t.id)}', false)" class="px-3 py-1.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 font-bold text-[11px] cursor-pointer">حفظ الرد فقط</button>
+                            ${isClosed
+                                ? `<button type="button" onclick="updateTicketStatus('${escapeHtml(t.id)}', 'open')" class="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-bold text-[11px] cursor-pointer">إعادة فتح</button>`
+                                : ""
+                            }
+                        </div>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        window.setUserRequestFilter = function (filterKey) {
+            userRequestFilter = filterKey;
+            document.querySelectorAll(".user-filter-btn").forEach((btn) => {
+                if (btn.dataset.userFilter === filterKey) {
+                    btn.className = "user-filter-btn px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 font-bold cursor-pointer";
+                } else {
+                    btn.className = "user-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 font-bold cursor-pointer";
+                }
+            });
+            renderUserRequests();
+        };
+
+        function renderUserRequests() {
+            const listEl = document.getElementById("userRequestsList");
+            const filtered = cachedUserRequests.filter((r) => {
+                if (userRequestFilter === "all") return true;
+                return r.type === userRequestFilter;
+            });
+
+            if (!filtered.length) {
+                listEl.innerHTML = "<p class='text-xs text-slate-500'>لا توجد عمليات مطابقة للفلتر المحدد.</p>";
+                return;
+            }
+
+            listEl.innerHTML = filtered.map((r) => {
+                const statusText = r.status === "pending"
+                    ? `<span class="text-amber-400">قيد المراجعة</span>`
+                    : r.status === "approved"
+                    ? `<span class="text-emerald-400">مكتمل</span>`
+                    : `<span class="text-rose-400">مرفوض</span>`;
+
+                const reasonHtml = r.status === "rejected" && r.rejectReason
+                    ? `<p class="text-[10px] text-rose-300 mt-1">السبب: ${escapeHtml(r.rejectReason)}</p>`
+                    : "";
+
+                return `
+                    <div class="flex items-center justify-between gap-2 bg-slate-950/80 border border-slate-800/80 rounded-2xl px-3.5 py-2.5">
+                        <div class="min-w-0">
+                            <p class="font-bold text-white truncate">${escapeHtml(r.type)} - ${escapeHtml(r.method)}</p>
+                            <p class="text-[10px] text-slate-400 truncate">${statusText} • ${escapeHtml(r.reference || "-")}</p>
+                            ${reasonHtml}
+                        </div>
+                        <span class="font-black text-amber-400 shrink-0">$${Number(r.amount).toFixed(2)}</span>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        function renderUserTickets(docs) {
+            const listEl = document.getElementById("userTicketsList");
+            if (!docs.length) {
+                listEl.innerHTML = "<p class='text-xs text-slate-500'>لا توجد تذاكر دعم فني مسجلة بعد.</p>";
+                return;
+            }
+
+            const sorted = docs.map(d => d.data()).sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
+            listEl.innerHTML = sorted.map((t) => {
+                const statusBadge = t.status === "closed"
+                    ? `<span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300">مغلقة</span>`
+                    : `<span class="text-[10px] px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">مفتوحة</span>`;
+
+                const replyHtml = t.adminReply
+                    ? `<div class="mt-2 bg-emerald-500/10 border border-emerald-500/25 rounded-xl p-2.5 text-[11px] text-emerald-200">
+                           <p class="font-bold text-emerald-400 mb-0.5">رد الإدارة:</p>
+                           <p class="whitespace-pre-line">${escapeHtml(t.adminReply)}</p>
+                       </div>`
+                    : "";
+
+                return `
+                    <div class="bg-slate-950/80 border border-slate-800/80 rounded-2xl p-3 space-y-1">
+                        <div class="flex items-center justify-between gap-2">
+                            <p class="font-bold text-white">${escapeHtml(t.topic)}</p>
+                            ${statusBadge}
+                        </div>
+                        <p class="text-[11px] text-slate-400 whitespace-pre-line">${escapeHtml(t.message)}</p>
+                        ${replyHtml}
+                    </div>
+                `;
+            }).join("");
+        }
+
+        function renderUserInvestments(docs) {
+            const listEl = document.getElementById("investmentsList");
+            let sum = 0;
+            document.getElementById("activeInvestmentsCount").textContent = `${docs.length} عقود`;
+
+            if (!docs.length) {
+                listEl.innerHTML = "<p class='text-xs text-slate-500'>لا توجد عقود استثمارية نشطة حالياً.</p>";
+            } else {
+                listEl.innerHTML = docs.map((d) => {
+                    const inv = d.data();
+                    sum += Number(inv.amount || 0);
+                    const daysPaid = Number(inv.daysPaid || 0);
+                    const totalDays = Number(inv.days || 0);
+                    return `
+                        <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5 space-y-2">
+                            <div class="flex items-center justify-between gap-2">
                                 <div class="min-w-0">
                                     <p class="font-black text-white truncate">${escapeHtml(inv.planName)} <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 mr-1">${escapeHtml(inv.status || "نشط")}</span></p>
-                                    <p class="text-[11px] text-emerald-400">عائد يومي ${escapeHtml(inv.rate)}% • المصروف: ${daysPaid}/${totalDays} يوم • أرباح مستلمة: $${Number(inv.totalProfitPaid || 0).toFixed(2)}</p>
+                                    <p class="text-[11px] text-emerald-400">عائد يومي ${escapeHtml(inv.rate)}% • أرباح مستلمة: $${Number(inv.totalProfitPaid || 0).toFixed(2)}</p>
                                 </div>
                                 <span class="font-black text-amber-400 shrink-0">$${Number(inv.amount).toFixed(2)}</span>
                             </div>
-                        `;
-                    }).join("");
-                }
-                updateBalancesUI(sum);
-            } catch (e) {}
+                            ${buildProgressBarHtml(daysPaid, totalDays)}
+                        </div>
+                    `;
+                }).join("");
+            }
+            updateBalancesUI(sum);
         }
 
         window.switchTab = function (tabName) {
@@ -1467,34 +1527,81 @@
             window.scrollTo({ top: 0, behavior: "smooth" });
         };
 
-        async function loadUserData(user) {
+        function subscribeUserRealtime(user) {
+            cleanupRealtimeListeners();
             document.getElementById("userEmailDisplay").textContent = user.email;
             document.getElementById("accountEmailText").textContent = user.email;
 
+            // 1. رصيد المستخدم لحظياً
+            const unsubUser = onSnapshot(doc(db, "users", user.uid), (snap) => {
+                currentBalance = snap.exists() ? Number(snap.data().balance || 0) : 0;
+                updateBalancesUI();
+            });
+            unsubscribeListeners.push(unsubUser);
+
+            // 2. طلبات المستخدم لحظياً
+            const unsubReq = onSnapshot(
+                query(collection(db, "requests"), where("userId", "==", user.uid)),
+                (snap) => {
+                    cachedUserRequests = snap.docs
+                        .map(d => d.data())
+                        .sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
+                    renderUserRequests();
+                }
+            );
+            unsubscribeListeners.push(unsubReq);
+
+            // 3. عقود المستخدم لحظياً
+            const unsubInv = onSnapshot(
+                query(collection(db, "investments"), where("userId", "==", user.uid)),
+                (snap) => {
+                    renderUserInvestments(snap.docs);
+                }
+            );
+            unsubscribeListeners.push(unsubInv);
+
+            // 4. تذاكر الدعم للمستخدم لحظياً
+            const unsubTickets = onSnapshot(
+                query(collection(db, "support_tickets"), where("userId", "==", user.uid)),
+                (snap) => {
+                    renderUserTickets(snap.docs);
+                }
+            );
+            unsubscribeListeners.push(unsubTickets);
+
+            // 5. مستمعات لوحة الأدمن لحظياً إذا كان الحساب هو الأدمن
             if (user.email === ADMIN_EMAIL) {
                 document.getElementById("adminHeaderBadge").classList.remove("hidden");
-                await refreshAdminPanel();
+
+                const unsubAdminReq = onSnapshot(collection(db, "requests"), (snap) => {
+                    cachedAdminRequests = snap.docs
+                        .map(d => ({ id: d.id, ...d.data() }))
+                        .sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
+                    renderAdminRequests();
+                });
+                unsubscribeListeners.push(unsubAdminReq);
+
+                const unsubAdminInv = onSnapshot(collection(db, "investments"), (snap) => {
+                    renderAdminInvestments(snap.docs);
+                });
+                unsubscribeListeners.push(unsubAdminInv);
+
+                const unsubAdminTickets = onSnapshot(collection(db, "support_tickets"), (snap) => {
+                    renderAdminTickets(snap.docs);
+                });
+                unsubscribeListeners.push(unsubAdminTickets);
             } else {
                 document.getElementById("adminHeaderBadge").classList.add("hidden");
             }
-
-            try {
-                const snap = await getDoc(doc(db, "users", user.uid));
-                currentBalance = snap.exists() ? Number(snap.data().balance || 0) : 0;
-            } catch (e) {
-                currentBalance = 0;
-            }
-            await loadUserInvestments(user.uid);
-            await loadUserRequests(user.uid);
-            await loadUserTickets(user.uid);
         }
 
-        onAuthStateChanged(auth, async (user) => {
+        onAuthStateChanged(auth, (user) => {
             if (user) {
                 authScreen.classList.add("hidden");
                 appShell.classList.remove("hidden");
-                await loadUserData(user);
+                subscribeUserRealtime(user);
             } else {
+                cleanupRealtimeListeners();
                 appShell.classList.add("hidden");
                 authScreen.classList.remove("hidden");
             }
