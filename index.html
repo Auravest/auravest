@@ -129,15 +129,17 @@
         <main class="max-w-3xl mx-auto p-3.5 sm:p-4 space-y-5">
             <!-- الرئيسية -->
             <section id="tab-home" class="tab-content active space-y-5">
-                <!-- شريط الأسعار والنشاط الحي -->
+                <!-- شريط الأسعار وتغير 24 ساعة -->
                 <div class="glass-card rounded-2xl px-4 py-2.5 flex flex-wrap items-center justify-between gap-2 text-[11px]">
-                    <div class="flex flex-wrap items-center gap-3">
+                    <div class="flex flex-wrap items-center gap-2.5 sm:gap-3">
                         <span class="flex items-center gap-1 text-amber-400 font-bold">
                             <i class="fa-brands fa-bitcoin"></i> BTC: <strong id="tickerBtc" class="text-white font-mono">جاري...</strong>
+                            <span id="tickerBtcChange" class="font-mono text-[10px] text-slate-400"></span>
                         </span>
                         <span class="text-slate-700">|</span>
                         <span class="flex items-center gap-1 text-indigo-400 font-bold">
                             <i class="fa-brands fa-ethereum"></i> ETH: <strong id="tickerEth" class="text-white font-mono">جاري...</strong>
+                            <span id="tickerEthChange" class="font-mono text-[10px] text-slate-400"></span>
                         </span>
                         <span class="text-slate-700">|</span>
                         <span class="flex items-center gap-1 text-emerald-400 font-bold">
@@ -148,6 +150,21 @@
                         <i id="tickerRefreshIcon" class="fa-solid fa-rotate"></i>
                         <span id="tickerStatusLabel">مباشر</span>
                     </button>
+                </div>
+
+                <!-- بطاقة ملخص الأداء والنشاط للمستثمر -->
+                <div class="glass-card rounded-2xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border border-slate-800/90">
+                    <div class="space-y-1">
+                        <p class="text-xs font-black text-white flex items-center gap-1.5">
+                            <i class="fa-solid fa-chart-simple text-amber-400"></i> ملخص أداء حسابك
+                        </p>
+                        <p id="investorPulseText" class="text-[11px] text-slate-300">
+                            إجمالي الأرباح المحصّلة لرصيدك: <strong id="claimedProfitTotalDisplay" class="text-emerald-400">$0.00</strong> • العقود الجارية: <strong id="runningContractsDisplay" class="text-amber-300">0</strong>
+                        </p>
+                    </div>
+                    <span id="investorPulseBadge" class="text-[10px] px-2.5 py-1 rounded-full bg-slate-800 text-slate-300 font-bold shrink-0 self-start sm:self-auto">
+                        جاهز لبدء أول عقد
+                    </span>
                 </div>
 
                 <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-amber-950/30 border border-slate-800 rounded-3xl p-5 sm:p-6 space-y-5 shadow-xl relative overflow-hidden">
@@ -269,6 +286,13 @@
                             <button type="button" id="modeDepositBtn" onclick="setWalletMode('deposit')" class="px-3.5 py-2 rounded-xl bg-amber-500 text-slate-950 font-black text-xs cursor-pointer">إيداع</button>
                             <button type="button" id="modeWithdrawBtn" onclick="setWalletMode('withdraw')" class="px-3.5 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs cursor-pointer">سحب</button>
                         </div>
+                    </div>
+
+                    <!-- تنبيه الشروط والقواعد المهمة للإيداع والسحب -->
+                    <div class="bg-slate-950/80 border border-amber-500/25 rounded-2xl p-3 text-[11px] text-slate-300 space-y-1">
+                        <p class="font-bold text-amber-300"><i class="fa-solid fa-circle-info ml-1"></i> قواعد مهمة قبل التحويل أو السحب:</p>
+                        <p class="text-slate-400">• الحد الأدنى للإيداع والسحب هو <strong class="text-white">$10</strong>، ويُرجى التأكد التام من مطابقة الشبكة المختارة.</p>
+                        <p class="text-slate-400">• تُراجع الطلبات وتُعالج من قِبل الإدارة، ويمكن متابعة حالتها مباشرة من سجل العمليات أو التنبيهات.</p>
                     </div>
 
                     <!-- نموذج الإيداع -->
@@ -653,6 +677,22 @@
                             <p id="adminOpenTicketsCount" class="text-xs sm:text-sm font-black text-purple-300 mt-0.5">0</p>
                         </div>
                     </div>
+
+                    <!-- ملخص سريع للطلبات المعلقة حسب النوع -->
+                    <div class="grid grid-cols-3 gap-2 text-center text-[11px]">
+                        <div class="bg-slate-950/70 border border-slate-800/80 rounded-xl py-2 px-2">
+                            <span class="text-slate-400">إيداعات معلقة: </span>
+                            <strong id="adminPendingDepositsCount" class="text-amber-400">0</strong>
+                        </div>
+                        <div class="bg-slate-950/70 border border-slate-800/80 rounded-xl py-2 px-2">
+                            <span class="text-slate-400">سحوبات معلقة: </span>
+                            <strong id="adminPendingWithdrawsCount" class="text-rose-400">0</strong>
+                        </div>
+                        <div class="bg-slate-950/70 border border-slate-800/80 rounded-xl py-2 px-2">
+                            <span class="text-slate-400">عقود معلقة: </span>
+                            <strong id="adminPendingInvestsCount" class="text-emerald-400">0</strong>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- بحث سريع في لوحة الأدمن -->
@@ -821,10 +861,19 @@
 
         let isFetchingTicker = false;
 
-        function applyTickerValues(btc, eth, usdt, isLive = true) {
+        function formatChangeBadge(pct) {
+            if (typeof pct !== "number" || !Number.isFinite(pct)) return "";
+            const sign = pct >= 0 ? "+" : "";
+            const color = pct >= 0 ? "text-emerald-400" : "text-rose-400";
+            return `<span class="${color}">(${sign}${pct.toFixed(1)}%)</span>`;
+        }
+
+        function applyTickerValues(btc, eth, usdt, btc24h = null, eth24h = null, isLive = true) {
             const btcEl = document.getElementById("tickerBtc");
             const ethEl = document.getElementById("tickerEth");
             const usdtEl = document.getElementById("tickerUsdt");
+            const btcChgEl = document.getElementById("tickerBtcChange");
+            const ethChgEl = document.getElementById("tickerEthChange");
             const statusLabel = document.getElementById("tickerStatusLabel");
 
             if (btcEl && Number.isFinite(btc)) {
@@ -835,6 +884,12 @@
             }
             if (usdtEl && Number.isFinite(usdt)) {
                 usdtEl.textContent = "$" + Number(usdt).toFixed(2);
+            }
+            if (btcChgEl) {
+                btcChgEl.innerHTML = isLive ? formatChangeBadge(btc24h) : "";
+            }
+            if (ethChgEl) {
+                ethChgEl.innerHTML = isLive ? formatChangeBadge(eth24h) : "";
             }
             if (statusLabel) {
                 statusLabel.textContent = isLive ? "مباشر" : "تقديري";
@@ -853,7 +908,7 @@
                 const timeoutId = setTimeout(() => controller.abort(), 7000);
 
                 const res = await fetch(
-                    "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,tether&vs_currencies=usd",
+                    "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,tether&vs_currencies=usd&include_24hr_change=true",
                     { signal: controller.signal }
                 );
                 clearTimeout(timeoutId);
@@ -864,14 +919,16 @@
                 const btc = data?.bitcoin?.usd;
                 const eth = data?.ethereum?.usd;
                 const usdt = data?.tether?.usd;
+                const btc24h = data?.bitcoin?.usd_24h_change;
+                const eth24h = data?.ethereum?.usd_24h_change;
 
                 if (typeof btc === "number" && typeof eth === "number" && typeof usdt === "number") {
-                    applyTickerValues(btc, eth, usdt, true);
+                    applyTickerValues(btc, eth, usdt, btc24h, eth24h, true);
                 } else {
-                    applyTickerValues(94250, 3180, 1.0, false);
+                    applyTickerValues(94250, 3180, 1.0, null, null, false);
                 }
             } catch {
-                applyTickerValues(94250, 3180, 1.0, false);
+                applyTickerValues(94250, 3180, 1.0, null, null, false);
             } finally {
                 isFetchingTicker = false;
                 if (icon) icon.classList.remove("fa-spin");
@@ -885,6 +942,29 @@
                 window.refreshMarketTicker();
             }
         }, 30000);
+
+        function refreshInvestorPulse() {
+            const claimedSum = cachedUserRequests
+                .filter(r => r.type === "تحصيل أرباح" && r.status === "approved")
+                .reduce((acc, r) => acc + Number(r.amount || 0), 0);
+
+            const claimedEl = document.getElementById("claimedProfitTotalDisplay");
+            const badgeEl = document.getElementById("investorPulseBadge");
+            if (claimedEl) claimedEl.textContent = "$" + claimedSum.toFixed(2);
+
+            if (badgeEl) {
+                if (Number(currentPendingProfit || 0) > 0) {
+                    badgeEl.textContent = `أرباح جاهزة للتحصيل: $${Number(currentPendingProfit).toFixed(2)}`;
+                    badgeEl.className = "text-[10px] px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-bold shrink-0 self-start sm:self-auto";
+                } else if (Number(currentTotalInvested || 0) > 0) {
+                    badgeEl.textContent = "عقودك قيد المتابعة";
+                    badgeEl.className = "text-[10px] px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-300 font-bold shrink-0 self-start sm:self-auto";
+                } else {
+                    badgeEl.textContent = "جاهز لبدء أول عقد";
+                    badgeEl.className = "text-[10px] px-2.5 py-1 rounded-full bg-slate-800 text-slate-300 font-bold shrink-0 self-start sm:self-auto";
+                }
+            }
+        }
 
         function cleanupRealtimeListeners() {
             unsubscribeListeners.forEach((unsub) => {
@@ -1152,6 +1232,7 @@
                 claimBtn.disabled = isClaimingProfit || Number(currentPendingProfit || 0) <= 0;
             }
             updateWithdrawPreview();
+            refreshInvestorPulse();
         }
 
         window.claimPendingProfit = async function () {
@@ -1387,6 +1468,16 @@
                 alert("تم نسخ عنوان المحفظة بنجاح!");
             } catch {
                 alert("انسخ العنوان يدوياً من الخانة المظللة.");
+            }
+        };
+
+        window.copyInlineText = async function (text) {
+            if (!text) return;
+            try {
+                await navigator.clipboard.writeText(text);
+                alert("تم النسخ بنجاح!");
+            } catch {
+                alert("تعذر النسخ تلقائياً.");
             }
         };
 
@@ -1772,6 +1863,13 @@
             }
         };
 
+        window.applyTicketTemplate = function (ticketId, text) {
+            const input = document.getElementById(`ticketReply-${ticketId}`);
+            if (!input) return;
+            input.value = text;
+            input.focus();
+        };
+
         window.saveTicketReply = async function (ticketId, closeTicket = false) {
             try {
                 const replyInput = document.getElementById(`ticketReply-${ticketId}`);
@@ -1827,6 +1925,20 @@
             if (capEl) capEl.textContent = "$" + activeCap.toFixed(2);
             if (paidEl) paidEl.textContent = "$" + paidProfits.toFixed(2);
             if (openEl) openEl.textContent = String(openTickets);
+        }
+
+        function updateAdminPendingTypeCounters() {
+            const pendingOnly = cachedAdminRequests.filter(r => r.status === "pending");
+            const depCount = pendingOnly.filter(r => r.type === "إيداع").length;
+            const witCount = pendingOnly.filter(r => r.type === "سحب").length;
+            const invCount = pendingOnly.filter(r => r.type === "استثمار").length;
+
+            const depEl = document.getElementById("adminPendingDepositsCount");
+            const witEl = document.getElementById("adminPendingWithdrawsCount");
+            const invEl = document.getElementById("adminPendingInvestsCount");
+            if (depEl) depEl.textContent = String(depCount);
+            if (witEl) witEl.textContent = String(witCount);
+            if (invEl) invEl.textContent = String(invCount);
         }
 
         function renderAdminInvestments(docs) {
@@ -1908,6 +2020,7 @@
             const listEl = document.getElementById("adminRequestsList");
             const pendingCount = cachedAdminRequests.filter(item => item.status === "pending").length;
             document.getElementById("pendingCountBadge").textContent = String(pendingCount);
+            updateAdminPendingTypeCounters();
 
             const q = (document.getElementById("adminSearchInput")?.value || "").trim().toLowerCase();
 
@@ -1988,6 +2101,9 @@
                     ? `<span class="px-2 py-0.5 rounded bg-slate-700 text-slate-300 font-bold">مغلقة</span>`
                     : `<span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 font-bold">مفتوحة</span>`;
 
+                const tpl1 = "تم التحقق من بيانات الطلب وتحديث حسابك بنجاح.";
+                const tpl2 = "يرجى تزويدنا برقم المعاملة TxHash أو صورة أوضح للتحويل للمتابعة.";
+
                 return `
                     <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-3.5 space-y-2">
                         <div class="flex items-center justify-between gap-2">
@@ -1996,6 +2112,10 @@
                         </div>
                         <p class="text-[11px] text-slate-400">المستخدم: <span class="text-slate-200">${escapeHtml(t.userEmail)}</span></p>
                         <p class="text-xs text-slate-200 bg-slate-900/80 border border-slate-800/80 rounded-xl p-2.5 whitespace-pre-line">${escapeHtml(t.message)}</p>
+                        <div class="flex flex-wrap gap-1.5 text-[10px]">
+                            <button type="button" onclick="applyTicketTemplate('${escapeHtml(t.id)}', '${escapeHtml(tpl1)}')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 font-bold cursor-pointer">قالب: تم التأكيد</button>
+                            <button type="button" onclick="applyTicketTemplate('${escapeHtml(t.id)}', '${escapeHtml(tpl2)}')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold cursor-pointer">قالب: طلب TxHash</button>
+                        </div>
                         <textarea id="ticketReply-${escapeHtml(t.id)}" rows="2" placeholder="اكتب رد الإدارة للمستثمر..." class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-purple-500">${escapeHtml(t.adminReply || "")}</textarea>
                         <div class="flex flex-wrap gap-2 pt-1">
                             <button type="button" onclick="saveTicketReply('${escapeHtml(t.id)}', true)" class="px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-[11px] cursor-pointer">حفظ الرد وإغلاق</button>
@@ -2045,6 +2165,12 @@
                     ? `<p class="text-[10px] text-rose-300 mt-1">السبب: ${escapeHtml(r.rejectReason)}</p>`
                     : "";
 
+                const copyBtnHtml = r.reference && r.reference.length >= 10
+                    ? `<button type="button" onclick="copyInlineText('${escapeHtml(r.reference)}')" class="mt-1.5 ml-3 inline-flex items-center gap-1 text-[10px] font-bold text-sky-400 hover:underline cursor-pointer">
+                           <i class="fa-regular fa-copy"></i> نسخ البيان
+                       </button>`
+                    : "";
+
                 const supportBtnHtml = r.status === "rejected"
                     ? `<button type="button" onclick="openSupportWithContext('${escapeHtml(`${r.type} (${r.method}) بقيمة $${Number(r.amount).toFixed(2)}`)}')" class="mt-1.5 inline-flex items-center gap-1 text-[10px] font-bold text-amber-400 hover:underline cursor-pointer">
                            <i class="fa-solid fa-headset"></i> استفسر بخصوص هذا الطلب
@@ -2057,6 +2183,7 @@
                             <p class="font-bold text-white truncate">${escapeHtml(r.type)} - ${escapeHtml(r.method)}</p>
                             <p class="text-[10px] text-slate-400 truncate">${statusText} • ${escapeHtml(formatShortDate(r.createdAt))} • ${escapeHtml(r.reference || "-")}</p>
                             ${reasonHtml}
+                            ${copyBtnHtml}
                             ${supportBtnHtml}
                         </div>
                         <span class="font-black text-amber-400 shrink-0">$${Number(r.amount).toFixed(2)}</span>
@@ -2100,6 +2227,7 @@
         function renderUserInvestments(docs) {
             const listEl = document.getElementById("investmentsList");
             let sum = 0;
+            let runningCount = 0;
             document.getElementById("activeInvestmentsCount").textContent = `${docs.length} عقود`;
 
             if (!docs.length) {
@@ -2115,16 +2243,27 @@
                     const daysPaid = Number(inv.daysPaid || 0);
                     const totalDays = Number(inv.days || 0);
                     const totalPaid = Number(inv.totalProfitPaid || 0);
+                    const isCompleted = inv.status === "مكتمل" || daysPaid >= totalDays;
+                    if (!isCompleted) runningCount++;
+
                     const remainingDays = Math.max(0, totalDays - daysPaid);
                     const remainingProfit = (remainingDays * dailyEstVal).toFixed(2);
+
+                    const statusBadgeClass = isCompleted
+                        ? "bg-emerald-500/20 text-emerald-300"
+                        : "bg-slate-800 text-slate-300";
+
+                    const summaryLine = isCompleted
+                        ? `<p class="text-[10px] text-emerald-300 font-bold">اكتملت مدة العقد (${daysPaid}/${totalDays}) • إجمالي الربح المحقق: $${totalPaid.toFixed(2)}</p>`
+                        : `<p class="text-[10px] text-slate-400">المتبقي المتوقع (${remainingDays} يوم): <span class="text-amber-300 font-bold">$${remainingProfit}</span> • بدأ في: ${escapeHtml(formatShortDate(inv.createdAt))}</p>`;
 
                     return `
                         <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5 space-y-2">
                             <div class="flex items-center justify-between gap-2">
                                 <div class="min-w-0">
-                                    <p class="font-black text-white truncate">${escapeHtml(inv.planName)} <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 mr-1">${escapeHtml(inv.status || "نشط")}</span></p>
+                                    <p class="font-black text-white truncate">${escapeHtml(inv.planName)} <span class="text-[10px] px-2 py-0.5 rounded ${statusBadgeClass} mr-1">${escapeHtml(isCompleted ? "مكتمل" : (inv.status || "نشط"))}</span></p>
                                     <p class="text-[11px] text-emerald-400">عائد يومي ${escapeHtml(rate)}% ($${dailyEst}/يوم) • أرباح مستلمة: $${totalPaid.toFixed(2)}</p>
-                                    <p class="text-[10px] text-slate-400">المتبقي المتوقع (${remainingDays} يوم): <span class="text-amber-300 font-bold">$${remainingProfit}</span> • بدأ في: ${escapeHtml(formatShortDate(inv.createdAt))}</p>
+                                    ${summaryLine}
                                 </div>
                                 <span class="font-black text-amber-400 shrink-0">$${amount.toFixed(2)}</span>
                             </div>
@@ -2133,6 +2272,10 @@
                     `;
                 }).join("");
             }
+
+            const runningEl = document.getElementById("runningContractsDisplay");
+            if (runningEl) runningEl.textContent = String(runningCount);
+
             updateBalancesUI(sum);
         }
 
@@ -2181,6 +2324,7 @@
                         .sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
                     renderUserRequests();
                     renderAlertsFeed();
+                    refreshInvestorPulse();
                 }
             );
             unsubscribeListeners.push(unsubReq);
