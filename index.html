@@ -268,7 +268,7 @@
                             <div class="flex flex-col sm:flex-row items-center gap-3 bg-slate-900 border border-slate-800 rounded-xl p-3">
                                 <img id="gatewayQrImg" src="" alt="QR Code المحفظة" class="w-28 h-28 rounded-xl bg-white p-1.5 shrink-0 object-contain">
                                 <div class="w-full space-y-2 min-w-0">
-                                    <p class="text-[10px] text-slate-400">امسح رمز QR من محفظتك أو انسخ العنوان:</p>
+                                    <p class="text-[10px] text-slate-400">امسح رمز QR الخاص بالمحفظة أو انسخ العنوان:</p>
                                     <div class="flex items-center justify-between gap-2 bg-slate-950 border border-slate-800 rounded-lg p-2">
                                         <code id="gatewayAddressText" class="text-xs text-emerald-400 font-mono break-all select-all"></code>
                                         <button type="button" onclick="copyGatewayAddress()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] font-bold text-white shrink-0 cursor-pointer">
@@ -659,7 +659,8 @@
             query,
             where,
             onSnapshot,
-            increment
+            increment,
+            runTransaction
         } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -676,16 +677,16 @@
 
         const PAYMENT_WALLETS = {
             "USDT (TRC20)": {
-                address: "TQn9Y2khEsLJW1ChVWFMSMeRDow5KcbLSE",
-                network: "الشبكة المعتمدة: TRON (TRC20) فقط"
+                address: "TJAmY6Pcy8VVTB9BBvh7La42oeEL6Yhibf",
+                network: "الشبكة المعتمدة: Tron (TRC20) فقط"
             },
             "Bitcoin (BTC)": {
-                address: "bc1q_PUT_YOUR_BTC_WALLET_ADDRESS_HERE",
-                network: "الشبكة المعتمدة: Bitcoin Mainnet (BTC) فقط"
+                address: "bc1qnq0egs7qtf4xk084y3l5r9zgygsjar6q237a6m3gxgrq6dw5ya2swrg3qk",
+                network: "الشبكة المعتمدة: Bitcoin Mainnet (SegWit) فقط"
             },
             "Ethereum (ETH)": {
-                address: "0xPUT_YOUR_ETH_WALLET_ADDRESS_HERE",
-                network: "الشبكة المعتمدة: Ethereum Mainnet (ERC-20) فقط"
+                address: "0xc2099ebb0bc3c26de944cd10088bf910b31a29d3",
+                network: "الشبكة المعتمدة: Ethereum (ERC20) فقط"
             }
         };
 
@@ -995,45 +996,60 @@
             updateWithdrawPreview();
         }
 
-        // المستثمر هو الذي يحرك أرباحه المتراكمة إلى رصيده الفعلي على المنصة
+        // يتم استدعاء هذه الدالة فقط عند ضغط المستثمر على زر تحصيل الأرباح بنفسه
         window.claimPendingProfit = async function () {
             if (isClaimingProfit) return;
             const user = auth.currentUser;
             const statusEl = document.getElementById("profitClaimStatus");
             if (!user) return;
 
-            const claimable = Number(currentPendingProfit || 0);
-            if (claimable <= 0) {
-                if (statusEl) {
-                    statusEl.textContent = "لا توجد أرباح متراكمة جاهزة للتحصيل حالياً.";
-                    statusEl.className = "text-xs font-bold text-slate-400";
-                }
-                return;
-            }
-
             isClaimingProfit = true;
             updateBalancesUI();
 
             try {
-                const roundedClaim = Number(claimable.toFixed(2));
-                await setDoc(doc(db, "users", user.uid), {
-                    balance: increment(roundedClaim),
-                    pendingProfit: increment(-roundedClaim)
-                }, { merge: true });
+                const userRef = doc(db, "users", user.uid);
+                let claimedAmount = 0;
+
+                await runTransaction(db, async (transaction) => {
+                    const snap = await transaction.get(userRef);
+                    const data = snap.exists() ? snap.data() : {};
+                    const availableProfit = Number(data.pendingProfit || 0);
+
+                    if (availableProfit <= 0) {
+                        claimedAmount = 0;
+                        return;
+                    }
+
+                    claimedAmount = Number(availableProfit.toFixed(2));
+                    const currentBal = Number(data.balance || 0);
+
+                    transaction.set(userRef, {
+                        balance: Number((currentBal + claimedAmount).toFixed(2)),
+                        pendingProfit: 0
+                    }, { merge: true });
+                });
+
+                if (claimedAmount <= 0) {
+                    if (statusEl) {
+                        statusEl.textContent = "لا توجد أرباح متراكمة جاهزة للتحصيل حالياً.";
+                        statusEl.className = "text-xs font-bold text-slate-400";
+                    }
+                    return;
+                }
 
                 await addDoc(collection(db, "requests"), {
                     userId: user.uid,
                     userEmail: user.email,
                     type: "تحصيل أرباح",
                     method: "نقل إلى الرصيد الفعلي",
-                    amount: roundedClaim,
+                    amount: claimedAmount,
                     reference: "تم تحصيل الأرباح بواسطة المستثمر",
                     status: "approved",
                     createdAt: new Date().toISOString()
                 });
 
                 if (statusEl) {
-                    statusEl.textContent = `مبروك! تم تحصيل $${roundedClaim.toFixed(2)} ونقلها إلى رصيدك الفعلي بنجاح.`;
+                    statusEl.textContent = `مبروك! تم تحصيل $${claimedAmount.toFixed(2)} ونقلها إلى رصيدك الفعلي بنجاح.`;
                     statusEl.className = "text-xs font-bold text-emerald-400";
                 }
             } catch (err) {
@@ -1506,7 +1522,6 @@
             const nextDaysPaid = daysPaid + 1;
             const nextStatus = nextDaysPaid >= totalDays ? "مكتمل" : "نشط";
 
-            // يضاف الربح إلى رصيد الأرباح المستقلة ليحركه المستثمر بنفسه لرصيده الفعلي
             await setDoc(doc(db, "users", inv.userId), {
                 pendingProfit: increment(dailyProfit)
             }, { merge: true });
