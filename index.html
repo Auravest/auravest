@@ -209,7 +209,7 @@
                             متابعة وإظهار بيانات التحويل
                         </button>
 
-                        <!-- بوابة الدفع والعداد الزمني -->
+                        <!-- بوابة الدفع والعداد الزمني + QR -->
                         <div id="paymentGatewayBox" class="hidden bg-slate-950 border border-amber-500/40 rounded-2xl p-4 space-y-3.5">
                             <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
                                 <span class="text-xs font-bold text-amber-400"><i class="fa-solid fa-clock ml-1"></i> بوابة الدفع المؤقتة</span>
@@ -220,11 +220,17 @@
                             </p>
                             <p id="gatewayNetworkHint" class="text-[11px] text-sky-400 font-bold"></p>
 
-                            <div class="flex items-center justify-between gap-2 bg-slate-900 border border-slate-800 rounded-xl p-3">
-                                <code id="gatewayAddressText" class="text-xs text-emerald-400 font-mono break-all select-all"></code>
-                                <button type="button" onclick="copyGatewayAddress()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] font-bold text-white shrink-0 cursor-pointer">
-                                    نسخ
-                                </button>
+                            <div class="flex flex-col sm:flex-row items-center gap-3 bg-slate-900 border border-slate-800 rounded-xl p-3">
+                                <img id="gatewayQrImg" src="" alt="QR Code المحفظة" class="w-28 h-28 rounded-xl bg-white p-1.5 shrink-0 object-contain">
+                                <div class="w-full space-y-2 min-w-0">
+                                    <p class="text-[10px] text-slate-400">امسح رمز QR من محفظتك أو انسخ العنوان:</p>
+                                    <div class="flex items-center justify-between gap-2 bg-slate-950 border border-slate-800 rounded-lg p-2">
+                                        <code id="gatewayAddressText" class="text-xs text-emerald-400 font-mono break-all select-all"></code>
+                                        <button type="button" onclick="copyGatewayAddress()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] font-bold text-white shrink-0 cursor-pointer">
+                                            نسخ
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
 
                             <div>
@@ -273,11 +279,11 @@
                 </div>
             </section>
 
-            <!-- خطط الاستثمار الاحترافية -->
+            <!-- خطط الاستثمار الاحترافية + حاسبة الأرباح الفورية -->
             <section id="tab-invest" class="tab-content space-y-4">
                 <div class="glass-card rounded-3xl p-4 sm:p-5 space-y-1.5">
                     <h3 class="font-black text-base text-amber-400">صناديق الاستثمار المُدارة</h3>
-                    <p class="text-xs text-slate-400">استثمارات مدعومة بعقود ذكية وعوائد يومية ثابتة تُضاف لمحفظتك.</p>
+                    <p class="text-xs text-slate-400">استثمارات مدعومة بعقود ذكية وعوائد يومية ثابتة تُضاف لمحفظتك. اكتب المبلغ لمعاينة العائد فوراً.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -298,7 +304,12 @@
                             <div class="flex justify-between"><span class="text-slate-400">الحد الأدنى / الأقصى:</span><span class="font-bold text-white">$20 - $499</span></div>
                             <div class="flex justify-between"><span class="text-slate-400">إجمالي العائد المتوقع:</span><span class="font-bold text-emerald-400">135% (شامل رأس المال)</span></div>
                         </div>
-                        <input id="plan1Amount" type="number" min="20" step="any" inputmode="decimal" placeholder="أدخل مبلغ الاستثمار ($)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-emerald-500">
+                        <input id="plan1Amount" oninput="updatePlanCalculator('plan1Amount', 3.5, 10, 'plan1Calc')" type="number" min="20" step="any" inputmode="decimal" placeholder="أدخل مبلغ الاستثمار ($)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-emerald-500">
+                        <div id="plan1Calc" class="bg-emerald-500/5 border border-emerald-500/20 rounded-xl p-2.5 text-[11px] text-slate-300 space-y-1">
+                            <div class="flex justify-between"><span>الربح اليومي المتوقع:</span><span class="font-bold text-emerald-400">$0.00</span></div>
+                            <div class="flex justify-between"><span>إجمالي الربح (10 أيام):</span><span class="font-bold text-white">$0.00</span></div>
+                            <div class="flex justify-between"><span>الإجمالي شامل رأس المال:</span><span class="font-black text-amber-400">$0.00</span></div>
+                        </div>
                         <button type="button" data-invest-btn onclick="handleInvestRequest('محفظة السيولة اليومية', 3.5, 10, 'plan1Amount', 20, this)" class="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-60 disabled:cursor-not-allowed text-slate-950 font-black text-xs transition cursor-pointer">
                             تفعيل العقد الاستثماري
                         </button>
@@ -321,7 +332,12 @@
                             <div class="flex justify-between"><span class="text-slate-400">الحد الأدنى / الأقصى:</span><span class="font-bold text-white">$500 - $2,499</span></div>
                             <div class="flex justify-between"><span class="text-slate-400">إجمالي العائد المتوقع:</span><span class="font-bold text-amber-400">184% (شامل رأس المال)</span></div>
                         </div>
-                        <input id="plan2Amount" type="number" min="500" step="any" inputmode="decimal" placeholder="أدخل مبلغ الاستثمار ($)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-amber-500">
+                        <input id="plan2Amount" oninput="updatePlanCalculator('plan2Amount', 4.2, 20, 'plan2Calc')" type="number" min="500" step="any" inputmode="decimal" placeholder="أدخل مبلغ الاستثمار ($)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-amber-500">
+                        <div id="plan2Calc" class="bg-amber-500/5 border border-amber-500/20 rounded-xl p-2.5 text-[11px] text-slate-300 space-y-1">
+                            <div class="flex justify-between"><span>الربح اليومي المتوقع:</span><span class="font-bold text-emerald-400">$0.00</span></div>
+                            <div class="flex justify-between"><span>إجمالي الربح (20 يوم):</span><span class="font-bold text-white">$0.00</span></div>
+                            <div class="flex justify-between"><span>الإجمالي شامل رأس المال:</span><span class="font-black text-amber-400">$0.00</span></div>
+                        </div>
                         <button type="button" data-invest-btn onclick="handleInvestRequest('صندوق الذهب والعملات', 4.2, 20, 'plan2Amount', 500, this)" class="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-60 disabled:cursor-not-allowed text-slate-950 font-black text-xs transition cursor-pointer">
                             تفعيل العقد الاستثماري
                         </button>
@@ -344,7 +360,12 @@
                             <div class="flex justify-between"><span class="text-slate-400">الحد الأدنى / الأقصى:</span><span class="font-bold text-white">$2,500 - $10,000</span></div>
                             <div class="flex justify-between"><span class="text-slate-400">إجمالي العائد المتوقع:</span><span class="font-bold text-sky-400">250% (شامل رأس المال)</span></div>
                         </div>
-                        <input id="plan3Amount" type="number" min="2500" step="any" inputmode="decimal" placeholder="أدخل مبلغ الاستثمار ($)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-sky-500">
+                        <input id="plan3Amount" oninput="updatePlanCalculator('plan3Amount', 5.0, 30, 'plan3Calc')" type="number" min="2500" step="any" inputmode="decimal" placeholder="أدخل مبلغ الاستثمار ($)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-sky-500">
+                        <div id="plan3Calc" class="bg-sky-500/5 border border-sky-500/20 rounded-xl p-2.5 text-[11px] text-slate-300 space-y-1">
+                            <div class="flex justify-between"><span>الربح اليومي المتوقع:</span><span class="font-bold text-emerald-400">$0.00</span></div>
+                            <div class="flex justify-between"><span>إجمالي الربح (30 يوم):</span><span class="font-bold text-white">$0.00</span></div>
+                            <div class="flex justify-between"><span>الإجمالي شامل رأس المال:</span><span class="font-black text-amber-400">$0.00</span></div>
+                        </div>
                         <button type="button" data-invest-btn onclick="handleInvestRequest('محفظة التداول الخوارزمي', 5.0, 30, 'plan3Amount', 2500, this)" class="w-full py-3 rounded-xl bg-sky-500 hover:bg-sky-400 disabled:opacity-60 disabled:cursor-not-allowed text-slate-950 font-black text-xs transition cursor-pointer">
                             تفعيل العقد الاستثماري
                         </button>
@@ -396,7 +417,7 @@
                 </div>
 
                 <div class="glass-card rounded-3xl p-4 sm:p-5 space-y-3">
-                    <h4 class="font-black text-sm text-white">تذاكر الدعم السابقة</h4>
+                    <h4 class="font-black text-sm text-white">تذاكر الدعم السابقة وردود الإدارة</h4>
                     <div id="userTicketsList" class="space-y-2.5 text-xs text-slate-400">
                         لا توجد تذاكر دعم فني مسجلة بعد.
                     </div>
@@ -435,7 +456,7 @@
             <section id="tab-admin" class="tab-content space-y-4">
                 <div class="bg-gradient-to-r from-amber-500/20 to-slate-900 border border-amber-500/40 rounded-3xl p-4 sm:p-5 space-y-1">
                     <h3 class="font-black text-base text-amber-400"><i class="fa-solid fa-crown ml-1"></i> لوحة تحكم المدير العام</h3>
-                    <p class="text-xs text-slate-300">مراجعة واعتماد الطلبات، صرف العوائد اليومية، ومتابعة تذاكر الدعم الفني.</p>
+                    <p class="text-xs text-slate-300">مراجعة واعتماد الطلبات، صرف العوائد اليومية، والرد على تذاكر الدعم الفني.</p>
                 </div>
 
                 <!-- الطلبات المعلقة والحديثة -->
@@ -585,6 +606,10 @@
                 .replace(/'/g, "&#39;");
         }
 
+        function buildQrUrl(address) {
+            return `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(address)}`;
+        }
+
         function getTodayKey() {
             return new Date().toISOString().slice(0, 10);
         }
@@ -598,6 +623,24 @@
             if (code.includes("email-already-in-use")) return "هذا البريد الإلكتروني مسجل بالفعل.";
             return err?.message || "حدث خطأ غير متوقع، حاول مرة أخرى.";
         }
+
+        // حاسبة الأرباح الفورية لخطط الاستثمار
+        window.updatePlanCalculator = function (inputId, dailyRate, days, calcBoxId) {
+            const raw = parseFloat(document.getElementById(inputId).value);
+            const box = document.getElementById(calcBoxId);
+            if (!box) return;
+
+            const amt = Number.isFinite(raw) && raw > 0 ? raw : 0;
+            const dailyProfit = (amt * dailyRate) / 100;
+            const totalProfit = dailyProfit * days;
+            const totalReturn = amt + totalProfit;
+
+            box.innerHTML = `
+                <div class="flex justify-between"><span>الربح اليومي المتوقع:</span><span class="font-bold text-emerald-400">$${dailyProfit.toFixed(2)}</span></div>
+                <div class="flex justify-between"><span>إجمالي الربح (${days} يوم):</span><span class="font-bold text-white">$${totalProfit.toFixed(2)}</span></div>
+                <div class="flex justify-between"><span>الإجمالي شامل رأس المال:</span><span class="font-black text-amber-400">$${totalReturn.toFixed(2)}</span></div>
+            `;
+        };
 
         function compressImageToBase64(file, maxWidth = 800, quality = 0.7) {
             return new Promise((resolve, reject) => {
@@ -686,7 +729,6 @@
 
         window.handleLogout = async () => await signOut(auth);
 
-        // التبديل بين الإيداع والسحب
         window.setWalletMode = function (mode) {
             const depSec = document.getElementById("depositSection");
             const witSec = document.getElementById("withdrawSection");
@@ -707,7 +749,6 @@
             }
         };
 
-        // اختيار وسيلة الدفع الرقمية
         window.selectPaymentMethod = function (method) {
             selectedPayMethod = method;
             document.querySelectorAll(".pay-method-btn").forEach((btn) => {
@@ -723,10 +764,10 @@
                 document.getElementById("gatewayMethodLabel").textContent = selectedPayMethod;
                 document.getElementById("gatewayNetworkHint").textContent = walletInfo.network;
                 document.getElementById("gatewayAddressText").textContent = walletInfo.address;
+                document.getElementById("gatewayQrImg").src = buildQrUrl(walletInfo.address);
             }
         };
 
-        // بدء بوابة الدفع وتشغيل العداد
         window.initiateDepositGateway = function () {
             const amount = parseFloat(document.getElementById("depositAmountInput").value);
             const statusEl = document.getElementById("walletStatus");
@@ -743,6 +784,7 @@
             document.getElementById("gatewayMethodLabel").textContent = selectedPayMethod;
             document.getElementById("gatewayNetworkHint").textContent = walletInfo.network;
             document.getElementById("gatewayAddressText").textContent = walletInfo.address;
+            document.getElementById("gatewayQrImg").src = buildQrUrl(walletInfo.address);
             document.getElementById("paymentGatewayBox").classList.remove("hidden");
 
             if (timerInterval) clearInterval(timerInterval);
@@ -771,7 +813,6 @@
             }
         };
 
-        // إرسال طلب الإيداع مع صورة التحويل ومنع التكرار
         window.submitDepositRequest = async function () {
             if (isSubmittingDeposit) return;
             const user = auth.currentUser;
@@ -809,6 +850,7 @@
                     amount: Number(amount.toFixed(2)),
                     reference: "مرفق صورة إيصال التحويل",
                     proofImage: proofImage,
+                    rejectReason: "",
                     status: "pending",
                     createdAt: new Date().toISOString()
                 });
@@ -832,7 +874,6 @@
             }
         };
 
-        // إرسال طلب السحب للمراجعة مع منع التكرار
         window.submitWithdrawRequest = async function () {
             if (isSubmittingWithdraw) return;
             const user = auth.currentUser;
@@ -874,6 +915,7 @@
                     method: method,
                     amount: roundedAmount,
                     reference: address,
+                    rejectReason: "",
                     status: "pending",
                     createdAt: new Date().toISOString()
                 });
@@ -897,7 +939,6 @@
             }
         };
 
-        // طلب استثمار جديد مع منع التكرار
         window.handleInvestRequest = async function (planName, rate, days, inputId, minAmount, btnEl) {
             if (isSubmittingInvest) return;
             const user = auth.currentUser;
@@ -933,6 +974,7 @@
                     amount: roundedAmount,
                     reference: `عائد ${rate}% لمدة ${days} يوم`,
                     planDetails: { planName, rate, days },
+                    rejectReason: "",
                     status: "pending",
                     createdAt: new Date().toISOString()
                 });
@@ -940,6 +982,9 @@
                 currentBalance = Math.max(0, Number((currentBalance - roundedAmount).toFixed(2)));
                 updateBalancesUI();
                 document.getElementById(inputId).value = "";
+                if (inputId === "plan1Amount") updatePlanCalculator("plan1Amount", 3.5, 10, "plan1Calc");
+                if (inputId === "plan2Amount") updatePlanCalculator("plan2Amount", 4.2, 20, "plan2Calc");
+                if (inputId === "plan3Amount") updatePlanCalculator("plan3Amount", 5.0, 30, "plan3Calc");
 
                 statusEl.textContent = `تم إرسال طلب الاشتراك في (${planName}) وبانتظار اعتماد الإدارة.`;
                 statusEl.className = "text-xs font-bold text-emerald-400 px-1";
@@ -955,7 +1000,6 @@
             }
         };
 
-        // إرسال تذكرة دعم فني للمستخدم
         window.submitSupportTicket = async function () {
             if (isSubmittingSupport) return;
             const user = auth.currentUser;
@@ -982,6 +1026,7 @@
                     userEmail: user.email,
                     topic,
                     message,
+                    adminReply: "",
                     status: "open",
                     createdAt: new Date().toISOString()
                 });
@@ -1001,10 +1046,16 @@
             }
         };
 
-        // دوال الأدمن: الموافقة أو الرفض مع تأكيد لتقليل أخطاء الضغط بالخطأ
+        // دوال الأدمن: الموافقة أو الرفض مع إمكانية كتابة سبب الرفض
         window.adminAction = async function (reqId, action) {
             const label = action === "approve" ? "موافقة واعتماد" : "رفض";
             if (!confirm(`هل أنت متأكد من تنفيذ (${label}) لهذا الطلب؟`)) return;
+
+            let rejectReason = "";
+            if (action === "reject") {
+                const reasonInput = document.getElementById(`rejectReason-${reqId}`);
+                rejectReason = reasonInput ? reasonInput.value.trim() : "";
+            }
 
             try {
                 const reqRef = doc(db, "requests", reqId);
@@ -1032,12 +1083,12 @@
                             createdAt: new Date().toISOString()
                         });
                     }
-                    await updateDoc(reqRef, { status: "approved" });
+                    await updateDoc(reqRef, { status: "approved", rejectReason: "" });
                 } else if (action === "reject") {
                     if (data.type === "سحب" || data.type === "استثمار") {
                         await setDoc(doc(db, "users", data.userId), { balance: increment(Number(data.amount)) }, { merge: true });
                     }
-                    await updateDoc(reqRef, { status: "rejected" });
+                    await updateDoc(reqRef, { status: "rejected", rejectReason });
                 }
 
                 await refreshAdminPanel();
@@ -1047,7 +1098,6 @@
             }
         };
 
-        // دالة الأدمن: صرف العائد اليومي لعقد استثماري نشط
         window.payDailyProfit = async function (invId) {
             if (!confirm("تأكيد صرف العائد اليومي لهذا العقد الآن؟")) return;
 
@@ -1105,7 +1155,23 @@
             }
         };
 
-        // تحديث حالة تذكرة الدعم للأدمن
+        // حفظ رد الإدارة وتحديث حالة تذكرة الدعم
+        window.saveTicketReply = async function (ticketId, closeTicket = false) {
+            try {
+                const replyInput = document.getElementById(`ticketReply-${ticketId}`);
+                const replyText = replyInput ? replyInput.value.trim() : "";
+                const payload = { adminReply: replyText };
+                if (closeTicket) payload.status = "closed";
+
+                await updateDoc(doc(db, "support_tickets", ticketId), payload);
+                alert("تم حفظ الرد وتحديث التذكرة بنجاح.");
+                await loadAdminTickets();
+                if (auth.currentUser) await loadUserTickets(auth.currentUser.uid);
+            } catch (err) {
+                alert("خطأ في حفظ الرد: " + friendlyErrorMessage(err));
+            }
+        };
+
         window.updateTicketStatus = async function (ticketId, newStatus) {
             try {
                 await updateDoc(doc(db, "support_tickets", ticketId), { status: newStatus });
@@ -1116,7 +1182,6 @@
             }
         };
 
-        // تحميل العقود للأدمن مع زر صرف العائد اليومي
         async function loadAdminInvestments() {
             const listEl = document.getElementById("adminInvestmentsList");
             try {
@@ -1170,7 +1235,6 @@
             }
         }
 
-        // تحميل كل الطلبات للأدمن مع عرض صورة التحويل إن وجدت
         window.loadAdminRequests = async function () {
             const listEl = document.getElementById("adminRequestsList");
             try {
@@ -1202,10 +1266,17 @@
                            </div>`
                         : `<p class="text-[11px] text-slate-400 break-all">البيان: <span class="text-slate-200">${escapeHtml(r.reference || "-")}</span></p>`;
 
+                    const reasonInfo = r.status === "rejected" && r.rejectReason
+                        ? `<p class="text-[11px] text-rose-300 bg-rose-500/10 border border-rose-500/20 rounded-lg px-2.5 py-1.5">سبب الرفض: ${escapeHtml(r.rejectReason)}</p>`
+                        : "";
+
                     const actionButtons = r.status === "pending" ? `
-                        <div class="grid grid-cols-2 gap-2 pt-2">
-                            <button type="button" onclick="adminAction('${escapeHtml(d.id)}', 'approve')" class="py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs cursor-pointer">موافقة واعتماد</button>
-                            <button type="button" onclick="adminAction('${escapeHtml(d.id)}', 'reject')" class="py-2 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 font-bold text-xs cursor-pointer">رفض الطلب</button>
+                        <div class="space-y-2 pt-2">
+                            <input id="rejectReason-${escapeHtml(d.id)}" type="text" placeholder="سبب الرفض (اختياري في حال الرفض)" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-rose-500">
+                            <div class="grid grid-cols-2 gap-2">
+                                <button type="button" onclick="adminAction('${escapeHtml(d.id)}', 'approve')" class="py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs cursor-pointer">موافقة واعتماد</button>
+                                <button type="button" onclick="adminAction('${escapeHtml(d.id)}', 'reject')" class="py-2 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 font-bold text-xs cursor-pointer">رفض الطلب</button>
+                            </div>
                         </div>
                     ` : "";
 
@@ -1218,6 +1289,7 @@
                             <p class="text-[11px] text-slate-400">المستخدم: <span class="text-slate-200">${escapeHtml(r.userEmail)}</span></p>
                             <p class="text-[11px] text-slate-400">المبلغ: <span class="font-black text-amber-400">$${Number(r.amount).toFixed(2)}</span></p>
                             ${proofHtml}
+                            ${reasonInfo}
                             ${actionButtons}
                         </div>
                     `;
@@ -1229,7 +1301,6 @@
             }
         };
 
-        // تحميل تذاكر الدعم الفني للأدمن
         async function loadAdminTickets() {
             const listEl = document.getElementById("adminTicketsList");
             try {
@@ -1257,10 +1328,13 @@
                             </div>
                             <p class="text-[11px] text-slate-400">المستخدم: <span class="text-slate-200">${escapeHtml(t.userEmail)}</span></p>
                             <p class="text-xs text-slate-200 bg-slate-900/80 border border-slate-800/80 rounded-xl p-2.5 whitespace-pre-line">${escapeHtml(t.message)}</p>
-                            <div class="flex gap-2 pt-1">
-                                ${!isClosed
-                                    ? `<button type="button" onclick="updateTicketStatus('${escapeHtml(t.id)}', 'closed')" class="px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 font-bold text-[11px] cursor-pointer">إغلاق التذكرة</button>`
-                                    : `<button type="button" onclick="updateTicketStatus('${escapeHtml(t.id)}', 'open')" class="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-bold text-[11px] cursor-pointer">إعادة فتح</button>`
+                            <textarea id="ticketReply-${escapeHtml(t.id)}" rows="2" placeholder="اكتب رد الإدارة للمستثمر..." class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-purple-500">${escapeHtml(t.adminReply || "")}</textarea>
+                            <div class="flex flex-wrap gap-2 pt-1">
+                                <button type="button" onclick="saveTicketReply('${escapeHtml(t.id)}', true)" class="px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-[11px] cursor-pointer">حفظ الرد وإغلاق</button>
+                                <button type="button" onclick="saveTicketReply('${escapeHtml(t.id)}', false)" class="px-3 py-1.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 font-bold text-[11px] cursor-pointer">حفظ الرد فقط</button>
+                                ${isClosed
+                                    ? `<button type="button" onclick="updateTicketStatus('${escapeHtml(t.id)}', 'open')" class="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-bold text-[11px] cursor-pointer">إعادة فتح</button>`
+                                    : ""
                                 }
                             </div>
                         </div>
@@ -1293,11 +1367,16 @@
                         ? `<span class="text-emerald-400">مكتمل</span>`
                         : `<span class="text-rose-400">مرفوض</span>`;
 
+                    const reasonHtml = r.status === "rejected" && r.rejectReason
+                        ? `<p class="text-[10px] text-rose-300 mt-1">السبب: ${escapeHtml(r.rejectReason)}</p>`
+                        : "";
+
                     return `
                         <div class="flex items-center justify-between gap-2 bg-slate-950/80 border border-slate-800/80 rounded-2xl px-3.5 py-2.5">
                             <div class="min-w-0">
                                 <p class="font-bold text-white truncate">${escapeHtml(r.type)} - ${escapeHtml(r.method)}</p>
                                 <p class="text-[10px] text-slate-400 truncate">${statusText} • ${escapeHtml(r.reference || "-")}</p>
+                                ${reasonHtml}
                             </div>
                             <span class="font-black text-amber-400 shrink-0">$${Number(r.amount).toFixed(2)}</span>
                         </div>
@@ -1320,6 +1399,13 @@
                         ? `<span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300">مغلقة</span>`
                         : `<span class="text-[10px] px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">مفتوحة</span>`;
 
+                    const replyHtml = t.adminReply
+                        ? `<div class="mt-2 bg-emerald-500/10 border border-emerald-500/25 rounded-xl p-2.5 text-[11px] text-emerald-200">
+                               <p class="font-bold text-emerald-400 mb-0.5">رد الإدارة:</p>
+                               <p class="whitespace-pre-line">${escapeHtml(t.adminReply)}</p>
+                           </div>`
+                        : "";
+
                     return `
                         <div class="bg-slate-950/80 border border-slate-800/80 rounded-2xl p-3 space-y-1">
                             <div class="flex items-center justify-between gap-2">
@@ -1327,6 +1413,7 @@
                                 ${statusBadge}
                             </div>
                             <p class="text-[11px] text-slate-400 whitespace-pre-line">${escapeHtml(t.message)}</p>
+                            ${replyHtml}
                         </div>
                     `;
                 }).join("");
