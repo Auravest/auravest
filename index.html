@@ -92,14 +92,40 @@
                 </div>
             </div>
             <div class="flex items-center gap-1.5 shrink-0">
+                <!-- جرس التنبيهات للشفافية -->
+                <button id="alertsBellBtn" type="button" onclick="toggleAlertsPanel()" class="relative p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-bold text-slate-200 hover:text-amber-400 transition cursor-pointer" title="سجل التنبيهات">
+                    <i class="fa-solid fa-bell"></i>
+                    <span id="alertsUnreadBadge" class="hidden absolute -top-1 -left-1 min-w-[18px] h-[18px] px-1 rounded-full bg-amber-500 text-slate-950 text-[10px] font-black flex items-center justify-center">0</span>
+                </button>
                 <button id="adminHeaderBadge" type="button" onclick="switchTab('admin')" class="hidden px-2.5 py-1.5 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-black cursor-pointer">
-                    <i class="fa-solid fa-bell ml-1"></i> الإدارة (<span id="pendingCountBadge">0</span>)
+                    <i class="fa-solid fa-shield-halved ml-1"></i> الإدارة (<span id="pendingCountBadge">0</span>)
                 </button>
                 <button type="button" onclick="handleLogout()" class="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-bold text-slate-400 hover:text-rose-400 transition cursor-pointer" title="تسجيل الخروج">
                     <i class="fa-solid fa-power-off"></i>
                 </button>
             </div>
         </header>
+
+        <!-- لوحة التنبيهات المنسدلة للشفافية -->
+        <div id="alertsPanel" class="hidden fixed inset-x-0 top-[65px] z-40 px-3.5 sm:px-4">
+            <div class="max-w-3xl mx-auto glass-card border border-amber-500/35 rounded-3xl p-4 shadow-2xl space-y-3">
+                <div class="flex items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-bell text-amber-400 text-sm"></i>
+                        <h4 class="font-black text-sm text-white">سجل التنبيهات والشفافية</h4>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="markAllAlertsRead()" class="text-[11px] font-bold text-emerald-400 hover:underline cursor-pointer">تعليم الكل كمقروء</button>
+                        <button type="button" onclick="toggleAlertsPanel()" class="p-1 text-slate-400 hover:text-white cursor-pointer" title="إغلاق">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="alertsFeedList" class="max-h-72 overflow-y-auto space-y-2 text-xs text-slate-400">
+                    لا توجد تنبيهات جديدة حالياً.
+                </div>
+            </div>
+        </div>
 
         <main class="max-w-3xl mx-auto p-3.5 sm:p-4 space-y-5">
             <!-- الرئيسية -->
@@ -607,7 +633,9 @@
         let userRequestFilter = "all";
         let adminRequestFilter = "pending";
         let cachedUserRequests = [];
+        let cachedUserTickets = [];
         let cachedAdminRequests = [];
+        let readAlertSignatures = new Set();
 
         let isSubmittingDeposit = false;
         let isSubmittingWithdraw = false;
@@ -649,6 +677,144 @@
         function getTodayKey() {
             return new Date().toISOString().slice(0, 10);
         }
+
+        function getAlertStorageKey(uid) {
+            return `auravest_read_alerts_${uid}`;
+        }
+
+        function loadReadAlerts(uid) {
+            try {
+                const raw = localStorage.getItem(getAlertStorageKey(uid));
+                const parsed = raw ? JSON.parse(raw) : [];
+                readAlertSignatures = new Set(Array.isArray(parsed) ? parsed : []);
+            } catch {
+                readAlertSignatures = new Set();
+            }
+        }
+
+        function persistReadAlerts() {
+            const uid = auth.currentUser?.uid;
+            if (!uid) return;
+            try {
+                localStorage.setItem(getAlertStorageKey(uid), JSON.stringify(Array.from(readAlertSignatures)));
+            } catch {}
+        }
+
+        function buildAlertsList() {
+            const alerts = [];
+
+            cachedUserRequests.forEach((r) => {
+                const amt = Number(r.amount || 0).toFixed(2);
+                const sig = `req_${r.id || r.createdAt}_${r.type}_${r.status}_${amt}_${r.rejectReason || ""}`;
+                let title = "";
+                let desc = "";
+                let tone = "text-amber-400";
+                let targetTab = "wallet";
+
+                if (r.type === "عائد يومي") {
+                    title = `تم صرف عائد يومي (+$${amt})`;
+                    desc = `صندوق: ${r.method} • ${r.reference || ""}`;
+                    tone = "text-emerald-400";
+                    targetTab = "portfolio";
+                } else if (r.status === "pending") {
+                    title = `طلب ${r.type} قيد المراجعة ($${amt})`;
+                    desc = `الوسيلة/الخطة: ${r.method}`;
+                    tone = "text-amber-400";
+                } else if (r.status === "approved") {
+                    title = `تم اعتماد طلب ${r.type} ($${amt})`;
+                    desc = `الوسيلة/الخطة: ${r.method}`;
+                    tone = "text-emerald-400";
+                    targetTab = r.type === "استثمار" ? "portfolio" : "wallet";
+                } else if (r.status === "rejected") {
+                    title = `تم رفض طلب ${r.type} ($${amt})`;
+                    desc = r.rejectReason ? `السبب: ${r.rejectReason}` : `الوسيلة/الخطة: ${r.method}`;
+                    tone = "text-rose-400";
+                }
+
+                alerts.push({
+                    sig,
+                    title,
+                    desc,
+                    tone,
+                    targetTab,
+                    createdAt: String(r.createdAt || "")
+                });
+            });
+
+            cachedUserTickets.forEach((t) => {
+                if (!t.adminReply) return;
+                const sig = `ticket_${t.id || t.createdAt}_${t.status}_${t.adminReply}`;
+                alerts.push({
+                    sig,
+                    title: `رد جديد من الإدارة على تذكرة دعم`,
+                    desc: `${t.topic}: ${t.adminReply}`,
+                    tone: "text-purple-300",
+                    targetTab: "support",
+                    createdAt: String(t.createdAt || "")
+                });
+            });
+
+            return alerts.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+        }
+
+        function renderAlertsFeed() {
+            const feedEl = document.getElementById("alertsFeedList");
+            const badgeEl = document.getElementById("alertsUnreadBadge");
+            if (!feedEl || !badgeEl) return;
+
+            const alerts = buildAlertsList();
+            const unreadCount = alerts.filter(a => !readAlertSignatures.has(a.sig)).length;
+
+            if (unreadCount > 0) {
+                badgeEl.textContent = unreadCount > 99 ? "99+" : String(unreadCount);
+                badgeEl.classList.remove("hidden");
+            } else {
+                badgeEl.classList.add("hidden");
+            }
+
+            if (!alerts.length) {
+                feedEl.innerHTML = "<p class='text-xs text-slate-500 text-center py-4'>لا توجد تنبيهات مسجلة حتى الآن.</p>";
+                return;
+            }
+
+            feedEl.innerHTML = alerts.map((a) => {
+                const isUnread = !readAlertSignatures.has(a.sig);
+                return `
+                    <button type="button" onclick="openAlertTarget('${escapeHtml(a.sig)}', '${escapeHtml(a.targetTab)}')" class="w-full text-right bg-slate-950/90 hover:bg-slate-900 border ${isUnread ? "border-amber-500/40" : "border-slate-800/80"} rounded-2xl p-3 space-y-1 transition cursor-pointer">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="font-black ${a.tone} text-xs">${escapeHtml(a.title)}</span>
+                            ${isUnread ? `<span class="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>` : `<span class="text-[10px] text-slate-500 shrink-0">مقروء</span>`}
+                        </div>
+                        <p class="text-[11px] text-slate-300 line-clamp-2">${escapeHtml(a.desc)}</p>
+                    </button>
+                `;
+            }).join("");
+        }
+
+        window.toggleAlertsPanel = function () {
+            const panel = document.getElementById("alertsPanel");
+            if (!panel) return;
+            panel.classList.toggle("hidden");
+            renderAlertsFeed();
+        };
+
+        window.markAllAlertsRead = function () {
+            const alerts = buildAlertsList();
+            alerts.forEach(a => readAlertSignatures.add(a.sig));
+            persistReadAlerts();
+            renderAlertsFeed();
+        };
+
+        window.openAlertTarget = function (sig, tabName) {
+            if (sig) {
+                readAlertSignatures.add(sig);
+                persistReadAlerts();
+                renderAlertsFeed();
+            }
+            const panel = document.getElementById("alertsPanel");
+            if (panel) panel.classList.add("hidden");
+            if (tabName) switchTab(tabName);
+        };
 
         function friendlyErrorMessage(err) {
             const code = String(err?.code || "");
@@ -1447,15 +1613,14 @@
             }).join("");
         }
 
-        function renderUserTickets(docs) {
+        function renderUserTickets() {
             const listEl = document.getElementById("userTicketsList");
-            if (!docs.length) {
+            if (!cachedUserTickets.length) {
                 listEl.innerHTML = "<p class='text-xs text-slate-500'>لا توجد تذاكر دعم فني مسجلة بعد.</p>";
                 return;
             }
 
-            const sorted = docs.map(d => d.data()).sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
-            listEl.innerHTML = sorted.map((t) => {
+            listEl.innerHTML = cachedUserTickets.map((t) => {
                 const statusBadge = t.status === "closed"
                     ? `<span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300">مغلقة</span>`
                     : `<span class="text-[10px] px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">مفتوحة</span>`;
@@ -1511,6 +1676,9 @@
         }
 
         window.switchTab = function (tabName) {
+            const panel = document.getElementById("alertsPanel");
+            if (panel) panel.classList.add("hidden");
+
             document.querySelectorAll(".tab-content").forEach((el) => el.classList.remove("active"));
             const target = document.getElementById("tab-" + tabName);
             if (target) target.classList.add("active");
@@ -1529,29 +1697,28 @@
 
         function subscribeUserRealtime(user) {
             cleanupRealtimeListeners();
+            loadReadAlerts(user.uid);
             document.getElementById("userEmailDisplay").textContent = user.email;
             document.getElementById("accountEmailText").textContent = user.email;
 
-            // 1. رصيد المستخدم لحظياً
             const unsubUser = onSnapshot(doc(db, "users", user.uid), (snap) => {
                 currentBalance = snap.exists() ? Number(snap.data().balance || 0) : 0;
                 updateBalancesUI();
             });
             unsubscribeListeners.push(unsubUser);
 
-            // 2. طلبات المستخدم لحظياً
             const unsubReq = onSnapshot(
                 query(collection(db, "requests"), where("userId", "==", user.uid)),
                 (snap) => {
                     cachedUserRequests = snap.docs
-                        .map(d => d.data())
+                        .map(d => ({ id: d.id, ...d.data() }))
                         .sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
                     renderUserRequests();
+                    renderAlertsFeed();
                 }
             );
             unsubscribeListeners.push(unsubReq);
 
-            // 3. عقود المستخدم لحظياً
             const unsubInv = onSnapshot(
                 query(collection(db, "investments"), where("userId", "==", user.uid)),
                 (snap) => {
@@ -1560,16 +1727,18 @@
             );
             unsubscribeListeners.push(unsubInv);
 
-            // 4. تذاكر الدعم للمستخدم لحظياً
             const unsubTickets = onSnapshot(
                 query(collection(db, "support_tickets"), where("userId", "==", user.uid)),
                 (snap) => {
-                    renderUserTickets(snap.docs);
+                    cachedUserTickets = snap.docs
+                        .map(d => ({ id: d.id, ...d.data() }))
+                        .sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
+                    renderUserTickets();
+                    renderAlertsFeed();
                 }
             );
             unsubscribeListeners.push(unsubTickets);
 
-            // 5. مستمعات لوحة الأدمن لحظياً إذا كان الحساب هو الأدمن
             if (user.email === ADMIN_EMAIL) {
                 document.getElementById("adminHeaderBadge").classList.remove("hidden");
 
