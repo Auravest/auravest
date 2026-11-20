@@ -2165,8 +2165,15 @@
                     ? `<p class="text-[10px] text-rose-300 mt-1">السبب: ${escapeHtml(r.rejectReason)}</p>`
                     : "";
 
-                const copyBtnHtml = r.reference && r.reference.length >= 10
-                    ? `<button type="button" onclick="copyInlineText('${escapeHtml(r.reference)}')" class="mt-1.5 ml-3 inline-flex items-center gap-1 text-[10px] font-bold text-sky-400 hover:underline cursor-pointer">
+                const cleanRef = String(r.reference || "").trim();
+                const isCopyableRef =
+                    cleanRef.toLowerCase().startsWith("txhash:") ||
+                    /^0x[a-fA-F0-9]{10,}$/.test(cleanRef) ||
+                    /^T[a-zA-Z0-9]{20,}$/.test(cleanRef) ||
+                    /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{15,}$/.test(cleanRef);
+
+                const copyBtnHtml = isCopyableRef
+                    ? `<button type="button" onclick="copyInlineText('${escapeHtml(cleanRef)}')" class="mt-1.5 ml-3 inline-flex items-center gap-1 text-[10px] font-bold text-sky-400 hover:underline cursor-pointer">
                            <i class="fa-regular fa-copy"></i> نسخ البيان
                        </button>`
                     : "";
