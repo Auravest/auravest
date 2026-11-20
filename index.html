@@ -176,7 +176,7 @@
                     </div>
                     <div>
                         <h3 id="homeBalanceDisplay" class="text-3xl sm:text-4xl font-black text-white tracking-tight">$0.00</h3>
-                        <p class="text-[11px] text-slate-400 mt-1">متاح للسحب الفوري أو الاستثمار في الصناديق</p>
+                        <p class="text-[11px] text-slate-400 mt-1">متاح للسحب الفوري (من $10) أو الاستثمار في الباقات</p>
                     </div>
 
                     <!-- صندوق الأرباح المستقلة القابلة للتحصيل بيد المستثمر -->
@@ -216,7 +216,7 @@
                         <div class="w-10 h-10 mx-auto rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
                             <i class="fa-solid fa-chart-pie text-lg"></i>
                         </div>
-                        <p class="text-xs font-bold text-slate-200">صناديق الاستثمار</p>
+                        <p class="text-xs font-bold text-slate-200">الباقات الاستثمارية</p>
                     </button>
                     <button type="button" onclick="switchTab('portfolio')" class="glass-card hover:border-sky-500/50 rounded-2xl p-3.5 text-center space-y-2 transition cursor-pointer">
                         <div class="w-10 h-10 mx-auto rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center">
@@ -291,8 +291,8 @@
                     <!-- تنبيه الشروط والقواعد المهمة للإيداع والسحب -->
                     <div class="bg-slate-950/80 border border-amber-500/25 rounded-2xl p-3 text-[11px] text-slate-300 space-y-1">
                         <p class="font-bold text-amber-300"><i class="fa-solid fa-circle-info ml-1"></i> قواعد مهمة قبل التحويل أو السحب:</p>
-                        <p class="text-slate-400">• الحد الأدنى للإيداع والسحب هو <strong class="text-white">$10</strong>، ويُرجى التأكد التام من مطابقة الشبكة المختارة.</p>
-                        <p class="text-slate-400">• تُراجع الطلبات وتُعالج من قِبل الإدارة، ويمكن متابعة حالتها مباشرة من سجل العمليات أو التنبيهات.</p>
+                        <p class="text-slate-400">• الحد الأدنى للإيداع والسحب هو <strong class="text-white">$10</strong> (والأرباح المحصّلة من الباقة المجانية قابلة للسحب فعلياً عند الوصول لـ $10).</p>
+                        <p class="text-slate-400">• يُرجى التأكد التام من مطابقة الشبكة المختارة، وتُراجع الطلبات وتُعالج من قِبل الإدارة.</p>
                     </div>
 
                     <!-- نموذج الإيداع -->
@@ -412,48 +412,55 @@
                 </div>
             </section>
 
-            <!-- خطط الاستثمار الاحترافية + حاسبة الأرباح الفورية -->
+            <!-- خطط الاستثمار الاحترافية (الباقة المجانية + الباقات الثابتة 100 / 1000 / 2500) -->
             <section id="tab-invest" class="tab-content space-y-4">
                 <div class="glass-card rounded-3xl p-4 sm:p-5 space-y-1.5">
-                    <h3 class="font-black text-base text-amber-400">صناديق الاستثمار المُدارة</h3>
-                    <p class="text-xs text-slate-400">استثمارات مدعومة بعقود ذكية وعوائد يومية تُضاف إلى رصيد أرباحك لتقوم بتحصيلها بنفسك في رصيدك الفعلي.</p>
+                    <h3 class="font-black text-base text-amber-400">الباقات الاستثمارية والباقة المجانية</h3>
+                    <p class="text-xs text-slate-400">ابدأ بالباقة المجانية ($0.50/يوم لمدة 20 يوم • حد سحب $10 قابل للسحب فعلياً) أو اختر باقة ثابتة لمدة 10 أيام بعوائد يومية تُضاف إلى رصيد أرباحك.</p>
                 </div>
 
-                <!-- مقارنة سريعة بين الصناديق -->
+                <!-- مقارنة سريعة بين الباقات -->
                 <div class="glass-card rounded-3xl p-4 space-y-2.5">
-                    <h4 class="font-black text-xs text-slate-200"><i class="fa-solid fa-table-columns text-amber-400 ml-1"></i> مقارنة سريعة بين الصناديق</h4>
+                    <h4 class="font-black text-xs text-slate-200"><i class="fa-solid fa-table-columns text-amber-400 ml-1"></i> مقارنة سريعة بين الباقات</h4>
                     <div class="overflow-x-auto">
                         <table class="w-full text-right text-[11px] border-collapse">
                             <thead>
                                 <tr class="border-b border-slate-800 text-slate-400">
-                                    <th class="py-2 pr-1">الصندوق</th>
+                                    <th class="py-2 pr-1">الباقة</th>
+                                    <th class="py-2">قيمة الباقة</th>
                                     <th class="py-2">المدة</th>
                                     <th class="py-2">العائد اليومي</th>
-                                    <th class="py-2">الحد الأدنى</th>
-                                    <th class="py-2 pl-1">الإجمالي</th>
+                                    <th class="py-2 pl-1">إجمالي العائد</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-800/60 text-slate-200">
                                 <tr>
-                                    <td class="py-2 pr-1 font-bold text-emerald-400">السيولة اليومية</td>
-                                    <td class="py-2">10 أيام</td>
-                                    <td class="py-2 font-bold">3.5%</td>
-                                    <td class="py-2">$20</td>
-                                    <td class="py-2 pl-1 font-bold text-amber-400">135%</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-2 pr-1 font-bold text-amber-400">الذهب والعملات</td>
+                                    <td class="py-2 pr-1 font-bold text-teal-400">الباقة المجانية</td>
+                                    <td class="py-2">$0 (مجانية)</td>
                                     <td class="py-2">20 يوماً</td>
-                                    <td class="py-2 font-bold">4.2%</td>
-                                    <td class="py-2">$500</td>
-                                    <td class="py-2 pl-1 font-bold text-amber-400">184%</td>
+                                    <td class="py-2 font-bold">$0.50 / يوم</td>
+                                    <td class="py-2 pl-1 font-bold text-teal-300">$10.00 (سحب من $10)</td>
                                 </tr>
                                 <tr>
-                                    <td class="py-2 pr-1 font-bold text-sky-400">التداول الخوارزمي</td>
-                                    <td class="py-2">30 يوماً</td>
-                                    <td class="py-2 font-bold">5.0%</td>
+                                    <td class="py-2 pr-1 font-bold text-emerald-400">الباقة الثانية</td>
+                                    <td class="py-2">$100</td>
+                                    <td class="py-2">10 أيام</td>
+                                    <td class="py-2 font-bold">3.5% ($3.50/يوم)</td>
+                                    <td class="py-2 pl-1 font-bold text-amber-400">$135.00 شامل رأس المال</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 pr-1 font-bold text-amber-400">الباقة الثالثة</td>
+                                    <td class="py-2">$1,000</td>
+                                    <td class="py-2">10 أيام</td>
+                                    <td class="py-2 font-bold">4.0% ($40.00/يوم)</td>
+                                    <td class="py-2 pl-1 font-bold text-amber-400">$1,400.00 شامل رأس المال</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 pr-1 font-bold text-sky-400">الباقة الرابعة</td>
                                     <td class="py-2">$2,500</td>
-                                    <td class="py-2 pl-1 font-bold text-amber-400">250%</td>
+                                    <td class="py-2">10 أيام</td>
+                                    <td class="py-2 font-bold">4.5% ($112.50/يوم)</td>
+                                    <td class="py-2 pl-1 font-bold text-amber-400">$3,625.00 شامل رأس المال</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -461,87 +468,110 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- الخطة 1 -->
+                    <!-- الباقة المجانية -->
+                    <div class="glass-card rounded-3xl p-5 space-y-3.5 border-t-2 border-t-teal-400">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-[10px] font-bold text-teal-400 uppercase">تجربة مجانية</span>
+                                <h4 class="font-black text-base text-white">الباقة المجانية</h4>
+                            </div>
+                            <div class="text-left">
+                                <span class="text-lg font-black text-teal-400">$0.50</span>
+                                <p class="text-[10px] text-slate-400">عائد يومي ثابت</p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-950/80 rounded-2xl p-3 space-y-1.5 text-xs">
+                            <div class="flex justify-between"><span class="text-slate-400">رسوم التفعيل:</span><span class="font-bold text-teal-300">مجانية ($0.00)</span></div>
+                            <div class="flex justify-between"><span class="text-slate-400">مدة الباقة:</span><span class="font-bold text-white">20 يوماً</span></div>
+                            <div class="flex justify-between"><span class="text-slate-400">إجمالي الأرباح عند الاكتمال:</span><span class="font-bold text-emerald-400">$10.00 (قابلة للسحب من $10)</span></div>
+                        </div>
+                        <div class="bg-teal-500/5 border border-teal-500/20 rounded-xl p-2.5 text-[11px] text-slate-300 space-y-1">
+                            <div class="flex justify-between"><span>الربح اليومي:</span><span class="font-bold text-teal-300">$0.50</span></div>
+                            <div class="flex justify-between"><span>الإجمالي بعد 20 يوم:</span><span class="font-black text-emerald-400">$10.00</span></div>
+                        </div>
+                        <button type="button" id="freePlanBtn" data-invest-btn onclick="handleFreePlanActivate(this)" class="w-full py-3 rounded-xl bg-teal-400 hover:bg-teal-300 disabled:bg-slate-800 disabled:text-slate-500 disabled:cursor-not-allowed text-slate-950 font-black text-xs transition cursor-pointer">
+                            تفعيل الباقة المجانية الآن
+                        </button>
+                    </div>
+
+                    <!-- الباقة الثانية: $100 ثابتة لمدة 10 أيام -->
                     <div class="glass-card rounded-3xl p-5 space-y-3.5 border-t-2 border-t-emerald-500">
                         <div class="flex items-center justify-between">
                             <div>
-                                <span class="text-[10px] font-bold text-emerald-400 uppercase">الأكثر طلباً</span>
-                                <h4 class="font-black text-base text-white">محفظة السيولة اليومية</h4>
+                                <span class="text-[10px] font-bold text-emerald-400 uppercase">الباقة الثانية • ثابتة</span>
+                                <h4 class="font-black text-base text-white">الباقة الثانية ($100)</h4>
                             </div>
                             <div class="text-left">
                                 <span class="text-lg font-black text-emerald-400">3.5%</span>
-                                <p class="text-[10px] text-slate-400">عائد يومي</p>
+                                <p class="text-[10px] text-slate-400">عائد يومي ($3.50)</p>
                             </div>
                         </div>
                         <div class="bg-slate-950/80 rounded-2xl p-3 space-y-1.5 text-xs">
+                            <div class="flex justify-between"><span class="text-slate-400">قيمة الباقة الثابتة:</span><span class="font-bold text-white">$100.00</span></div>
                             <div class="flex justify-between"><span class="text-slate-400">مدة العقد:</span><span class="font-bold text-white">10 أيام</span></div>
-                            <div class="flex justify-between"><span class="text-slate-400">الحد الأدنى / الأقصى:</span><span class="font-bold text-white">$20 - $499</span></div>
-                            <div class="flex justify-between"><span class="text-slate-400">إجمالي العائد المتوقع:</span><span class="font-bold text-emerald-400">135% (شامل رأس المال)</span></div>
+                            <div class="flex justify-between"><span class="text-slate-400">إجمالي العائد المتوقع:</span><span class="font-bold text-emerald-400">$135.00 (شامل رأس المال)</span></div>
                         </div>
-                        <input id="plan1Amount" oninput="updatePlanCalculator('plan1Amount', 3.5, 10, 'plan1Calc')" type="number" min="20" step="any" inputmode="decimal" placeholder="أدخل مبلغ الاستثمار ($)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-emerald-500">
-                        <div id="plan1Calc" class="bg-emerald-500/5 border border-emerald-500/20 rounded-xl p-2.5 text-[11px] text-slate-300 space-y-1">
-                            <div class="flex justify-between"><span>الربح اليومي المتوقع:</span><span class="font-bold text-emerald-400">$0.00</span></div>
-                            <div class="flex justify-between"><span>إجمالي الربح (10 أيام):</span><span class="font-bold text-white">$0.00</span></div>
-                            <div class="flex justify-between"><span>الإجمالي شامل رأس المال:</span><span class="font-black text-amber-400">$0.00</span></div>
+                        <div class="bg-emerald-500/5 border border-emerald-500/20 rounded-xl p-2.5 text-[11px] text-slate-300 space-y-1">
+                            <div class="flex justify-between"><span>الربح اليومي المتوقع:</span><span class="font-bold text-emerald-400">$3.50</span></div>
+                            <div class="flex justify-between"><span>إجمالي الربح (10 أيام):</span><span class="font-bold text-white">$35.00</span></div>
+                            <div class="flex justify-between"><span>الإجمالي شامل رأس المال:</span><span class="font-black text-amber-400">$135.00</span></div>
                         </div>
-                        <button type="button" data-invest-btn onclick="handleInvestRequest('محفظة السيولة اليومية', 3.5, 10, 'plan1Amount', 20, this)" class="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-60 disabled:cursor-not-allowed text-slate-950 font-black text-xs transition cursor-pointer">
-                            تفعيل العقد الاستثماري
+                        <button type="button" data-invest-btn onclick="handleFixedPlanRequest('الباقة الثانية ($100)', 100, 3.5, 10, this)" class="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-60 disabled:cursor-not-allowed text-slate-950 font-black text-xs transition cursor-pointer">
+                            تفعيل الباقة الثانية ($100)
                         </button>
                     </div>
 
-                    <!-- الخطة 2 -->
+                    <!-- الباقة الثالثة: $1,000 ثابتة لمدة 10 أيام -->
                     <div class="glass-card rounded-3xl p-5 space-y-3.5 border-t-2 border-t-amber-500">
                         <div class="flex items-center justify-between">
                             <div>
-                                <span class="text-[10px] font-bold text-amber-400 uppercase">نمو متوازن</span>
-                                <h4 class="font-black text-base text-white">صندوق الذهب والعملات</h4>
+                                <span class="text-[10px] font-bold text-amber-400 uppercase">الباقة الثالثة • ثابتة</span>
+                                <h4 class="font-black text-base text-white">الباقة الثالثة ($1,000)</h4>
                             </div>
                             <div class="text-left">
-                                <span class="text-lg font-black text-amber-400">4.2%</span>
-                                <p class="text-[10px] text-slate-400">عائد يومي</p>
+                                <span class="text-lg font-black text-amber-400">4.0%</span>
+                                <p class="text-[10px] text-slate-400">عائد يومي ($40.00)</p>
                             </div>
                         </div>
                         <div class="bg-slate-950/80 rounded-2xl p-3 space-y-1.5 text-xs">
-                            <div class="flex justify-between"><span class="text-slate-400">مدة العقد:</span><span class="font-bold text-white">20 يوماً</span></div>
-                            <div class="flex justify-between"><span class="text-slate-400">الحد الأدنى / الأقصى:</span><span class="font-bold text-white">$500 - $2,499</span></div>
-                            <div class="flex justify-between"><span class="text-slate-400">إجمالي العائد المتوقع:</span><span class="font-bold text-amber-400">184% (شامل رأس المال)</span></div>
+                            <div class="flex justify-between"><span class="text-slate-400">قيمة الباقة الثابتة:</span><span class="font-bold text-white">$1,000.00</span></div>
+                            <div class="flex justify-between"><span class="text-slate-400">مدة العقد:</span><span class="font-bold text-white">10 أيام</span></div>
+                            <div class="flex justify-between"><span class="text-slate-400">إجمالي العائد المتوقع:</span><span class="font-bold text-amber-400">$1,400.00 (شامل رأس المال)</span></div>
                         </div>
-                        <input id="plan2Amount" oninput="updatePlanCalculator('plan2Amount', 4.2, 20, 'plan2Calc')" type="number" min="500" step="any" inputmode="decimal" placeholder="أدخل مبلغ الاستثمار ($)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-amber-500">
-                        <div id="plan2Calc" class="bg-amber-500/5 border border-amber-500/20 rounded-xl p-2.5 text-[11px] text-slate-300 space-y-1">
-                            <div class="flex justify-between"><span>الربح اليومي المتوقع:</span><span class="font-bold text-emerald-400">$0.00</span></div>
-                            <div class="flex justify-between"><span>إجمالي الربح (20 يوم):</span><span class="font-bold text-white">$0.00</span></div>
-                            <div class="flex justify-between"><span>الإجمالي شامل رأس المال:</span><span class="font-black text-amber-400">$0.00</span></div>
+                        <div class="bg-amber-500/5 border border-amber-500/20 rounded-xl p-2.5 text-[11px] text-slate-300 space-y-1">
+                            <div class="flex justify-between"><span>الربح اليومي المتوقع:</span><span class="font-bold text-emerald-400">$40.00</span></div>
+                            <div class="flex justify-between"><span>إجمالي الربح (10 أيام):</span><span class="font-bold text-white">$400.00</span></div>
+                            <div class="flex justify-between"><span>الإجمالي شامل رأس المال:</span><span class="font-black text-amber-400">$1,400.00</span></div>
                         </div>
-                        <button type="button" data-invest-btn onclick="handleInvestRequest('صندوق الذهب والعملات', 4.2, 20, 'plan2Amount', 500, this)" class="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-60 disabled:cursor-not-allowed text-slate-950 font-black text-xs transition cursor-pointer">
-                            تفعيل العقد الاستثماري
+                        <button type="button" data-invest-btn onclick="handleFixedPlanRequest('الباقة الثالثة ($1,000)', 1000, 4.0, 10, this)" class="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-60 disabled:cursor-not-allowed text-slate-950 font-black text-xs transition cursor-pointer">
+                            تفعيل الباقة الثالثة ($1,000)
                         </button>
                     </div>
 
-                    <!-- الخطة 3 -->
+                    <!-- الباقة الرابعة: $2,500 ثابتة لمدة 10 أيام -->
                     <div class="glass-card rounded-3xl p-5 space-y-3.5 border-t-2 border-t-sky-500">
                         <div class="flex items-center justify-between">
                             <div>
-                                <span class="text-[10px] font-bold text-sky-400 uppercase">كبار المستثمرين</span>
-                                <h4 class="font-black text-base text-white">محفظة التداول الخوارزمي</h4>
+                                <span class="text-[10px] font-bold text-sky-400 uppercase">الباقة الرابعة • ثابتة</span>
+                                <h4 class="font-black text-base text-white">الباقة الرابعة ($2,500)</h4>
                             </div>
                             <div class="text-left">
-                                <span class="text-lg font-black text-sky-400">5.0%</span>
-                                <p class="text-[10px] text-slate-400">عائد يومي</p>
+                                <span class="text-lg font-black text-sky-400">4.5%</span>
+                                <p class="text-[10px] text-slate-400">عائد يومي ($112.50)</p>
                             </div>
                         </div>
                         <div class="bg-slate-950/80 rounded-2xl p-3 space-y-1.5 text-xs">
-                            <div class="flex justify-between"><span class="text-slate-400">مدة العقد:</span><span class="font-bold text-white">30 يوماً</span></div>
-                            <div class="flex justify-between"><span class="text-slate-400">الحد الأدنى / الأقصى:</span><span class="font-bold text-white">$2,500 - $10,000</span></div>
-                            <div class="flex justify-between"><span class="text-slate-400">إجمالي العائد المتوقع:</span><span class="font-bold text-sky-400">250% (شامل رأس المال)</span></div>
+                            <div class="flex justify-between"><span class="text-slate-400">قيمة الباقة الثابتة:</span><span class="font-bold text-white">$2,500.00</span></div>
+                            <div class="flex justify-between"><span class="text-slate-400">مدة العقد:</span><span class="font-bold text-white">10 أيام</span></div>
+                            <div class="flex justify-between"><span class="text-slate-400">إجمالي العائد المتوقع:</span><span class="font-bold text-sky-400">$3,625.00 (شامل رأس المال)</span></div>
                         </div>
-                        <input id="plan3Amount" oninput="updatePlanCalculator('plan3Amount', 5.0, 30, 'plan3Calc')" type="number" min="2500" step="any" inputmode="decimal" placeholder="أدخل مبلغ الاستثمار ($)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-sky-500">
-                        <div id="plan3Calc" class="bg-sky-500/5 border border-sky-500/20 rounded-xl p-2.5 text-[11px] text-slate-300 space-y-1">
-                            <div class="flex justify-between"><span>الربح اليومي المتوقع:</span><span class="font-bold text-emerald-400">$0.00</span></div>
-                            <div class="flex justify-between"><span>إجمالي الربح (30 يوم):</span><span class="font-bold text-white">$0.00</span></div>
-                            <div class="flex justify-between"><span>الإجمالي شامل رأس المال:</span><span class="font-black text-amber-400">$0.00</span></div>
+                        <div class="bg-sky-500/5 border border-sky-500/20 rounded-xl p-2.5 text-[11px] text-slate-300 space-y-1">
+                            <div class="flex justify-between"><span>الربح اليومي المتوقع:</span><span class="font-bold text-emerald-400">$112.50</span></div>
+                            <div class="flex justify-between"><span>إجمالي الربح (10 أيام):</span><span class="font-bold text-white">$1,125.00</span></div>
+                            <div class="flex justify-between"><span>الإجمالي شامل رأس المال:</span><span class="font-black text-amber-400">$3,625.00</span></div>
                         </div>
-                        <button type="button" data-invest-btn onclick="handleInvestRequest('محفظة التداول الخوارزمي', 5.0, 30, 'plan3Amount', 2500, this)" class="w-full py-3 rounded-xl bg-sky-500 hover:bg-sky-400 disabled:opacity-60 disabled:cursor-not-allowed text-slate-950 font-black text-xs transition cursor-pointer">
-                            تفعيل العقد الاستثماري
+                        <button type="button" data-invest-btn onclick="handleFixedPlanRequest('الباقة الرابعة ($2,500)', 2500, 4.5, 10, this)" class="w-full py-3 rounded-xl bg-sky-500 hover:bg-sky-400 disabled:opacity-60 disabled:cursor-not-allowed text-slate-950 font-black text-xs transition cursor-pointer">
+                            تفعيل الباقة الرابعة ($2,500)
                         </button>
                     </div>
                 </div>
@@ -552,12 +582,12 @@
                     <h4 class="font-black text-sm text-white"><i class="fa-solid fa-circle-question text-amber-400 ml-1"></i> الأسئلة الشائعة وتنبيهات المخاطر</h4>
                     <div class="space-y-2.5 text-xs text-slate-300 leading-relaxed">
                         <div class="bg-slate-950/75 border border-slate-800/80 rounded-2xl p-3">
-                            <p class="font-bold text-amber-300 mb-1">1. كيف يتم إضافة الأرباح إلى رصيدي الفعلي؟</p>
-                            <p class="text-slate-400">عند صرف العائد اليومي من الإدارة يُضاف المبلغ إلى رصيد الأرباح المتراكمة، ويمكنك نقله بضغطة واحدة إلى رصيدك الفعلي القابل للسحب أو إعادة الاستثمار.</p>
+                            <p class="font-bold text-amber-300 mb-1">1. كيف تعمل الباقة المجانية وهل أرباحها قابلة للسحب؟</p>
+                            <p class="text-slate-400">تمنحك الباقة المجانية $0.50 يومياً لمدة 20 يوماً بإجمالي $10.00، وبمجرد تحصيلها في رصيدك الفعلي تصبح قابلة للسحب فعلياً لأن الحد الأدنى للسحب هو $10.</p>
                         </div>
                         <div class="bg-slate-950/75 border border-slate-800/80 rounded-2xl p-3">
-                            <p class="font-bold text-amber-300 mb-1">2. ما الشبكات المعتمدة للإيداع والسحب؟</p>
-                            <p class="text-slate-400">التأكد من مطابقة الشبكة المحددة (USDT TRC20، BTC Mainnet، أو ETH ERC-20) ضروري لتجنب فقدان التحويل أو تأخر مراجعته.</p>
+                            <p class="font-bold text-amber-300 mb-1">2. كيف يتم إضافة الأرباح إلى رصيدي الفعلي؟</p>
+                            <p class="text-slate-400">عند صرف العائد اليومي من الإدارة يُضاف المبلغ إلى رصيد الأرباح المتراكمة، ويمكنك نقله بضغطة واحدة إلى رصيدك الفعلي القابل للسحب أو تفعيل باقة جديدة.</p>
                         </div>
                         <div class="bg-slate-950/75 border border-slate-800/80 rounded-2xl p-3">
                             <p class="font-bold text-rose-300 mb-1">3. تنبيه المخاطر</p>
@@ -573,7 +603,7 @@
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <h3 class="font-black text-base text-amber-400">عقودي الاستثمارية</h3>
                         <button type="button" onclick="quickReinvestFromProfit()" class="px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/35 text-amber-300 text-[11px] font-bold cursor-pointer">
-                            <i class="fa-solid fa-rotate-right ml-1"></i> الذهاب لإعادة الاستثمار
+                            <i class="fa-solid fa-rotate-right ml-1"></i> الذهاب إلى الباقات
                         </button>
                     </div>
                     <div id="investmentsList" class="space-y-3 text-xs text-slate-400">
@@ -587,7 +617,7 @@
                 <div class="glass-card rounded-3xl p-4 sm:p-5 space-y-4">
                     <div>
                         <h3 class="font-black text-base text-amber-400"><i class="fa-solid fa-headset ml-1"></i> مركز الدعم الفني</h3>
-                        <p class="text-xs text-slate-400 mt-1">تواصل مع فريق الدعم بخصوص الإيداعات (BTC / ETH / USDT) أو الحساب والعقود.</p>
+                        <p class="text-xs text-slate-400 mt-1">تواصل مع فريق الدعم بخصوص الإيداعات (BTC / ETH / USDT) أو الحساب والباقات.</p>
                     </div>
 
                     <div class="space-y-3.5">
@@ -596,7 +626,7 @@
                             <select id="supportTopicSelect" class="w-full px-4 py-3 rounded-2xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-amber-500">
                                 <option value="مشكلة أو متابعة إيداع (BTC / ETH / USDT)">مشكلة أو متابعة إيداع (BTC / ETH / USDT)</option>
                                 <option value="متابعة طلب سحب أو عائد يومي">متابعة طلب سحب أو عائد يومي</option>
-                                <option value="مساعدة في الحساب أو العقود">مساعدة في الحساب أو العقود</option>
+                                <option value="مساعدة في الحساب أو الباقات">مساعدة في الحساب أو الباقات</option>
                                 <option value="استفسار عام">استفسار عام</option>
                             </select>
                         </div>
@@ -697,7 +727,7 @@
 
                 <!-- بحث سريع في لوحة الأدمن -->
                 <div class="glass-card rounded-2xl p-3">
-                    <input id="adminSearchInput" oninput="renderAdminRequests(); renderAdminInvestments(cachedAdminInvestmentsDocs);" type="text" placeholder="بحث سريع بالبريد الإلكتروني أو نوع العملية أو اسم الخطة..." class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:outline-none focus:border-amber-500">
+                    <input id="adminSearchInput" oninput="renderAdminRequests(); renderAdminInvestments(cachedAdminInvestmentsDocs);" type="text" placeholder="بحث سريع بالبريد الإلكتروني أو نوع العملية أو اسم الباقة..." class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:outline-none focus:border-amber-500">
                 </div>
 
                 <!-- الطلبات المعلقة والحديثة + فلتر -->
@@ -752,7 +782,7 @@
             </button>
             <button type="button" data-nav="invest" onclick="switchTab('invest')" class="nav-btn flex flex-col items-center gap-1 text-slate-400 hover:text-white text-[10px] sm:text-[11px] font-bold cursor-pointer">
                 <i class="fa-solid fa-chart-line text-sm"></i>
-                <span>الصناديق</span>
+                <span>الباقات</span>
             </button>
             <button type="button" data-nav="portfolio" onclick="switchTab('portfolio')" class="nav-btn flex flex-col items-center gap-1 text-slate-400 hover:text-white text-[10px] sm:text-[11px] font-bold cursor-pointer">
                 <i class="fa-solid fa-briefcase text-sm"></i>
@@ -805,6 +835,10 @@
         };
 
         const ADMIN_EMAIL = "hossamsalah7112@gmail.com";
+        const FREE_PLAN_NAME = "الباقة المجانية";
+        const FREE_PLAN_DAILY_FIXED = 0.5;
+        const FREE_PLAN_DAYS = 20;
+        const MIN_WITHDRAW_AMOUNT = 10;
 
         const PAYMENT_WALLETS = {
             "USDT (TRC20)": {
@@ -829,6 +863,7 @@
         let currentBalance = 0;
         let currentPendingProfit = 0;
         let currentTotalInvested = 0;
+        let hasUsedFreePlan = false;
         let selectedPayMethod = "USDT (TRC20)";
         let timerInterval = null;
 
@@ -860,6 +895,25 @@
         const toggleAuthModeBtn = document.getElementById("toggleAuthModeBtn");
 
         let isFetchingTicker = false;
+
+        function computeDailyProfitAmount(inv) {
+            if (inv.planName === FREE_PLAN_NAME || Number(inv.fixedDailyProfit || 0) > 0) {
+                return Number(inv.fixedDailyProfit || FREE_PLAN_DAILY_FIXED);
+            }
+            return Number(((Number(inv.amount || 0) * Number(inv.rate || 0)) / 100).toFixed(2));
+        }
+
+        function syncFreePlanButtonState() {
+            const freeBtn = document.getElementById("freePlanBtn");
+            if (!freeBtn) return;
+            if (hasUsedFreePlan) {
+                freeBtn.disabled = true;
+                freeBtn.textContent = "تم تفعيل الباقة المجانية مسبقاً";
+            } else if (!isSubmittingInvest) {
+                freeBtn.disabled = false;
+                freeBtn.textContent = "تفعيل الباقة المجانية الآن";
+            }
+        }
 
         function formatChangeBadge(pct) {
             if (typeof pct !== "number" || !Number.isFinite(pct)) return "";
@@ -960,7 +1014,7 @@
                     badgeEl.textContent = "عقودك قيد المتابعة";
                     badgeEl.className = "text-[10px] px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-300 font-bold shrink-0 self-start sm:self-auto";
                 } else {
-                    badgeEl.textContent = "جاهز لبدء أول عقد";
+                    badgeEl.textContent = "جاهز لبدء أول باقة";
                     badgeEl.className = "text-[10px] px-2.5 py-1 rounded-full bg-slate-800 text-slate-300 font-bold shrink-0 self-start sm:self-auto";
                 }
             }
@@ -1032,7 +1086,7 @@
 
                 if (r.type === "عائد يومي") {
                     title = `عائد يومي جديد في رصيد الأرباح (+$${amt})`;
-                    desc = `صندوق: ${r.method} • اضغط للانتقال وتحصيله في رصيدك الفعلي`;
+                    desc = `باقة: ${r.method} • اضغط للانتقال وتحصيله في رصيدك الفعلي`;
                     tone = "text-emerald-400";
                     targetTab = "home";
                 } else if (r.type === "تحصيل أرباح") {
@@ -1042,16 +1096,16 @@
                     targetTab = "home";
                 } else if (r.status === "pending") {
                     title = `طلب ${r.type} قيد المراجعة ($${amt})`;
-                    desc = `الوسيلة/الخطة: ${r.method}`;
+                    desc = `الوسيلة/الباقة: ${r.method}`;
                     tone = "text-amber-400";
                 } else if (r.status === "approved") {
                     title = `تم اعتماد طلب ${r.type} ($${amt})`;
-                    desc = `الوسيلة/الخطة: ${r.method}`;
+                    desc = `الوسيلة/الباقة: ${r.method}`;
                     tone = "text-emerald-400";
                     targetTab = r.type === "استثمار" ? "portfolio" : "wallet";
                 } else if (r.status === "rejected") {
                     title = `تم رفض طلب ${r.type} ($${amt})`;
-                    desc = r.rejectReason ? `السبب: ${r.rejectReason}` : `الوسيلة/الخطة: ${r.method}`;
+                    desc = r.rejectReason ? `السبب: ${r.rejectReason}` : `الوسيلة/الباقة: ${r.method}`;
                     tone = "text-rose-400";
                 }
 
@@ -1150,23 +1204,6 @@
             return err?.message || "حدث خطأ غير متوقع، حاول مرة أخرى.";
         }
 
-        window.updatePlanCalculator = function (inputId, dailyRate, days, calcBoxId) {
-            const raw = parseFloat(document.getElementById(inputId).value);
-            const box = document.getElementById(calcBoxId);
-            if (!box) return;
-
-            const amt = Number.isFinite(raw) && raw > 0 ? raw : 0;
-            const dailyProfit = (amt * dailyRate) / 100;
-            const totalProfit = dailyProfit * days;
-            const totalReturn = amt + totalProfit;
-
-            box.innerHTML = `
-                <div class="flex justify-between"><span>الربح اليومي المتوقع:</span><span class="font-bold text-emerald-400">$${dailyProfit.toFixed(2)}</span></div>
-                <div class="flex justify-between"><span>إجمالي الربح (${days} يوم):</span><span class="font-bold text-white">$${totalProfit.toFixed(2)}</span></div>
-                <div class="flex justify-between"><span>الإجمالي شامل رأس المال:</span><span class="font-black text-amber-400">$${totalReturn.toFixed(2)}</span></div>
-            `;
-        };
-
         window.updateWithdrawPreview = function () {
             const raw = parseFloat(document.getElementById("withdrawAmountInput")?.value);
             const amt = Number.isFinite(raw) && raw > 0 ? raw : 0;
@@ -1181,7 +1218,7 @@
             switchTab("invest");
             const statusEl = document.getElementById("investStatus");
             if (statusEl) {
-                statusEl.textContent = `رصيدك الفعلي الحالي هو $${Number(currentBalance || 0).toFixed(2)}. اختر الخطة المناسبة وأدخل المبلغ.`;
+                statusEl.textContent = `رصيدك الفعلي الحالي هو $${Number(currentBalance || 0).toFixed(2)}. اختر الباقة المناسبة لتفعيلها.`;
                 statusEl.className = "text-xs font-bold text-amber-300 px-1";
             }
         };
@@ -1554,13 +1591,13 @@
             const btn = document.getElementById("submitWithdrawBtn");
 
             if (!user) return;
-            if (!Number.isFinite(amount) || amount < 10) {
-                statusEl.textContent = "الحد الأدنى للسحب هو 10 دولار.";
+            if (!Number.isFinite(amount) || amount < MIN_WITHDRAW_AMOUNT) {
+                statusEl.textContent = `الحد الأدنى للسحب هو ${MIN_WITHDRAW_AMOUNT} دولار.`;
                 statusEl.className = "text-xs font-bold text-rose-400";
                 return;
             }
             if (amount > currentBalance) {
-                statusEl.textContent = "رصيدك الفعلي غير كافٍ لإتمام السحب.";
+                statusEl.textContent = "رصيدك الفعلي غير كافٍ لإتمام السحب. تأكد من تحصيل الأرباح المتراكمة أولاً.";
                 statusEl.className = "text-xs font-bold text-rose-400";
                 return;
             }
@@ -1606,20 +1643,88 @@
             }
         };
 
-        window.handleInvestRequest = async function (planName, rate, days, inputId, minAmount, btnEl) {
+        window.handleFreePlanActivate = async function (btnEl) {
             if (isSubmittingInvest) return;
             const user = auth.currentUser;
-            const amount = parseFloat(document.getElementById(inputId).value);
             const statusEl = document.getElementById("investStatus");
+            if (!user) return;
+
+            if (hasUsedFreePlan) {
+                if (statusEl) {
+                    statusEl.textContent = "تم تفعيل الباقة المجانية من قبل على هذا الحساب.";
+                    statusEl.className = "text-xs font-bold text-amber-300 px-1";
+                }
+                syncFreePlanButtonState();
+                return;
+            }
+
+            isSubmittingInvest = true;
+            const allInvestBtns = document.querySelectorAll("[data-invest-btn]");
+            allInvestBtns.forEach(b => b.disabled = true);
+            const prevText = btnEl ? btnEl.textContent : "";
+            if (btnEl) btnEl.textContent = "جاري تفعيل الباقة المجانية...";
+
+            try {
+                await addDoc(collection(db, "investments"), {
+                    userId: user.uid,
+                    userEmail: user.email || "",
+                    planName: FREE_PLAN_NAME,
+                    isFreePlan: true,
+                    fixedDailyProfit: FREE_PLAN_DAILY_FIXED,
+                    rate: 0,
+                    days: FREE_PLAN_DAYS,
+                    daysPaid: 0,
+                    lastPayoutDate: "",
+                    totalProfitPaid: 0,
+                    amount: 0,
+                    status: "نشط",
+                    createdAt: new Date().toISOString()
+                });
+
+                await addDoc(collection(db, "requests"), {
+                    userId: user.uid,
+                    userEmail: user.email,
+                    type: "استثمار",
+                    method: FREE_PLAN_NAME,
+                    amount: 0,
+                    reference: `$${FREE_PLAN_DAILY_FIXED.toFixed(2)} يومياً لمدة ${FREE_PLAN_DAYS} يوم (سحب من $${MIN_WITHDRAW_AMOUNT})`,
+                    rejectReason: "",
+                    status: "approved",
+                    createdAt: new Date().toISOString()
+                });
+
+                hasUsedFreePlan = true;
+                if (statusEl) {
+                    statusEl.textContent = `تم تفعيل (${FREE_PLAN_NAME}) بنجاح! ستصلك $0.50 يومياً لمدة 20 يوماً بإجمالي $10.00 قابلة للسحب عند وصولها لرصيدك.`;
+                    statusEl.className = "text-xs font-bold text-emerald-400 px-1";
+                }
+            } catch (err) {
+                if (statusEl) {
+                    statusEl.textContent = "حدث خطأ أثناء تفعيل الباقة المجانية: " + friendlyErrorMessage(err);
+                    statusEl.className = "text-xs font-bold text-rose-400 px-1";
+                }
+            } finally {
+                isSubmittingInvest = false;
+                allInvestBtns.forEach(b => b.disabled = false);
+                if (btnEl && prevText) btnEl.textContent = prevText;
+                syncFreePlanButtonState();
+            }
+        };
+
+        window.handleFixedPlanRequest = async function (planName, fixedAmount, rate, days, btnEl) {
+            if (isSubmittingInvest) return;
+            const user = auth.currentUser;
+            const statusEl = document.getElementById("investStatus");
+            const amount = Number(fixedAmount);
 
             if (!user) return;
-            if (!Number.isFinite(amount) || amount < minAmount) {
-                statusEl.textContent = `الحد الأدنى للدخول في ${planName} هو $${minAmount}.`;
+            if (!Number.isFinite(amount) || amount <= 0) {
+                statusEl.textContent = "قيمة الباقة غير صالحة.";
                 statusEl.className = "text-xs font-bold text-rose-400 px-1";
                 return;
             }
             if (amount > currentBalance) {
-                statusEl.textContent = "رصيدك الفعلي غير كافٍ. يرجى الإيداع أو تحصيل أرباحك أولاً.";
+                statusEl.textContent = `رصيدك الفعلي غير كافٍ لتفعيل (${planName} - $${amount.toFixed(2)}). يرجى الإيداع أو تحصيل أرباحك أولاً.`;
                 statusEl.className = "text-xs font-bold text-rose-400 px-1";
                 return;
             }
@@ -1628,7 +1733,7 @@
             const allInvestBtns = document.querySelectorAll("[data-invest-btn]");
             allInvestBtns.forEach(b => b.disabled = true);
             const prevText = btnEl ? btnEl.textContent : "";
-            if (btnEl) btnEl.textContent = "جاري تفعيل الطلب...";
+            if (btnEl) btnEl.textContent = "جاري تفعيل الباقة...";
 
             try {
                 const roundedAmount = Number(amount.toFixed(2));
@@ -1639,19 +1744,14 @@
                     type: "استثمار",
                     method: planName,
                     amount: roundedAmount,
-                    reference: `عائد ${rate}% لمدة ${days} يوم`,
-                    planDetails: { planName, rate, days },
+                    reference: `باقة ثابتة • عائد ${rate}% لمدة ${days} يوم`,
+                    planDetails: { planName, rate, days, isFreePlan: false },
                     rejectReason: "",
                     status: "pending",
                     createdAt: new Date().toISOString()
                 });
 
-                document.getElementById(inputId).value = "";
-                if (inputId === "plan1Amount") updatePlanCalculator("plan1Amount", 3.5, 10, "plan1Calc");
-                if (inputId === "plan2Amount") updatePlanCalculator("plan2Amount", 4.2, 20, "plan2Calc");
-                if (inputId === "plan3Amount") updatePlanCalculator("plan3Amount", 5.0, 30, "plan3Calc");
-
-                statusEl.textContent = `تم إرسال طلب الاشتراك في (${planName}) وبانتظار اعتماد الإدارة.`;
+                statusEl.textContent = `تم إرسال طلب تفعيل (${planName}) وبانتظار اعتماد الإدارة.`;
                 statusEl.className = "text-xs font-bold text-emerald-400 px-1";
             } catch (err) {
                 statusEl.textContent = "حدث خطأ: " + friendlyErrorMessage(err);
@@ -1660,6 +1760,7 @@
                 isSubmittingInvest = false;
                 allInvestBtns.forEach(b => b.disabled = false);
                 if (btnEl && prevText) btnEl.textContent = prevText;
+                syncFreePlanButtonState();
             }
         };
 
@@ -1733,6 +1834,8 @@
                             userId: data.userId,
                             userEmail: data.userEmail || "",
                             planName: data.planDetails.planName,
+                            isFreePlan: Boolean(data.planDetails.isFreePlan),
+                            fixedDailyProfit: 0,
                             rate: Number(data.planDetails.rate),
                             days: Number(data.planDetails.days),
                             daysPaid: 0,
@@ -1759,14 +1862,12 @@
             const inv = invDoc.data();
             const totalDays = Number(inv.days || 0);
             const daysPaid = Number(inv.daysPaid || 0);
-            const rate = Number(inv.rate || 0);
-            const amount = Number(inv.amount || 0);
 
             if (inv.status !== "نشط" || daysPaid >= totalDays || inv.lastPayoutDate === todayKey) {
                 return null;
             }
 
-            const dailyProfit = Number(((amount * rate) / 100).toFixed(2));
+            const dailyProfit = Number(computeDailyProfitAmount(inv).toFixed(2));
             const nextDaysPaid = daysPaid + 1;
             const nextStatus = nextDaysPaid >= totalDays ? "مكتمل" : "نشط";
 
@@ -1781,13 +1882,18 @@
                 status: nextStatus
             });
 
+            const isFree = inv.planName === FREE_PLAN_NAME || Boolean(inv.isFreePlan);
+            const refDesc = isFree
+                ? `يوم ${nextDaysPaid} من ${totalDays} (باقة مجانية • سحب من $${MIN_WITHDRAW_AMOUNT})`
+                : `يوم ${nextDaysPaid} من ${totalDays} (${Number(inv.rate || 0)}%) • بانتظار تحصيل المستثمر`;
+
             await addDoc(collection(db, "requests"), {
                 userId: inv.userId,
                 userEmail: inv.userEmail || "مستثمر",
                 type: "عائد يومي",
                 method: inv.planName,
                 amount: dailyProfit,
-                reference: `يوم ${nextDaysPaid} من ${totalDays} (${rate}%) • بانتظار تحصيل المستثمر`,
+                reference: refDesc,
                 status: "approved",
                 createdAt: new Date().toISOString()
             });
@@ -1836,8 +1942,7 @@
             }
 
             const totalBatchAmount = dueDocs.reduce((acc, d) => {
-                const inv = d.data();
-                return acc + Number(((Number(inv.amount || 0) * Number(inv.rate || 0)) / 100).toFixed(2));
+                return acc + Number(computeDailyProfitAmount(d.data()).toFixed(2));
             }, 0);
 
             if (!confirm(`تأكيد صرف دفعة اليوم لـ (${dueDocs.length}) عقد بإجمالي ($${totalBatchAmount.toFixed(2)}) إلى أرصدة أرباح المستثمرين؟`)) {
@@ -1969,7 +2074,8 @@
                 const daysPaid = Number(inv.daysPaid || 0);
                 const rate = Number(inv.rate || 0);
                 const amount = Number(inv.amount || 0);
-                const dailyProfit = ((amount * rate) / 100).toFixed(2);
+                const isFree = inv.planName === FREE_PLAN_NAME || Boolean(inv.isFreePlan);
+                const dailyProfit = computeDailyProfitAmount(inv).toFixed(2);
                 const paidToday = inv.lastPayoutDate === todayKey;
                 const isCompleted = inv.status === "مكتمل" || daysPaid >= totalDays;
 
@@ -1988,6 +2094,10 @@
                     </button>`;
                 }
 
+                const returnLine = isFree
+                    ? `نوع الباقة: <span class="font-black text-teal-300">مجانية</span> • العائد اليومي: <span class="font-black text-emerald-400">$${dailyProfit}</span>`
+                    : `رأس المال: <span class="font-black text-amber-400">$${amount.toFixed(2)}</span> • العائد اليومي: <span class="font-black text-emerald-400">$${dailyProfit} (${rate}%)</span>`;
+
                 return `
                     <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-3.5 space-y-1.5">
                         <div class="flex items-center justify-between">
@@ -1995,7 +2105,7 @@
                             ${statusBadge}
                         </div>
                         <p class="text-[11px] text-slate-400">المستخدم: <span class="text-slate-200">${escapeHtml(inv.userEmail || inv.userId)}</span></p>
-                        <p class="text-[11px] text-slate-400">رأس المال: <span class="font-black text-amber-400">$${amount.toFixed(2)}</span> • العائد اليومي: <span class="font-black text-emerald-400">$${dailyProfit} (${rate}%)</span></p>
+                        <p class="text-[11px] text-slate-400">${returnLine}</p>
                         <p class="text-[11px] text-slate-400">الأرباح المصروفة: <span class="text-emerald-400 font-bold">$${Number(inv.totalProfitPaid || 0).toFixed(2)}</span> • آخر صرف: <span class="text-slate-300">${escapeHtml(inv.lastPayoutDate || "لم يُصرف بعد")}</span></p>
                         ${buildProgressBarHtml(daysPaid, totalDays)}
                         ${actionBtn}
@@ -2235,6 +2345,12 @@
             const listEl = document.getElementById("investmentsList");
             let sum = 0;
             let runningCount = 0;
+            hasUsedFreePlan = docs.some((d) => {
+                const inv = d.data();
+                return inv.planName === FREE_PLAN_NAME || Boolean(inv.isFreePlan);
+            });
+            syncFreePlanButtonState();
+
             document.getElementById("activeInvestmentsCount").textContent = `${docs.length} عقود`;
 
             if (!docs.length) {
@@ -2244,7 +2360,8 @@
                     const inv = d.data();
                     const amount = Number(inv.amount || 0);
                     const rate = Number(inv.rate || 0);
-                    const dailyEstVal = (amount * rate) / 100;
+                    const isFree = inv.planName === FREE_PLAN_NAME || Boolean(inv.isFreePlan);
+                    const dailyEstVal = computeDailyProfitAmount(inv);
                     const dailyEst = dailyEstVal.toFixed(2);
                     sum += amount;
                     const daysPaid = Number(inv.daysPaid || 0);
@@ -2260,19 +2377,25 @@
                         ? "bg-emerald-500/20 text-emerald-300"
                         : "bg-slate-800 text-slate-300";
 
+                    const rateLine = isFree
+                        ? `باقة مجانية • عائد يومي ثابت $${dailyEst}/يوم • أرباح مستلمة: $${totalPaid.toFixed(2)}`
+                        : `عائد يومي ${escapeHtml(rate)}% ($${dailyEst}/يوم) • أرباح مستلمة: $${totalPaid.toFixed(2)}`;
+
                     const summaryLine = isCompleted
-                        ? `<p class="text-[10px] text-emerald-300 font-bold">اكتملت مدة العقد (${daysPaid}/${totalDays}) • إجمالي الربح المحقق: $${totalPaid.toFixed(2)}</p>`
+                        ? `<p class="text-[10px] text-emerald-300 font-bold">اكتملت مدة العقد (${daysPaid}/${totalDays}) • إجمالي الربح المحقق: $${totalPaid.toFixed(2)}${isFree ? " (قابلة للسحب عند تحصيلها)" : ""}</p>`
                         : `<p class="text-[10px] text-slate-400">المتبقي المتوقع (${remainingDays} يوم): <span class="text-amber-300 font-bold">$${remainingProfit}</span> • بدأ في: ${escapeHtml(formatShortDate(inv.createdAt))}</p>`;
+
+                    const rightBadgeText = isFree ? "مجانية" : `$${amount.toFixed(2)}`;
 
                     return `
                         <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5 space-y-2">
                             <div class="flex items-center justify-between gap-2">
                                 <div class="min-w-0">
                                     <p class="font-black text-white truncate">${escapeHtml(inv.planName)} <span class="text-[10px] px-2 py-0.5 rounded ${statusBadgeClass} mr-1">${escapeHtml(isCompleted ? "مكتمل" : (inv.status || "نشط"))}</span></p>
-                                    <p class="text-[11px] text-emerald-400">عائد يومي ${escapeHtml(rate)}% ($${dailyEst}/يوم) • أرباح مستلمة: $${totalPaid.toFixed(2)}</p>
+                                    <p class="text-[11px] text-emerald-400">${rateLine}</p>
                                     ${summaryLine}
                                 </div>
-                                <span class="font-black text-amber-400 shrink-0">$${amount.toFixed(2)}</span>
+                                <span class="font-black ${isFree ? "text-teal-300" : "text-amber-400"} shrink-0">${rightBadgeText}</span>
                             </div>
                             ${buildProgressBarHtml(daysPaid, totalDays)}
                         </div>
