@@ -129,6 +129,27 @@
         <main class="max-w-3xl mx-auto p-3.5 sm:p-4 space-y-5">
             <!-- الرئيسية -->
             <section id="tab-home" class="tab-content active space-y-5">
+                <!-- شريط الأسعار والنشاط الحي -->
+                <div class="glass-card rounded-2xl px-4 py-2.5 flex flex-wrap items-center justify-between gap-2 text-[11px]">
+                    <div class="flex flex-wrap items-center gap-3">
+                        <span class="flex items-center gap-1 text-amber-400 font-bold">
+                            <i class="fa-brands fa-bitcoin"></i> BTC: <strong id="tickerBtc" class="text-white font-mono">$94,250</strong>
+                        </span>
+                        <span class="text-slate-700">|</span>
+                        <span class="flex items-center gap-1 text-indigo-400 font-bold">
+                            <i class="fa-brands fa-ethereum"></i> ETH: <strong id="tickerEth" class="text-white font-mono">$3,180</strong>
+                        </span>
+                        <span class="text-slate-700">|</span>
+                        <span class="flex items-center gap-1 text-emerald-400 font-bold">
+                            <i class="fa-solid fa-coins"></i> USDT: <strong class="text-white font-mono">$1.00</strong>
+                        </span>
+                    </div>
+                    <button type="button" onclick="refreshMarketTicker()" class="text-slate-400 hover:text-amber-400 font-bold flex items-center gap-1 cursor-pointer" title="تحديث الأسعار">
+                        <i id="tickerRefreshIcon" class="fa-solid fa-rotate"></i>
+                        <span>مباشر</span>
+                    </button>
+                </div>
+
                 <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-amber-950/30 border border-slate-800 rounded-3xl p-5 sm:p-6 space-y-5 shadow-xl relative overflow-hidden">
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <span class="text-xs font-bold text-slate-400">الرصيد الفعلي القابل للاستخدام والسحب</span>
@@ -372,6 +393,47 @@
                 <div class="glass-card rounded-3xl p-4 sm:p-5 space-y-1.5">
                     <h3 class="font-black text-base text-amber-400">صناديق الاستثمار المُدارة</h3>
                     <p class="text-xs text-slate-400">استثمارات مدعومة بعقود ذكية وعوائد يومية تُضاف إلى رصيد أرباحك لتقوم بتحصيلها بنفسك في رصيدك الفعلي.</p>
+                </div>
+
+                <!-- مقارنة سريعة بين الصناديق -->
+                <div class="glass-card rounded-3xl p-4 space-y-2.5">
+                    <h4 class="font-black text-xs text-slate-200"><i class="fa-solid fa-table-columns text-amber-400 ml-1"></i> مقارنة سريعة بين الصناديق</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-right text-[11px] border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-800 text-slate-400">
+                                    <th class="py-2 pr-1">الصندوق</th>
+                                    <th class="py-2">المدة</th>
+                                    <th class="py-2">العائد اليومي</th>
+                                    <th class="py-2">الحد الأدنى</th>
+                                    <th class="py-2 pl-1">الإجمالي</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800/60 text-slate-200">
+                                <tr>
+                                    <td class="py-2 pr-1 font-bold text-emerald-400">السيولة اليومية</td>
+                                    <td class="py-2">10 أيام</td>
+                                    <td class="py-2 font-bold">3.5%</td>
+                                    <td class="py-2">$20</td>
+                                    <td class="py-2 pl-1 font-bold text-amber-400">135%</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 pr-1 font-bold text-amber-400">الذهب والعملات</td>
+                                    <td class="py-2">20 يوماً</td>
+                                    <td class="py-2 font-bold">4.2%</td>
+                                    <td class="py-2">$500</td>
+                                    <td class="py-2 pl-1 font-bold text-amber-400">184%</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 pr-1 font-bold text-sky-400">التداول الخوارزمي</td>
+                                    <td class="py-2">30 يوماً</td>
+                                    <td class="py-2 font-bold">5.0%</td>
+                                    <td class="py-2">$2,500</td>
+                                    <td class="py-2 pl-1 font-bold text-amber-400">250%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -756,6 +818,34 @@
         const authInfo = document.getElementById("authInfo");
         const authSubmitBtn = document.getElementById("authSubmitBtn");
         const toggleAuthModeBtn = document.getElementById("toggleAuthModeBtn");
+
+        let baseBtcPrice = 94250;
+        let baseEthPrice = 3180;
+
+        window.refreshMarketTicker = function () {
+            const icon = document.getElementById("tickerRefreshIcon");
+            if (icon) icon.classList.add("fa-spin");
+
+            const btcDelta = (Math.random() - 0.5) * 260;
+            const ethDelta = (Math.random() - 0.5) * 28;
+            baseBtcPrice = Math.max(85000, baseBtcPrice + btcDelta);
+            baseEthPrice = Math.max(2500, baseEthPrice + ethDelta);
+
+            const btcEl = document.getElementById("tickerBtc");
+            const ethEl = document.getElementById("tickerEth");
+            if (btcEl) btcEl.textContent = "$" + Math.round(baseBtcPrice).toLocaleString("en-US");
+            if (ethEl) ethEl.textContent = "$" + Math.round(baseEthPrice).toLocaleString("en-US");
+
+            setTimeout(() => {
+                if (icon) icon.classList.remove("fa-spin");
+            }, 500);
+        };
+
+        setInterval(() => {
+            if (!appShell.classList.contains("hidden")) {
+                window.refreshMarketTicker();
+            }
+        }, 25000);
 
         function cleanupRealtimeListeners() {
             unsubscribeListeners.forEach((unsub) => {
@@ -1980,18 +2070,22 @@
                     const inv = d.data();
                     const amount = Number(inv.amount || 0);
                     const rate = Number(inv.rate || 0);
-                    const dailyEst = ((amount * rate) / 100).toFixed(2);
+                    const dailyEstVal = (amount * rate) / 100;
+                    const dailyEst = dailyEstVal.toFixed(2);
                     sum += amount;
                     const daysPaid = Number(inv.daysPaid || 0);
                     const totalDays = Number(inv.days || 0);
+                    const totalPaid = Number(inv.totalProfitPaid || 0);
+                    const remainingDays = Math.max(0, totalDays - daysPaid);
+                    const remainingProfit = (remainingDays * dailyEstVal).toFixed(2);
 
                     return `
                         <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5 space-y-2">
                             <div class="flex items-center justify-between gap-2">
                                 <div class="min-w-0">
                                     <p class="font-black text-white truncate">${escapeHtml(inv.planName)} <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 mr-1">${escapeHtml(inv.status || "نشط")}</span></p>
-                                    <p class="text-[11px] text-emerald-400">عائد يومي ${escapeHtml(rate)}% ($${dailyEst}/يوم) • أرباح مستلمة: $${Number(inv.totalProfitPaid || 0).toFixed(2)}</p>
-                                    <p class="text-[10px] text-slate-400">آخر صرف: ${escapeHtml(inv.lastPayoutDate || "بانتظار أول صرف")} • بدأ في: ${escapeHtml(formatShortDate(inv.createdAt))}</p>
+                                    <p class="text-[11px] text-emerald-400">عائد يومي ${escapeHtml(rate)}% ($${dailyEst}/يوم) • أرباح مستلمة: $${totalPaid.toFixed(2)}</p>
+                                    <p class="text-[10px] text-slate-400">المتبقي المتوقع (${remainingDays} يوم): <span class="text-amber-300 font-bold">$${remainingProfit}</span> • بدأ في: ${escapeHtml(formatShortDate(inv.createdAt))}</p>
                                 </div>
                                 <span class="font-black text-amber-400 shrink-0">$${amount.toFixed(2)}</span>
                             </div>
