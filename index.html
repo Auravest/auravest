@@ -21,10 +21,8 @@
 </head>
 <body>
 
-  <!-- إشعار منبثق -->
   <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-[100] hidden px-4 py-2.5 rounded-xl text-xs font-bold shadow-2xl border max-w-[92vw] text-center"></div>
 
-  <!-- شاشة تسجيل الدخول / إنشاء حساب -->
   <div id="authScreen" class="min-h-screen flex items-center justify-center p-4 bg-[radial-gradient(circle_at_top,#1e293b_0%,#060911_70%)]">
     <div class="glass w-full max-w-md rounded-3xl p-6 space-y-5 shadow-2xl">
       <div class="text-center space-y-1">
@@ -34,8 +32,8 @@
       </div>
 
       <div class="grid grid-cols-2 gap-2 bg-slate-900/90 p-1 rounded-xl border border-white/5 text-xs font-bold">
-        <button id="tabLogin" onclick="switchAuthMode('login')" class="py-2 rounded-lg bg-amber-500 text-slate-950">تسجيل الدخول</button>
-        <button id="tabRegister" onclick="switchAuthMode('register')" class="py-2 rounded-lg text-slate-400">حساب جديد</button>
+        <button id="tabLogin" type="button" onclick="switchAuthMode('login')" class="py-2 rounded-lg bg-amber-500 text-slate-950">تسجيل الدخول</button>
+        <button id="tabRegister" type="button" onclick="switchAuthMode('register')" class="py-2 rounded-lg text-slate-400">حساب جديد</button>
       </div>
 
       <form id="authForm" onsubmit="handleAuth(event)" class="space-y-3">
@@ -56,13 +54,9 @@
     </div>
   </div>
 
-  <!-- التطبيق الرئيسي -->
   <div id="appScreen" class="hidden">
-
-    <!-- إعلان عام من الإدارة -->
     <div id="announcementBanner" class="hidden bg-amber-500/15 border-b border-amber-400/30 px-4 py-2 text-center text-xs font-bold text-amber-200"></div>
 
-    <!-- الهيدر العلوي -->
     <header class="sticky top-0 z-40 glass px-4 py-3 flex items-center justify-between gap-2">
       <div class="flex items-center gap-2.5 min-w-0">
         <div class="w-9 h-9 rounded-xl gold-grad flex items-center justify-center text-slate-950 font-extrabold text-sm shrink-0">AV</div>
@@ -76,26 +70,23 @@
       </div>
 
       <div class="flex items-center gap-1.5 shrink-0">
-        <button onclick="openPage('notifications')" class="relative p-2 rounded-xl bg-slate-900 border border-white/10 text-slate-300 hover:text-amber-400">
+        <button type="button" onclick="openPage('notifications')" class="relative p-2 rounded-xl bg-slate-900 border border-white/10 text-slate-300 hover:text-amber-400">
           <span class="text-sm">🔔</span>
           <span id="notifDot" class="hidden absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500"></span>
         </button>
-        <button id="adminNavBtn" onclick="openPage('admin')" class="hidden px-2.5 py-1.5 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-extrabold">الإدارة</button>
-        <button onclick="logoutUser()" class="px-2.5 py-1.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-bold">خروج</button>
+        <button id="adminNavBtn" type="button" onclick="openPage('admin')" class="hidden px-2.5 py-1.5 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-extrabold">الإدارة</button>
+        <button type="button" onclick="logoutUser()" class="px-2.5 py-1.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-bold">خروج</button>
       </div>
     </header>
 
-    <!-- شريط الأسعار المباشرة -->
     <div id="tickerBar" class="bg-slate-900/90 border-b border-white/5 px-4 py-1.5 flex items-center justify-between text-[11px] text-slate-300 overflow-x-auto gap-4">
       <span>BTC: <b id="priceBTC" class="text-amber-400">...</b></span>
       <span>ETH: <b id="priceETH" class="text-sky-400">...</b></span>
       <span>USDT: <b class="text-emerald-400">$1.00</b></span>
     </div>
 
-    <!-- المحتوى المتغير -->
     <main class="max-w-3xl mx-auto p-4 space-y-4">
 
-      <!-- 1. الصفحة الرئيسية -->
       <section id="page-home" class="space-y-4">
         <div class="glass rounded-3xl p-5 space-y-4 border border-amber-500/20">
           <div class="flex items-start justify-between gap-2">
@@ -109,27 +100,25 @@
             </div>
           </div>
 
-          <button id="collectBtn" onclick="collectPendingProfit()" class="w-full py-2.5 rounded-xl emerald-grad text-slate-950 font-extrabold text-xs shadow-md disabled:opacity-40">
+          <button id="collectBtn" type="button" onclick="collectPendingProfit()" class="w-full py-2.5 rounded-xl emerald-grad text-slate-950 font-extrabold text-xs shadow-md disabled:opacity-40">
             تحصيل الأرباح إلى الرصيد الفعلي
           </button>
 
           <div class="grid grid-cols-2 gap-2.5 pt-1">
-            <button onclick="openPage('wallet'); openWalletModal('deposit')" class="py-2.5 rounded-xl gold-grad text-slate-950 font-extrabold text-xs">+ إيداع رصيد</button>
-            <button onclick="openPage('wallet'); openWalletModal('withdraw')" class="py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-white/10">سحب أرباح</button>
+            <button type="button" onclick="openPage('wallet'); openWalletModal('deposit')" class="py-2.5 rounded-xl gold-grad text-slate-950 font-extrabold text-xs">+ إيداع رصيد</button>
+            <button type="button" onclick="openPage('wallet'); openWalletModal('withdraw')" class="py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-white/10">سحب أرباح</button>
           </div>
         </div>
 
-        <!-- ملخص سريع للعقود النشطة -->
         <div class="glass rounded-2xl p-4 space-y-3">
           <div class="flex items-center justify-between">
             <h2 class="text-sm font-extrabold">عقودي الاستثمارية (<span id="activeContractsCount">0</span> نشط)</h2>
-            <button onclick="openPage('plans')" class="text-xs text-amber-400 font-bold">+ تفعيل باقة</button>
+            <button type="button" onclick="openPage('plans')" class="text-xs text-amber-400 font-bold">+ تفعيل باقة</button>
           </div>
           <div id="homeContractsList" class="space-y-2.5 text-xs text-slate-400">لا توجد عقود مفعلة حالياً.</div>
         </div>
       </section>
 
-      <!-- 2. صفحة الباقات والحاسبة -->
       <section id="page-plans" class="hidden space-y-4">
         <div class="glass rounded-2xl p-4 space-y-3">
           <h2 class="text-sm font-extrabold text-amber-400">حاسبة العائد التفاعلية</h2>
@@ -154,7 +143,6 @@
         <div id="plansGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
       </section>
 
-      <!-- 3. صفحة المحفظة والسجل -->
       <section id="page-wallet" class="hidden space-y-4">
         <div class="glass rounded-2xl p-4 space-y-3">
           <div class="flex items-center justify-between flex-wrap gap-2">
@@ -163,18 +151,17 @@
               <div id="walletBalance" class="text-2xl font-extrabold text-white">$0.00</div>
             </div>
             <div class="flex gap-2">
-              <button onclick="openWalletModal('deposit')" class="px-3.5 py-2 rounded-xl gold-grad text-slate-950 font-extrabold text-xs">إيداع (حد أدنى $10)</button>
-              <button onclick="openWalletModal('withdraw')" class="px-3.5 py-2 rounded-xl bg-slate-800 border border-white/10 text-white font-bold text-xs">سحب (حد أدنى $10)</button>
-              <button onclick="exportTransactionsCSV()" class="px-3 py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-bold text-xs">CSV</button>
+              <button type="button" onclick="openWalletModal('deposit')" class="px-3.5 py-2 rounded-xl gold-grad text-slate-950 font-extrabold text-xs">إيداع (حد أدنى $10)</button>
+              <button type="button" onclick="openWalletModal('withdraw')" class="px-3.5 py-2 rounded-xl bg-slate-800 border border-white/10 text-white font-bold text-xs">سحب (حد أدنى $10)</button>
+              <button type="button" onclick="exportTransactionsCSV()" class="px-3 py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-bold text-xs">CSV</button>
             </div>
           </div>
         </div>
 
-        <!-- نموذج إيداع أو سحب -->
         <div id="walletActionBox" class="hidden glass rounded-2xl p-4 space-y-3 border border-amber-400/30">
           <div class="flex items-center justify-between">
             <h3 id="walletBoxTitle" class="text-sm font-extrabold text-amber-400">إيداع رصيد</h3>
-            <button onclick="closeWalletModal()" class="text-xs text-slate-400">إغلاق ✕</button>
+            <button type="button" onclick="closeWalletModal()" class="text-xs text-slate-400">إغلاق ✕</button>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
@@ -192,7 +179,6 @@
             </div>
           </div>
 
-          <!-- تفاصيل الإيداع -->
           <div id="depositDetails" class="space-y-2.5 bg-slate-900/90 p-3 rounded-xl border border-white/10 text-xs">
             <div class="flex items-center justify-between">
               <span class="text-amber-300 font-bold">مدة جلسة الدفع: <span id="depositTimer">15:00</span></span>
@@ -203,10 +189,9 @@
               <label class="text-slate-400 block mb-1">إثبات التحويل (TxHash أو ملاحظة/رابط صورة)</label>
               <input id="depositProof" type="text" placeholder="أدخل TxHash أو رابط/تفاصيل إثبات التحويل" class="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs" />
             </div>
-            <button onclick="submitDeposit()" class="w-full py-2.5 rounded-xl gold-grad text-slate-950 font-extrabold">إرسال طلب الإيداع للمراجعة</button>
+            <button type="button" onclick="submitDeposit()" class="w-full py-2.5 rounded-xl gold-grad text-slate-950 font-extrabold">إرسال طلب الإيداع للمراجعة</button>
           </div>
 
-          <!-- تفاصيل السحب -->
           <div id="withdrawDetails" class="hidden space-y-2.5 text-xs">
             <div>
               <div class="flex items-center justify-between mb-1">
@@ -215,20 +200,17 @@
               </div>
               <input id="withdrawAddress" type="text" placeholder="أدخل عنوان المحفظة" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2" />
             </div>
-            <button onclick="submitWithdraw()" class="w-full py-2.5 rounded-xl emerald-grad text-slate-950 font-extrabold">تأكيد طلب السحب</button>
+            <button type="button" onclick="submitWithdraw()" class="w-full py-2.5 rounded-xl emerald-grad text-slate-950 font-extrabold">تأكيد طلب السحب</button>
           </div>
         </div>
 
-        <!-- سجل العمليات -->
         <div class="glass rounded-2xl p-4 space-y-2.5">
           <h3 class="text-sm font-extrabold">سجل العمليات</h3>
           <div id="transactionsList" class="space-y-2 text-xs text-slate-400">لا توجد عمليات مسجلة بعد.</div>
         </div>
       </section>
 
-      <!-- 4. صفحة الإعدادات والدعم -->
       <section id="page-settings" class="hidden space-y-4">
-        <!-- حالة KYC والبيانات الأساسية -->
         <div class="glass rounded-2xl p-4 space-y-3 text-xs">
           <div class="flex items-center justify-between">
             <h2 class="text-sm font-extrabold text-amber-400">توثيق الهوية (KYC) وبيانات الحساب</h2>
@@ -239,7 +221,7 @@
             <div>البريد: <b id="setEmail" class="text-white"></b></div>
             <div class="sm:col-span-2 flex items-center justify-between">
               <span>المعرف (UID): <span id="setUid" class="font-mono text-[11px] text-amber-300"></span></span>
-              <button onclick="copyText(currentUser.uid)" class="text-amber-400 underline">نسخ</button>
+              <button type="button" onclick="copyText(currentUser ? currentUser.uid : '')" class="text-amber-400 underline">نسخ</button>
             </div>
           </div>
 
@@ -247,23 +229,21 @@
             <label class="text-slate-400 block">رقم الهوية / جواز السفر أو رابط وثيقة التوثيق</label>
             <div class="flex gap-2">
               <input id="kycDocInput" type="text" placeholder="أدخل بيانات أو رابط التوثيق" class="flex-1 bg-slate-900 border border-white/10 rounded-xl px-3 py-2" />
-              <button onclick="submitKycRequest()" class="px-4 py-2 rounded-xl gold-grad text-slate-950 font-extrabold">إرسال طلب KYC</button>
+              <button type="button" onclick="submitKycRequest()" class="px-4 py-2 rounded-xl gold-grad text-slate-950 font-extrabold">إرسال طلب KYC</button>
             </div>
           </div>
         </div>
 
-        <!-- عناوين السحب الافتراضية -->
         <div class="glass rounded-2xl p-4 space-y-3 text-xs">
           <h3 class="text-sm font-extrabold">عناوين السحب الافتراضية المحفوظة</h3>
           <div class="space-y-2">
             <input id="savedUsdtAddr" type="text" placeholder="عنوان USDT (TRC20) الافتراضي" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2" />
             <input id="savedBtcAddr" type="text" placeholder="عنوان Bitcoin (BTC) الافتراضي" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2" />
             <input id="savedEthAddr" type="text" placeholder="عنوان Ethereum (ETH) الافتراضي" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2" />
-            <button onclick="saveDefaultWallets()" class="w-full py-2.5 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-300 font-extrabold">حفظ عناوين السحب</button>
+            <button type="button" onclick="saveDefaultWallets()" class="w-full py-2.5 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-300 font-extrabold">حفظ عناوين السحب</button>
           </div>
         </div>
 
-        <!-- الأمان وتفضيلات التنبيهات -->
         <div class="glass rounded-2xl p-4 space-y-3 text-xs">
           <h3 class="text-sm font-extrabold">الأمان والتنبيهات</h3>
           <label class="flex items-center justify-between bg-slate-900/70 p-3 rounded-xl cursor-pointer">
@@ -272,34 +252,31 @@
           </label>
           <div class="flex gap-2">
             <input id="newPassInput" type="password" minlength="6" placeholder="كلمة مرور جديدة (6 أحرف فأكثر)" class="flex-1 bg-slate-900 border border-white/10 rounded-xl px-3 py-2" />
-            <button onclick="changeUserPassword()" class="px-4 py-2 rounded-xl bg-slate-800 border border-white/10 text-white font-bold">تحديث كلمة المرور</button>
+            <button type="button" onclick="changeUserPassword()" class="px-4 py-2 rounded-xl bg-slate-800 border border-white/10 text-white font-bold">تحديث كلمة المرور</button>
           </div>
         </div>
 
-        <!-- مركز الدعم الفني -->
         <div class="glass rounded-2xl p-4 space-y-3 text-xs">
           <h3 class="text-sm font-extrabold text-sky-400">الدعم الفني والتذاكر</h3>
           <div class="space-y-2">
             <input id="ticketSubject" type="text" placeholder="عنوان التذكرة" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2" />
             <textarea id="ticketMessage" rows="2" placeholder="اكتب رسالتك أو استفسارك..." class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2"></textarea>
-            <button onclick="createSupportTicket()" class="w-full py-2.5 rounded-xl bg-sky-500 text-slate-950 font-extrabold">إرسال تذكرة دعم</button>
+            <button type="button" onclick="createSupportTicket()" class="w-full py-2.5 rounded-xl bg-sky-500 text-slate-950 font-extrabold">إرسال تذكرة دعم</button>
           </div>
           <div id="userTicketsList" class="space-y-2 pt-1"></div>
         </div>
       </section>
 
-      <!-- 5. صفحة التنبيهات -->
       <section id="page-notifications" class="hidden space-y-3">
         <div class="glass rounded-2xl p-4 space-y-3">
           <div class="flex items-center justify-between">
             <h2 class="text-sm font-extrabold">التنبيهات والإشعارات</h2>
-            <button onclick="markNotificationsRead()" class="text-xs text-amber-400 underline">تحديد الكل كمقروء</button>
+            <button type="button" onclick="markNotificationsRead()" class="text-xs text-amber-400 underline">تحديد الكل كمقروء</button>
           </div>
           <div id="notificationsList" class="space-y-2 text-xs text-slate-400">لا توجد تنبيهات حالياً.</div>
         </div>
       </section>
 
-      <!-- 6. لوحة الإدارة -->
       <section id="page-admin" class="hidden space-y-4">
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
           <div class="glass rounded-2xl p-3">
@@ -320,7 +297,6 @@
           </div>
         </div>
 
-        <!-- إعدادات المنصة المباشرة: المحافظ والإعلان العام -->
         <div class="glass rounded-2xl p-4 space-y-3 text-xs border border-amber-400/30">
           <h3 class="text-sm font-extrabold text-amber-400">إعدادات المحافظ والإعلان العام (مباشر)</h3>
           <div>
@@ -332,26 +308,23 @@
             <input id="admAddrBtc" type="text" placeholder="عنوان Bitcoin (BTC)" class="bg-slate-900 border border-white/10 rounded-xl px-3 py-2 font-mono text-[11px]" />
             <input id="admAddrEth" type="text" placeholder="عنوان Ethereum (ETH)" class="bg-slate-900 border border-white/10 rounded-xl px-3 py-2 font-mono text-[11px]" />
           </div>
-          <button onclick="saveAdminPlatformConfig()" class="w-full py-2.5 rounded-xl gold-grad text-slate-950 font-extrabold">حفظ إعدادات المنصة</button>
+          <button type="button" onclick="saveAdminPlatformConfig()" class="w-full py-2.5 rounded-xl gold-grad text-slate-950 font-extrabold">حفظ إعدادات المنصة</button>
         </div>
 
-        <!-- صرف جماعي للعوائد المستحقة -->
         <div class="glass rounded-2xl p-4 flex items-center justify-between gap-2">
           <div>
             <div class="text-sm font-extrabold">إدارة العقود والعوائد اليومية</div>
             <div class="text-xs text-slate-400">صرف اليوم المستحق مع إرجاع رأس المال تلقائياً في اليوم الأخير للباقات المدفوعة</div>
           </div>
-          <button onclick="payoutDueContractsBatch()" class="px-3.5 py-2.5 rounded-xl emerald-grad text-slate-950 font-extrabold text-xs shrink-0">صرف دفعة اليوم</button>
+          <button type="button" onclick="payoutDueContractsBatch()" class="px-3.5 py-2.5 rounded-xl emerald-grad text-slate-950 font-extrabold text-xs shrink-0">صرف دفعة اليوم</button>
         </div>
         <div id="adminContractsList" class="space-y-2.5 text-xs"></div>
 
-        <!-- مراجعة طلبات الإيداع والسحب والـ KYC -->
         <div class="glass rounded-2xl p-4 space-y-2.5">
           <h3 class="text-sm font-extrabold">طلبات الإيداع والسحب والتوثيق</h3>
           <div id="adminRequestsList" class="space-y-2.5 text-xs"></div>
         </div>
 
-        <!-- تذاكر الدعم الفني -->
         <div class="glass rounded-2xl p-4 space-y-2.5">
           <h3 class="text-sm font-extrabold text-sky-400">تذاكر الدعم الفني</h3>
           <div id="adminTicketsList" class="space-y-2.5 text-xs"></div>
@@ -360,27 +333,27 @@
 
     </main>
 
-    <!-- شريط التنقل السفلي -->
     <nav class="fixed bottom-0 inset-x-0 z-40 glass border-t border-white/10 px-2 py-2">
       <div class="max-w-3xl mx-auto grid grid-cols-4 gap-1 text-center text-[11px] font-bold">
-        <button data-nav="home" onclick="openPage('home')" class="nav-btn py-1.5 rounded-xl text-amber-400 bg-amber-500/10">الرئيسية</button>
-        <button data-nav="plans" onclick="openPage('plans')" class="nav-btn py-1.5 rounded-xl text-slate-400">الباقات</button>
-        <button data-nav="wallet" onclick="openPage('wallet')" class="nav-btn py-1.5 rounded-xl text-slate-400">المحفظة</button>
-        <button data-nav="settings" onclick="openPage('settings')" class="nav-btn py-1.5 rounded-xl text-slate-400">الإعدادات</button>
+        <button type="button" data-nav="home" onclick="openPage('home')" class="nav-btn py-1.5 rounded-xl text-amber-400 bg-amber-500/10">الرئيسية</button>
+        <button type="button" data-nav="plans" onclick="openPage('plans')" class="nav-btn py-1.5 rounded-xl text-slate-400">الباقات</button>
+        <button type="button" data-nav="wallet" onclick="openPage('wallet')" class="nav-btn py-1.5 rounded-xl text-slate-400">المحفظة</button>
+        <button type="button" data-nav="settings" onclick="openPage('settings')" class="nav-btn py-1.5 rounded-xl text-slate-400">الإعدادات</button>
       </div>
     </nav>
   </div>
 
   <script>
-    // إعداد Firebase
+    // ضع هنا بيانات مشروعك الحقيقية من Firebase Console -> Project settings -> Your apps
     const firebaseConfig = {
-      apiKey: "AIzaSyA_REPLACE_WITH_YOUR_API_KEY",
+      apiKey: "PUT_YOUR_REAL_FIREBASE_API_KEY_HERE",
       authDomain: "auravest-7b7e6.firebaseapp.com",
       projectId: "auravest-7b7e6",
       storageBucket: "auravest-7b7e6.appspot.com",
-      messagingSenderId: "000000000000",
-      appId: "1:000000000000:web:00000000000000"
+      messagingSenderId: "PUT_YOUR_REAL_SENDER_ID_HERE",
+      appId: "PUT_YOUR_REAL_APP_ID_HERE"
     };
+
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
@@ -388,12 +361,11 @@
     const ADMIN_EMAIL = "hossamsalah7112@gmail.com";
     const MIN_AMOUNT = 10;
 
-    // تعريف الباقات
     const PLANS = [
-      { id: "free", name: "الباقة المجانية", price: 0, days: 20, dailyRate: 0, dailyFixed: 0.5, totalProfit: 10, returnCapital: false, onceOnly: true, badge: "مرة واحدة • حد سحب $10" },
-      { id: "p100", name: "الباقة الثانية", price: 100, days: 10, dailyRate: 0.035, dailyFixed: 3.5, totalProfit: 35, returnCapital: true, onceOnly: false, badge: "3.5% يومياً + استرداد رأس المال" },
-      { id: "p1000", name: "الباقة الثالثة", price: 1000, days: 10, dailyRate: 0.04, dailyFixed: 40, totalProfit: 400, returnCapital: true, onceOnly: false, badge: "4.0% يومياً + استرداد رأس المال" },
-      { id: "p2500", name: "الباقة الرابعة", price: 2500, days: 10, dailyRate: 0.045, dailyFixed: 112.5, totalProfit: 1125, returnCapital: true, onceOnly: false, badge: "4.5% يومياً + استرداد رأس المال" }
+      { id: "free", name: "الباقة المجانية", price: 0, days: 20, dailyFixed: 0.5, totalProfit: 10, returnCapital: false, onceOnly: true, badge: "مرة واحدة • حد سحب $10" },
+      { id: "p100", name: "الباقة الثانية", price: 100, days: 10, dailyFixed: 3.5, totalProfit: 35, returnCapital: true, onceOnly: false, badge: "3.5% يومياً + استرداد رأس المال" },
+      { id: "p1000", name: "الباقة الثالثة", price: 1000, days: 10, dailyFixed: 40, totalProfit: 400, returnCapital: true, onceOnly: false, badge: "4.0% يومياً + استرداد رأس المال" },
+      { id: "p2500", name: "الباقة الرابعة", price: 2500, days: 10, dailyFixed: 112.5, totalProfit: 1125, returnCapital: true, onceOnly: false, badge: "4.5% يومياً + استرداد رأس المال" }
     ];
 
     let authMode = "login";
@@ -411,7 +383,6 @@
     let userTransactions = [];
     let userNotifications = [];
     let userTickets = [];
-    let adminAllUsers = [];
     let adminAllContracts = [];
     let adminAllRequests = [];
     let adminAllTickets = [];
@@ -441,7 +412,6 @@
       showToast("تم النسخ إلى الحافظة", "success");
     }
 
-    // المصادقة
     function switchAuthMode(mode) {
       authMode = mode;
       const isReg = mode === "register";
@@ -501,7 +471,6 @@
       const isAdmin = (user.email || "").toLowerCase() === ADMIN_EMAIL.toLowerCase();
       document.getElementById("adminNavBtn").classList.toggle("hidden", !isAdmin);
 
-      // ضمان وجود وثيقة المستخدم
       const userRef = db.collection("users").doc(user.uid);
       const snap = await userRef.get();
       if (!snap.exists) {
@@ -519,7 +488,6 @@
         });
       }
 
-      // اشتراكات فورية
       unsubs.push(db.collection("config").doc("platform").onSnapshot((doc) => {
         if (doc.exists) {
           platformConfig = { ...platformConfig, ...doc.data(), wallets: { ...platformConfig.wallets, ...(doc.data().wallets || {}) } };
@@ -555,10 +523,6 @@
       }));
 
       if (isAdmin) {
-        unsubs.push(db.collection("users").onSnapshot((qs) => {
-          adminAllUsers = qs.docs.map((d) => ({ id: d.id, ...d.data() }));
-          renderAdminStats();
-        }));
         unsubs.push(db.collection("contracts").onSnapshot((qs) => {
           adminAllContracts = qs.docs.map((d) => ({ id: d.id, ...d.data() }));
           renderAdminContracts();
@@ -580,7 +544,6 @@
       loadLivePrices();
     });
 
-    // التنقل بين الصفحات
     function openPage(page) {
       ["home", "plans", "wallet", "settings", "notifications", "admin"].forEach((p) => {
         document.getElementById(`page-${p}`).classList.toggle("hidden", p !== page);
@@ -591,7 +554,6 @@
       });
     }
 
-    // تحديث الإعدادات العامة للمنصة
     function renderPlatformConfig() {
       const banner = document.getElementById("announcementBanner");
       const msg = (platformConfig.announcement || "").trim();
@@ -624,7 +586,6 @@
       }
     }
 
-    // عرض بيانات المستخدم
     function renderUserUI() {
       if (!userProfile) return;
       const bal = Number(userProfile.balance || 0);
@@ -658,7 +619,6 @@
       document.getElementById("prefAlerts").checked = userProfile.alertsEnabled !== false;
     }
 
-    // تحصيل الأرباح من الصندوق المستقل إلى الرصيد الفعلي
     async function collectPendingProfit() {
       const pending = Number(userProfile?.pendingProfit || 0);
       if (pending <= 0) return showToast("لا توجد أرباح مستحقة للتحصيل حالياً", "info");
@@ -687,7 +647,6 @@
       }
     }
 
-    // الباقات والحاسبة
     function updateCalculator() {
       const id = document.getElementById("calcPlanSelect").value;
       const p = PLANS.find((x) => x.id === id) || PLANS[1];
@@ -714,7 +673,7 @@
               <div>الإجمالي النهائي: <b class="text-amber-300">${fmtMoney(finalSum)}</b></div>
               <div class="text-[11px] text-slate-400">${p.badge}</div>
             </div>
-            <button onclick="activatePlan('${p.id}')" class="w-full py-2.5 rounded-xl ${p.price === 0 ? "emerald-grad text-slate-950" : "gold-grad text-slate-950"} font-extrabold text-xs">
+            <button type="button" onclick="activatePlan('${p.id}')" class="w-full py-2.5 rounded-xl ${p.price === 0 ? "emerald-grad text-slate-950" : "gold-grad text-slate-950"} font-extrabold text-xs">
               ${p.price === 0 ? "تفعيل الباقة المجانية" : `استثمار ${fmtMoney(p.price)}`}
             </button>
           </div>
@@ -726,24 +685,22 @@
       const plan = PLANS.find((p) => p.id === planId);
       if (!plan) return;
       try {
+        if (plan.onceOnly) {
+          const existingFree = await db.collection("contracts")
+            .where("userId", "==", currentUser.uid)
+            .where("planId", "==", "free")
+            .get();
+          if (!existingFree.empty) throw new Error("الباقة المجانية تُفعّل مرة واحدة فقط لكل حساب");
+        }
+
         await db.runTransaction(async (tx) => {
           const uRef = db.collection("users").doc(currentUser.uid);
           const snap = await tx.get(uRef);
-          const uData = snap.data() || {};
-          const bal = Number(uData.balance || 0);
-
-          if (plan.onceOnly) {
-            const existingFree = await db.collection("contracts")
-              .where("userId", "==", currentUser.uid)
-              .where("planId", "==", "free")
-              .get();
-            if (!existingFree.empty) throw new Error("الباقة المجانية تُفعّل مرة واحدة فقط لكل حساب");
-          }
+          const bal = Number(snap.data().balance || 0);
 
           if (plan.price > 0 && bal < plan.price) {
             throw new Error("رصيدك الفعلي غير كافٍ لتفعيل هذه الباقة");
           }
-
           if (plan.price > 0) {
             tx.update(uRef, { balance: bal - plan.price });
           }
@@ -779,7 +736,6 @@
       }
     }
 
-    // العقود والتنبيهات
     function renderContractsUI() {
       const active = userContracts.filter((c) => c.status === "active");
       document.getElementById("activeContractsCount").textContent = active.length;
@@ -810,7 +766,6 @@
       }).join("");
     }
 
-    // المحفظة (إيداع وسحب)
     function openWalletModal(mode) {
       const box = document.getElementById("walletActionBox");
       box.classList.remove("hidden");
@@ -948,15 +903,11 @@
       URL.revokeObjectURL(url);
     }
 
-    // الإعدادات والدعم
     async function submitKycRequest() {
       const docVal = document.getElementById("kycDocInput").value.trim();
       if (!docVal) return showToast("يرجى إدخال بيانات أو رابط التوثيق", "error");
       try {
-        await db.collection("users").doc(currentUser.uid).update({
-          kycStatus: "pending",
-          kycDoc: docVal
-        });
+        await db.collection("users").doc(currentUser.uid).update({ kycStatus: "pending", kycDoc: docVal });
         await db.collection("requests").add({
           userId: currentUser.uid,
           userEmail: currentUser.email,
@@ -1038,7 +989,6 @@
       `).join("");
     }
 
-    // التنبيهات
     function renderNotificationsUI() {
       const unread = userNotifications.filter((n) => !n.read).length;
       document.getElementById("notifDot").classList.toggle("hidden", unread === 0);
@@ -1063,7 +1013,6 @@
       await batch.commit();
     }
 
-    // لوحة الإدارة: صرف العوائد + إرجاع رأس المال تلقائياً في اليوم الأخير
     async function payoutSingleContract(contractId) {
       const today = todayKey();
       try {
@@ -1085,12 +1034,8 @@
           const uSnap = await tx.get(uRef);
           if (!uSnap.exists) return;
 
-          const userUpdates = {
-            pendingProfit: firebase.firestore.FieldValue.increment(profitAmt)
-          };
-          if (capReturn > 0) {
-            userUpdates.balance = firebase.firestore.FieldValue.increment(capReturn);
-          }
+          const userUpdates = { pendingProfit: firebase.firestore.FieldValue.increment(profitAmt) };
+          if (capReturn > 0) userUpdates.balance = firebase.firestore.FieldValue.increment(capReturn);
           tx.update(uRef, userUpdates);
 
           tx.update(cRef, {
@@ -1159,7 +1104,7 @@
               <div class="text-[11px] text-slate-400">أيام: ${c.daysPaid || 0}/${c.days} | عائد: ${fmtMoney(c.dailyFixed)} | حالة: ${c.status}</div>
             </div>
             ${c.status === "active" ? `
-              <button ${paidToday ? "disabled" : ""} onclick="payoutSingleContract('${c.id}')" class="px-3 py-1.5 rounded-lg ${paidToday ? "bg-slate-800 text-slate-500" : "emerald-grad text-slate-950"} font-extrabold text-xs shrink-0">
+              <button type="button" ${paidToday ? "disabled" : ""} onclick="payoutSingleContract('${c.id}')" class="px-3 py-1.5 rounded-lg ${paidToday ? "bg-slate-800 text-slate-500" : "emerald-grad text-slate-950"} font-extrabold text-xs shrink-0">
                 ${paidToday ? "صُرف اليوم" : "صرف اليوم"}
               </button>
             ` : `<span class="text-[11px] text-slate-400">مكتمل</span>`}
@@ -1211,7 +1156,7 @@
       box.innerHTML = pending.map((r) => `
         <div class="bg-slate-900/80 rounded-xl p-3 border border-white/10 space-y-2">
           <div class="flex justify-between items-center">
-            <b class="text-amber-300">${r.type.toUpperCase()} ${r.amount ? fmtMoney(r.amount) : ""}</b>
+            <b class="text-amber-300">${String(r.type || "").toUpperCase()} ${r.amount ? fmtMoney(r.amount) : ""}</b>
             <span class="text-[11px] text-slate-400">${r.userEmail}</span>
           </div>
           ${r.network ? `<div class="text-[11px] text-slate-300">الشبكة: ${r.network}</div>` : ""}
@@ -1219,8 +1164,8 @@
           ${r.proof ? `<div class="text-[11px] text-sky-300 break-all">الإثبات: ${r.proof}</div>` : ""}
           ${r.kycDoc ? `<div class="text-[11px] text-emerald-300 break-all">وثيقة KYC: ${r.kycDoc}</div>` : ""}
           <div class="flex gap-2 pt-1">
-            <button onclick="reviewRequest('${r.id}', 'approve')" class="flex-1 py-1.5 rounded-lg emerald-grad text-slate-950 font-extrabold">قبول</button>
-            <button onclick="reviewRequest('${r.id}', 'reject')" class="flex-1 py-1.5 rounded-lg bg-rose-500/20 border border-rose-500/40 text-rose-300 font-bold">رفض</button>
+            <button type="button" onclick="reviewRequest('${r.id}', 'approve')" class="flex-1 py-1.5 rounded-lg emerald-grad text-slate-950 font-extrabold">قبول</button>
+            <button type="button" onclick="reviewRequest('${r.id}', 'reject')" class="flex-1 py-1.5 rounded-lg bg-rose-500/20 border border-rose-500/40 text-rose-300 font-bold">رفض</button>
           </div>
         </div>
       `).join("");
@@ -1248,14 +1193,13 @@
           ${t.reply ? `<div class="text-xs text-sky-300">الرد الحالي: ${t.reply}</div>` : `
             <div class="flex gap-2">
               <input id="rep-${t.id}" type="text" placeholder="اكتب رد الإدارة..." class="flex-1 bg-slate-950 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs" />
-              <button onclick="replyTicket('${t.id}')" class="px-3 py-1.5 rounded-lg bg-sky-500 text-slate-950 font-extrabold text-xs">رد</button>
+              <button type="button" onclick="replyTicket('${t.id}')" class="px-3 py-1.5 rounded-lg bg-sky-500 text-slate-950 font-extrabold text-xs">رد</button>
             </div>
           `}
         </div>
       `).join("");
     }
 
-    // أسعار السوق المباشرة
     async function loadLivePrices() {
       try {
         const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd");
