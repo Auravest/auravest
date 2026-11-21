@@ -152,7 +152,6 @@
 
       <!-- 1. الرئيسية -->
       <section id="page-home" class="page-enter space-y-4">
-        <!-- بطاقة المحفظة الذهبية الرئيسية -->
         <div class="luxury-card rounded-3xl p-5 space-y-4 relative overflow-hidden">
           <div class="flex items-start justify-between gap-3">
             <div>
@@ -165,19 +164,20 @@
             </div>
           </div>
 
-          <!-- مؤشر تحفيزي لجاهزية التحصيل / السحب -->
+          <!-- مؤشر دقيق لحالة السحب والتحصيل -->
           <div class="bg-slate-950/75 border border-white/5 rounded-2xl p-3 space-y-1.5 text-xs">
-            <div class="flex items-center justify-between">
-              <span class="text-slate-300 font-bold" id="homeMotivationLabel">جاهزية تحصيل الأرباح والسحب (الحد الأدنى $10.00)</span>
-              <span class="text-amber-300 font-extrabold" id="homeReadyPercent">0%</span>
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-slate-300 font-bold" id="homeWithdrawLabel">جاهزية السحب الفعلي (الحد الأدنى $10.00)</span>
+              <span class="text-amber-300 font-extrabold shrink-0" id="homeReadyPercent">0%</span>
             </div>
             <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
               <div id="homeReadyBar" class="h-full gold-grad rounded-full transition-all duration-500" style="width: 0%"></div>
             </div>
+            <div class="text-[11px] text-slate-400 pt-0.5" id="homeCollectStatusText">صندوق الأرباح فارغ حالياً — لا توجد أرباح بانتظار التحصيل</div>
           </div>
 
           <button id="collectBtn" type="button" onclick="collectPendingProfit()" class="interactive-btn w-full py-3 rounded-2xl emerald-grad text-slate-950 font-black text-xs sm:text-sm disabled:opacity-40">
-            ⚡ تحصيل الأرباح فوراً إلى الرصيد الفعلي
+            ⚡ تحصيل الأرباح إلى الرصيد الفعلي
           </button>
 
           <div class="grid grid-cols-3 gap-2 pt-0.5">
@@ -187,7 +187,6 @@
           </div>
         </div>
 
-        <!-- مؤشرات سريعة مشوقة -->
         <div class="grid grid-cols-3 gap-2.5 text-center">
           <div class="luxury-card rounded-2xl p-3">
             <div class="text-[11px] text-slate-400">عقود نشطة</div>
@@ -203,7 +202,6 @@
           </div>
         </div>
 
-        <!-- العقود الاستثمارية -->
         <div class="luxury-card rounded-3xl p-4 space-y-3">
           <div class="flex items-center justify-between">
             <div>
@@ -244,7 +242,7 @@
         <div id="plansGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5"></div>
       </section>
 
-      <!-- 3. النشاط والإحصائيات التفاعلية -->
+      <!-- 3. النشاط والإحصائيات -->
       <section id="page-activity" class="page-enter hidden space-y-4">
         <div class="luxury-card rounded-3xl p-4 space-y-3">
           <div class="flex items-center justify-between">
@@ -310,16 +308,26 @@
             </div>
           </div>
 
+          <!-- إيداع بصورة فقط بدون رقم معاملة -->
           <div id="depositDetails" class="space-y-2.5 bg-slate-950/90 p-3.5 rounded-2xl border border-amber-400/15 text-xs">
             <div class="flex items-center justify-between">
               <span class="text-amber-300 font-extrabold">مدة جلسة الدفع: <span id="depositTimer">15:00</span></span>
               <button type="button" onclick="copyText(document.getElementById('depositAddress').textContent)" class="text-amber-400 font-bold underline">نسخ العنوان</button>
             </div>
             <div id="depositAddress" class="font-mono text-[11px] bg-slate-900 p-2.5 rounded-xl break-all text-slate-200 border border-white/5"></div>
+
             <div>
-              <label class="text-slate-400 block mb-1">إثبات التحويل (TxHash أو ملاحظة/رابط صورة)</label>
-              <input id="depositProof" type="text" placeholder="أدخل TxHash أو رابط/تفاصيل إثبات التحويل" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs" />
+              <label class="text-slate-300 font-bold block mb-1.5">إضافة صورة إثبات التحويل</label>
+              <input id="depositImageInput" type="file" accept="image/*" onchange="handleDepositImageChange(event)" class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-slate-300 file:ml-3 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:bg-amber-500 file:text-slate-950 file:font-extrabold" />
+              <div id="depositPreviewWrap" class="hidden mt-2.5 bg-slate-900/90 p-2.5 rounded-xl border border-emerald-400/25 space-y-2">
+                <div class="flex items-center justify-between text-[11px] text-emerald-300 font-bold">
+                  <span id="depositImageName">تم اختيار الصورة</span>
+                  <button type="button" onclick="clearDepositImage()" class="text-rose-300 underline">إزالة الصورة</button>
+                </div>
+                <img id="depositImagePreview" src="" alt="معاينة إثبات التحويل" class="max-h-48 w-full object-contain rounded-lg bg-slate-950" />
+              </div>
             </div>
+
             <button type="button" onclick="submitDeposit()" class="interactive-btn w-full py-2.5 rounded-xl gold-grad text-slate-950 font-black">إرسال طلب الإيداع للمراجعة</button>
           </div>
 
@@ -467,7 +475,7 @@
 
     </main>
 
-    <!-- شريط التنقل السفلي التفاعلي (5 أقسام) -->
+    <!-- شريط التنقل السفلي التفاعلي -->
     <nav class="fixed bottom-0 inset-x-0 z-40 luxury-card border-x-0 border-b-0 px-2 py-2">
       <div class="max-w-3xl mx-auto grid grid-cols-5 gap-1 text-center text-[10px] sm:text-[11px] font-extrabold">
         <button type="button" data-nav="home" onclick="openPage('home')" class="interactive-btn nav-btn py-1.5 rounded-2xl text-amber-300 bg-amber-500/15 border border-amber-400/25 flex flex-col items-center gap-0.5">
@@ -538,6 +546,8 @@
     let adminAllRequests = [];
     let adminAllTickets = [];
     let depositInterval = null;
+    let depositImageDataUrl = "";
+    let depositImageFileName = "";
     let unsubs = [];
 
     const fmtMoney = (n) => `$${Number(n || 0).toFixed(2)}`;
@@ -765,14 +775,18 @@
       document.getElementById("collectBtn").disabled = pending <= 0;
       document.getElementById("totalTxCount").textContent = userTransactions.length;
 
-      const combinedForThreshold = bal + pending;
-      const pct = Math.min(100, Math.round((combinedForThreshold / MIN_AMOUNT) * 100));
+      const pct = Math.min(100, Math.round((bal / MIN_AMOUNT) * 100));
       document.getElementById("homeReadyPercent").textContent = `${pct}%`;
       document.getElementById("homeReadyBar").style.width = `${pct}%`;
-      document.getElementById("homeMotivationLabel").textContent =
-        combinedForThreshold >= MIN_AMOUNT
-          ? "رصيدك تخطى حد السحب الأدنى ($10.00) — جاهز للتحصيل أو السحب"
-          : `متبقي ${fmtMoney(Math.max(0, MIN_AMOUNT - combinedForThreshold))} للوصول لحد السحب الأدنى ($10.00)`;
+      document.getElementById("homeWithdrawLabel").textContent =
+        bal >= MIN_AMOUNT
+          ? `رصيدك الفعلي (${fmtMoney(bal)}) تخطى حد السحب الأدنى ($10.00) — جاهز للسحب`
+          : `متبقي ${fmtMoney(Math.max(0, MIN_AMOUNT - bal))} للوصول لحد السحب الأدنى ($10.00)`;
+
+      document.getElementById("homeCollectStatusText").textContent =
+        pending > 0
+          ? `يوجد ${fmtMoney(pending)} جاهز للتحصيل في صندوق الأرباح المستقل`
+          : "صندوق الأرباح فارغ حالياً — لا توجد أرباح بانتظار التحصيل";
 
       const kycMap = {
         verified: { text: "موثق KYC", cls: "bg-emerald-500/20 text-emerald-300" },
@@ -1005,6 +1019,44 @@
       depositInterval = setInterval(tick, 1000);
     }
 
+    function clearDepositImage() {
+      depositImageDataUrl = "";
+      depositImageFileName = "";
+      const inp = document.getElementById("depositImageInput");
+      if (inp) inp.value = "";
+      document.getElementById("depositPreviewWrap").classList.add("hidden");
+      document.getElementById("depositImagePreview").src = "";
+    }
+
+    function handleDepositImageChange(e) {
+      const file = e.target.files?.[0];
+      if (!file) return clearDepositImage();
+      if (!file.type.startsWith("image/")) {
+        clearDepositImage();
+        return showToast("يرجى اختيار ملف صورة فقط", "error");
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          const maxW = 800;
+          const scale = img.width > maxW ? maxW / img.width : 1;
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.round(img.width * scale);
+          canvas.height = Math.round(img.height * scale);
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          depositImageDataUrl = canvas.toDataURL("image/jpeg", 0.72);
+          depositImageFileName = file.name;
+          document.getElementById("depositImageName").textContent = file.name;
+          document.getElementById("depositImagePreview").src = depositImageDataUrl;
+          document.getElementById("depositPreviewWrap").classList.remove("hidden");
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
     function fillSavedWallet() {
       const net = document.getElementById("txNetwork").value;
       const saved = userProfile?.savedWallets?.[net] || "";
@@ -1014,9 +1066,8 @@
     async function submitDeposit() {
       const amount = Number(document.getElementById("txAmount").value);
       const network = document.getElementById("txNetwork").value;
-      const proof = document.getElementById("depositProof").value.trim();
       if (isNaN(amount) || amount < MIN_AMOUNT) return showToast(`الحد الأدنى للإيداع ${fmtMoney(MIN_AMOUNT)}`, "error");
-      if (!proof) return showToast("يرجى إدخال إثبات التحويل أو TxHash", "error");
+      if (!depositImageDataUrl) return showToast("يرجى إضافة صورة إثبات التحويل أولاً", "error");
       try {
         await db.collection("requests").add({
           userId: currentUser.uid,
@@ -1024,16 +1075,17 @@
           type: "deposit",
           network,
           amount,
-          proof,
+          proofImage: depositImageDataUrl,
+          proofImageName: depositImageFileName,
           status: "pending",
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         document.getElementById("txAmount").value = "";
-        document.getElementById("depositProof").value = "";
+        clearDepositImage();
         closeWalletModal();
-        showToast("تم إرسال طلب الإيداع بنجاح وجاري المراجعة", "success");
+        showToast("تم إرسال طلب الإيداع والصورة بنجاح وجاري المراجعة", "success");
       } catch (e) {
-        showToast("تعذر إرسال طلب الإيداع", "error");
+        showToast("تعذر إرسال طلب الإيداع (تأكد من حجم الصورة)", "error");
       }
     }
 
@@ -1359,7 +1411,7 @@
           </div>
           ${r.network ? `<div class="text-[11px] text-slate-300">الشبكة: ${r.network}</div>` : ""}
           ${r.address ? `<div class="text-[11px] font-mono text-slate-300 break-all">العنوان: ${r.address}</div>` : ""}
-          ${r.proof ? `<div class="text-[11px] text-sky-300 break-all">الإثبات: ${r.proof}</div>` : ""}
+          ${r.proofImage ? `<div class="space-y-1"><div class="text-[11px] text-sky-300">صورة إثبات التحويل:</div><img src="${r.proofImage}" alt="إثبات التحويل" class="max-h-52 rounded-xl border border-white/10 bg-slate-900 object-contain" /></div>` : ""}
           ${r.kycDoc ? `<div class="text-[11px] text-emerald-300 break-all">وثيقة KYC: ${r.kycDoc}</div>` : ""}
           <div class="flex gap-2 pt-1">
             <button type="button" onclick="reviewRequest('${r.id}', 'approve')" class="interactive-btn flex-1 py-1.5 rounded-xl emerald-grad text-slate-950 font-extrabold">قبول</button>
