@@ -148,7 +148,6 @@
       <div class="flex items-center gap-4 shrink-0">
         <span>BTC: <b id="priceBTC" class="text-amber-400">...</b></span>
         <span>ETH: <b id="priceETH" class="text-sky-400">...</b></span>
-        <span>EGP: <b id="priceEGP" class="text-amber-200">50.00</b></span>
         <span>USDT: <b class="text-emerald-400">$1.00</b></span>
       </div>
     </div>
@@ -163,7 +162,6 @@
             <div>
               <span data-i18n="actualBalanceLabel" class="text-xs text-amber-200/80 font-bold">الرصيد الفعلي القابل للاستثمار والسحب</span>
               <div id="homeBalance" class="text-3xl sm:text-4xl font-black text-white mt-1">$0.00</div>
-              <div id="homeBalanceEgp" class="text-[11px] text-amber-200/75 font-bold mt-0.5">≈ 0.00 ج.م</div>
             </div>
             <div class="text-left bg-emerald-500/10 border border-emerald-400/25 rounded-2xl px-3.5 py-2">
               <span data-i18n="profitBoxLabel" class="text-[11px] text-emerald-200/90 block font-bold">صندوق الأرباح المستقل</span>
@@ -288,7 +286,6 @@
             <div>
               <div data-i18n="walletAvailLbl" class="text-xs text-slate-400 font-bold">الرصيد الفعلي القابل للسحب</div>
               <div id="walletBalance" class="text-3xl font-black text-white mt-0.5">$0.00</div>
-              <div id="walletBalanceEgp" class="text-[11px] text-amber-200/75 font-bold mt-0.5">≈ 0.00 ج.م</div>
             </div>
             <div class="flex flex-wrap gap-2">
               <button type="button" onclick="openWalletModal('deposit')" data-i18n="walletDepositBtn" class="interactive-btn px-3.5 py-2 rounded-xl gold-grad text-slate-950 font-extrabold text-xs">+ إيداع (حد أدنى $10)</button>
@@ -306,18 +303,15 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
             <div>
-              <label data-i18n="networkMethodLbl" class="text-slate-400 block mb-1">الشبكة / وسيلة الدفع</label>
-              <select id="txNetwork" onchange="renderDepositInfo(); updateWalletAmountEgpPreview()" class="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2">
+              <label data-i18n="networkMethodLbl" class="text-slate-400 block mb-1">وسيلة التعامل</label>
+              <select id="txNetwork" onchange="renderDepositInfo()" class="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2">
                 <option value="USDT_TRC20">USDT (TRC20)</option>
-                <option value="BTC">Bitcoin (BTC)</option>
-                <option value="ETH">Ethereum (ETH)</option>
-                <option value="INSTAPAY">InstaPay (مصر)</option>
+                <option value="BANK_ACCOUNT">تحويل بنكي (رقم الحساب)</option>
               </select>
             </div>
             <div>
               <label data-i18n="amountUsdLbl" class="text-slate-400 block mb-1">المبلغ ($)</label>
-              <input id="txAmount" type="number" min="10" step="0.01" placeholder="10.00" oninput="updateWalletAmountEgpPreview()" class="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2" />
-              <div id="txAmountEgpPreview" class="text-[11px] text-amber-300 font-bold mt-1">≈ 0.00 ج.م</div>
+              <input id="txAmount" type="number" min="10" step="0.01" placeholder="10.00" class="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2" />
             </div>
           </div>
 
@@ -326,7 +320,7 @@
           <div id="depositDetails" class="space-y-2.5 bg-slate-950/90 p-3.5 rounded-2xl border border-amber-400/15 text-xs">
             <div class="flex items-center justify-between">
               <span class="text-amber-300 font-extrabold"><span data-i18n="sessionTimerLbl">مدة جلسة الدفع:</span> <span id="depositTimer">15:00</span></span>
-              <button type="button" onclick="copyText(document.getElementById('depositAddress').textContent)" data-i18n="copyAddressBtn" class="text-amber-400 font-bold underline">نسخ العنوان / الحساب</button>
+              <button type="button" onclick="copyText(document.getElementById('depositAddress').textContent)" data-i18n="copyAddressBtn" class="text-amber-400 font-bold underline">نسخ العنوان / رقم الحساب</button>
             </div>
             <div id="depositAddress" class="font-mono text-[11px] bg-slate-900 p-2.5 rounded-xl break-all text-slate-200 border border-white/5"></div>
 
@@ -348,10 +342,10 @@
           <div id="withdrawDetails" class="hidden space-y-2.5 text-xs">
             <div>
               <div class="flex items-center justify-between mb-1">
-                <label data-i18n="withdrawDestLbl" class="text-slate-400">عنوان المحفظة أو حساب InstaPay للاستلام</label>
+                <label data-i18n="withdrawDestLbl" class="text-slate-400">عنوان USDT أو رقم الحساب البنكي للاستلام</label>
                 <button type="button" onclick="fillSavedWallet()" data-i18n="useSavedBtn" class="text-amber-400 underline">استخدام المحفوظ</button>
               </div>
-              <input id="withdrawAddress" type="text" placeholder="عنوان المحفظة أو حساب InstaPay" class="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2" />
+              <input id="withdrawAddress" type="text" placeholder="عنوان USDT أو رقم الحساب البنكي" class="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2" />
             </div>
             <button type="button" onclick="submitWithdraw()" data-i18n="submitWithdrawBtn" class="interactive-btn w-full py-2.5 rounded-xl emerald-grad text-slate-950 font-black">تأكيد طلب السحب</button>
           </div>
@@ -404,13 +398,11 @@
         </div>
 
         <div class="luxury-card rounded-3xl p-4 space-y-3 text-xs">
-          <h3 data-i18n="savedWalletsTitle" class="text-sm font-black text-white">عناوين وحسابات السحب الافتراضية المحفوظة</h3>
+          <h3 data-i18n="savedWalletsTitle" class="text-sm font-black text-white">بيانات السحب الافتراضية المحفوظة</h3>
           <div class="space-y-2">
             <input id="savedUsdtAddr" type="text" placeholder="عنوان USDT (TRC20) الافتراضي" class="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2" />
-            <input id="savedBtcAddr" type="text" placeholder="عنوان Bitcoin (BTC) الافتراضي" class="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2" />
-            <input id="savedEthAddr" type="text" placeholder="عنوان Ethereum (ETH) الافتراضي" class="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2" />
-            <input id="savedInstapayAddr" type="text" placeholder="حساب أو رقم InstaPay الافتراضي (مصر)" class="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2" />
-            <button type="button" onclick="saveDefaultWallets()" data-i18n="saveWalletsBtn" class="interactive-btn w-full py-2.5 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-300 font-extrabold">حفظ عناوين السحب</button>
+            <input id="savedBankAddr" type="text" placeholder="رقم الحساب البنكي الافتراضي" class="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2" />
+            <button type="button" onclick="saveDefaultWallets()" data-i18n="saveWalletsBtn" class="interactive-btn w-full py-2.5 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-300 font-extrabold">حفظ بيانات السحب</button>
           </div>
         </div>
 
@@ -470,20 +462,14 @@
         </div>
 
         <div class="luxury-card rounded-3xl p-4 space-y-3 text-xs border border-amber-400/35">
-          <h3 data-i18n="admConfigTitle" class="text-sm font-black text-amber-400">إعدادات المحافظ، InstaPay، والإعلان العام (مباشر)</h3>
+          <h3 data-i18n="admConfigTitle" class="text-sm font-black text-amber-400">إعدادات USDT، التحويل البنكي، والإعلان العام (مباشر)</h3>
           <div>
             <label data-i18n="admAnnLbl" class="text-slate-400 block mb-1">الإعلان العام أعلى المنصة (اتركه فارغاً لإخفائه)</label>
             <input id="admAnnouncement" type="text" placeholder="مثال: صرف العوائد اليومية مستمر ومؤتمت بالكامل" class="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2" />
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <input id="admAddrUsdt" type="text" placeholder="عنوان USDT (TRC20)" class="bg-slate-950 border border-white/10 rounded-xl px-3 py-2 font-mono text-[11px]" />
-            <input id="admAddrBtc" type="text" placeholder="عنوان Bitcoin (BTC)" class="bg-slate-950 border border-white/10 rounded-xl px-3 py-2 font-mono text-[11px]" />
-            <input id="admAddrEth" type="text" placeholder="عنوان Ethereum (ETH)" class="bg-slate-950 border border-white/10 rounded-xl px-3 py-2 font-mono text-[11px]" />
-            <input id="admAddrInstapay" type="text" placeholder="حساب InstaPay / اسم المستلم (مصر)" class="bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-[11px]" />
-          </div>
-          <div>
-            <label class="text-slate-400 block mb-1">سعر صرف الدولار مقابل الجنيه المصري (EGP لكل $1)</label>
-            <input id="admEgpRate" type="number" min="1" step="0.1" placeholder="50.0" class="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs" />
+            <input id="admAddrBank" type="text" placeholder="رقم الحساب البنكي وبيانات التحويل" class="bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-[11px]" />
           </div>
           <button type="button" onclick="saveAdminPlatformConfig()" data-i18n="admSaveConfigBtn" class="interactive-btn w-full py-2.5 rounded-xl gold-grad text-slate-950 font-black">حفظ إعدادات المنصة</button>
         </div>
@@ -606,18 +592,18 @@
         walletDepositBtn: "+ إيداع (حد أدنى $10)",
         walletWithdrawBtn: "سحب (حد أدنى $10)",
         closeBtn: "إغلاق ✕",
-        networkMethodLbl: "الشبكة / وسيلة الدفع",
+        networkMethodLbl: "وسيلة التعامل",
         amountUsdLbl: "المبلغ ($)",
         sessionTimerLbl: "مدة جلسة الدفع:",
-        copyAddressBtn: "نسخ العنوان / الحساب",
+        copyAddressBtn: "نسخ العنوان / رقم الحساب",
         notSetYet: "غير محدد حالياً",
         proofImageLbl: "إضافة صورة إثبات التحويل",
         imageSelected: "تم اختيار الصورة",
         removeImageBtn: "إزالة الصورة",
         submitDepositBtn: "إرسال طلب الإيداع للمراجعة",
-        withdrawDestLbl: "عنوان المحفظة أو حساب InstaPay للاستلام",
+        withdrawDestLbl: "عنوان USDT أو رقم الحساب البنكي للاستلام",
         useSavedBtn: "استخدام المحفوظ",
-        withdrawDestPh: "عنوان المحفظة أو حساب InstaPay",
+        withdrawDestPh: "عنوان USDT أو رقم الحساب البنكي",
         submitWithdrawBtn: "تأكيد طلب السحب",
         txTableTitle: "جدول العمليات (إيداع • سحب • عقود)",
         txTableSub: "عرض واضح لحالة الإيداعات والسحوبات والعناوين والمبالغ",
@@ -630,12 +616,10 @@
         kycDocLbl: "رقم الهوية / جواز السفر أو رابط وثيقة التوثيق",
         kycDocPh: "أدخل بيانات أو رابط التوثيق",
         sendKycBtn: "إرسال KYC",
-        savedWalletsTitle: "عناوين وحسابات السحب الافتراضية المحفوظة",
+        savedWalletsTitle: "بيانات السحب الافتراضية المحفوظة",
         savedUsdtPh: "عنوان USDT (TRC20) الافتراضي",
-        savedBtcPh: "عنوان Bitcoin (BTC) الافتراضي",
-        savedEthPh: "عنوان Ethereum (ETH) الافتراضي",
-        savedInstapayPh: "حساب أو رقم InstaPay الافتراضي (مصر)",
-        saveWalletsBtn: "حفظ عناوين السحب",
+        savedBankPh: "رقم الحساب البنكي الافتراضي",
+        saveWalletsBtn: "حفظ بيانات السحب",
         securityTitle: "الأمان والتنبيهات",
         alertsToggleLbl: "تنبيهات العوائد واقتراب انتهاء العقود",
         newPassPh: "كلمة مرور جديدة (6 أحرف فأكثر)",
@@ -651,13 +635,11 @@
         admActiveLbl: "عقود نشطة",
         admDepLbl: "إيداعات معتمدة",
         admWdLbl: "سحوبات معتمدة",
-        admConfigTitle: "إعدادات المحافظ، InstaPay، والإعلان العام (مباشر)",
+        admConfigTitle: "إعدادات USDT، التحويل البنكي، والإعلان العام (مباشر)",
         admAnnLbl: "الإعلان العام أعلى المنصة (اتركه فارغاً لإخفائه)",
         admAnnPh: "مثال: صرف العوائد اليومية مستمر ومؤتمت بالكامل",
         admAddrUsdtPh: "عنوان USDT (TRC20)",
-        admAddrBtcPh: "عنوان Bitcoin (BTC)",
-        admAddrEthPh: "عنوان Ethereum (ETH)",
-        admAddrInstapayPh: "حساب InstaPay / اسم المستلم (مصر)",
+        admAddrBankPh: "رقم الحساب البنكي وبيانات التحويل",
         admSaveConfigBtn: "حفظ إعدادات المنصة",
         admContractsTitle: "إدارة العقود والعوائد اليومية",
         admContractsSub: "صرف اليوم المستحق مع إرجاع رأس المال تلقائياً في اليوم الأخير للباقات المدفوعة",
@@ -719,18 +701,18 @@
         walletDepositBtn: "+ Deposit ($10 min)",
         walletWithdrawBtn: "Withdraw ($10 min)",
         closeBtn: "Close ✕",
-        networkMethodLbl: "Network / Payment Method",
+        networkMethodLbl: "Payment Method",
         amountUsdLbl: "Amount ($)",
         sessionTimerLbl: "Payment Session Timer:",
-        copyAddressBtn: "Copy Address / Account",
+        copyAddressBtn: "Copy Address / Account Number",
         notSetYet: "Not configured yet",
         proofImageLbl: "Upload Transfer Proof Image",
         imageSelected: "Image selected",
         removeImageBtn: "Remove Image",
         submitDepositBtn: "Submit Deposit Request for Review",
-        withdrawDestLbl: "Destination Wallet Address or InstaPay Account",
+        withdrawDestLbl: "USDT Address or Bank Account Number",
         useSavedBtn: "Use Saved",
-        withdrawDestPh: "Wallet address or InstaPay account",
+        withdrawDestPh: "USDT address or bank account number",
         submitWithdrawBtn: "Confirm Withdrawal Request",
         txTableTitle: "Transactions Table (Deposits • Withdrawals • Contracts)",
         txTableSub: "Clear status for deposits, withdrawals, destinations, and amounts",
@@ -743,12 +725,10 @@
         kycDocLbl: "ID / Passport Number or Verification Document Link",
         kycDocPh: "Enter verification details or link",
         sendKycBtn: "Submit KYC",
-        savedWalletsTitle: "Saved Default Withdrawal Addresses & Accounts",
+        savedWalletsTitle: "Saved Default Withdrawal Details",
         savedUsdtPh: "Default USDT (TRC20) Address",
-        savedBtcPh: "Default Bitcoin (BTC) Address",
-        savedEthPh: "Default Ethereum (ETH) Address",
-        savedInstapayPh: "Default InstaPay Account / Number (Egypt)",
-        saveWalletsBtn: "Save Withdrawal Addresses",
+        savedBankPh: "Default Bank Account Number",
+        saveWalletsBtn: "Save Withdrawal Details",
         securityTitle: "Security & Notifications",
         alertsToggleLbl: "Payout alerts & contract completion reminders",
         newPassPh: "New password (6+ characters)",
@@ -764,13 +744,11 @@
         admActiveLbl: "Active Contracts",
         admDepLbl: "Approved Deposits",
         admWdLbl: "Approved Withdrawals",
-        admConfigTitle: "Wallets, InstaPay & Global Announcement (Live)",
+        admConfigTitle: "USDT, Bank Account & Global Announcement (Live)",
         admAnnLbl: "Top Global Banner (Leave empty to hide)",
         admAnnPh: "Example: Daily payouts are active and automated",
         admAddrUsdtPh: "USDT (TRC20) Address",
-        admAddrBtcPh: "Bitcoin (BTC) Address",
-        admAddrEthPh: "Ethereum (ETH) Address",
-        admAddrInstapayPh: "InstaPay Account / Recipient Name (Egypt)",
+        admAddrBankPh: "Bank Account Number & Transfer Details",
         admSaveConfigBtn: "Save Platform Settings",
         admContractsTitle: "Contracts & Daily Payout Management",
         admContractsSub: "Pay due day with automatic principal return on final day for paid plans",
@@ -846,12 +824,9 @@
     let userProfile = null;
     let platformConfig = {
       announcement: "",
-      egpRate: 50,
       wallets: {
         USDT_TRC20: "TExampleTRC20AddressHere123456789",
-        BTC: "bc1qexamplebtcaddresshere123456",
-        ETH: "0xExampleEthereumAddressHere123456",
-        INSTAPAY: "ExampleInstaPayHandle@instapay"
+        BANK_ACCOUNT: "Account #: 0000-0000-0000"
       }
     };
     let userContracts = [];
@@ -873,11 +848,6 @@
     const planName = (p) => (currentLang === "en" ? p.nameEn : p.nameAr);
     const planBadge = (p) => (currentLang === "en" ? p.badgeEn : p.badgeAr);
     const fmtMoney = (n) => `$${Number(n || 0).toFixed(2)}`;
-    const fmtEgp = (usd) => {
-      const rate = Number(platformConfig.egpRate || 50);
-      const val = (Number(usd || 0) * rate).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      return currentLang === "en" ? `≈ ${val} EGP` : `≈ ${val} ج.م`;
-    };
     const todayKey = () => new Date().toISOString().slice(0, 10);
 
     function applyLanguage() {
@@ -900,22 +870,27 @@
         withdrawAddress: "withdrawDestPh",
         kycDocInput: "kycDocPh",
         savedUsdtAddr: "savedUsdtPh",
-        savedBtcAddr: "savedBtcPh",
-        savedEthAddr: "savedEthPh",
-        savedInstapayAddr: "savedInstapayPh",
+        savedBankAddr: "savedBankPh",
         newPassInput: "newPassPh",
         ticketSubject: "ticketSubPh",
         ticketMessage: "ticketMsgPh",
         admAnnouncement: "admAnnPh",
         admAddrUsdt: "admAddrUsdtPh",
-        admAddrBtc: "admAddrBtcPh",
-        admAddrEth: "admAddrEthPh",
-        admAddrInstapay: "admAddrInstapayPh"
+        admAddrBank: "admAddrBankPh"
       };
       Object.entries(phMap).forEach(([id, k]) => {
         const el = document.getElementById(id);
         if (el) el.placeholder = t(k);
       });
+
+      const netSel = document.getElementById("txNetwork");
+      if (netSel) {
+        const curNet = netSel.value || "USDT_TRC20";
+        netSel.innerHTML = currentLang === "en"
+          ? `<option value="USDT_TRC20">USDT (TRC20)</option><option value="BANK_ACCOUNT">Bank Transfer (Account #)</option>`
+          : `<option value="USDT_TRC20">USDT (TRC20)</option><option value="BANK_ACCOUNT">تحويل بنكي (رقم الحساب)</option>`;
+        netSel.value = curNet === "BANK_ACCOUNT" ? "BANK_ACCOUNT" : "USDT_TRC20";
+      }
 
       const prevCalcVal = document.getElementById("calcPlanSelect")?.value || "p100";
       const calcSel = document.getElementById("calcPlanSelect");
@@ -937,7 +912,6 @@
       renderContractsUI();
       renderTransactionsUI();
       renderDepositInfo();
-      updateWalletAmountEgpPreview();
     }
 
     function toggleLanguage() {
@@ -993,7 +967,7 @@
             pendingProfit: 0,
             kycStatus: "unverified",
             kycDoc: "",
-            savedWallets: { USDT_TRC20: "", BTC: "", ETH: "", INSTAPAY: "" },
+            savedWallets: { USDT_TRC20: "", BANK_ACCOUNT: "" },
             alertsEnabled: true,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           });
@@ -1036,7 +1010,7 @@
           pendingProfit: 0,
           kycStatus: "unverified",
           kycDoc: "",
-          savedWallets: { USDT_TRC20: "", BTC: "", ETH: "", INSTAPAY: "" },
+          savedWallets: { USDT_TRC20: "", BANK_ACCOUNT: "" },
           alertsEnabled: true,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
@@ -1047,13 +1021,11 @@
           platformConfig = {
             ...platformConfig,
             ...doc.data(),
-            egpRate: Number(doc.data().egpRate || platformConfig.egpRate || 50),
             wallets: { ...platformConfig.wallets, ...(doc.data().wallets || {}) }
           };
         }
         renderPlatformConfig();
         renderUserUI();
-        updateWalletAmountEgpPreview();
       }));
 
       unsubs.push(userRef.onSnapshot((doc) => {
@@ -1141,33 +1113,21 @@
       banner.textContent = msg;
       banner.classList.toggle("hidden", !msg);
 
-      const rate = Number(platformConfig.egpRate || 50);
-      const egpEl = document.getElementById("priceEGP");
-      if (egpEl) egpEl.textContent = rate.toFixed(2);
-
       if ((currentUser?.email || "").toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
         document.getElementById("admAnnouncement").value = platformConfig.announcement || "";
         document.getElementById("admAddrUsdt").value = platformConfig.wallets?.USDT_TRC20 || "";
-        document.getElementById("admAddrBtc").value = platformConfig.wallets?.BTC || "";
-        document.getElementById("admAddrEth").value = platformConfig.wallets?.ETH || "";
-        document.getElementById("admAddrInstapay").value = platformConfig.wallets?.INSTAPAY || "";
-        document.getElementById("admEgpRate").value = rate;
+        document.getElementById("admAddrBank").value = platformConfig.wallets?.BANK_ACCOUNT || "";
       }
       renderDepositInfo();
     }
 
     async function saveAdminPlatformConfig() {
-      const rateVal = Number(document.getElementById("admEgpRate").value);
-      const validRate = !isNaN(rateVal) && rateVal > 0 ? rateVal : 50;
       try {
         await db.collection("config").doc("platform").set({
           announcement: document.getElementById("admAnnouncement").value.trim(),
-          egpRate: validRate,
           wallets: {
             USDT_TRC20: document.getElementById("admAddrUsdt").value.trim(),
-            BTC: document.getElementById("admAddrBtc").value.trim(),
-            ETH: document.getElementById("admAddrEth").value.trim(),
-            INSTAPAY: document.getElementById("admAddrInstapay").value.trim()
+            BANK_ACCOUNT: document.getElementById("admAddrBank").value.trim()
           },
           updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         }, { merge: true });
@@ -1260,9 +1220,7 @@
       document.getElementById("hdrName").textContent = userProfile.name || t("defaultUser");
       document.getElementById("hdrUidShort").textContent = `#${(currentUser.uid || "").slice(0, 6)}`;
       document.getElementById("homeBalance").textContent = fmtMoney(bal);
-      document.getElementById("homeBalanceEgp").textContent = fmtEgp(bal);
       document.getElementById("walletBalance").textContent = fmtMoney(bal);
-      document.getElementById("walletBalanceEgp").textContent = fmtEgp(bal);
       document.getElementById("homePendingProfit").textContent = fmtMoney(pending);
       document.getElementById("collectBtn").disabled = pending <= 0;
       document.getElementById("reinvestBtn").disabled = (bal + pending) < 100;
@@ -1315,9 +1273,7 @@
       document.getElementById("setEmail").textContent = userProfile.email || "";
       document.getElementById("setUid").textContent = currentUser.uid || "";
       document.getElementById("savedUsdtAddr").value = userProfile.savedWallets?.USDT_TRC20 || "";
-      document.getElementById("savedBtcAddr").value = userProfile.savedWallets?.BTC || "";
-      document.getElementById("savedEthAddr").value = userProfile.savedWallets?.ETH || "";
-      document.getElementById("savedInstapayAddr").value = userProfile.savedWallets?.INSTAPAY || "";
+      document.getElementById("savedBankAddr").value = userProfile.savedWallets?.BANK_ACCOUNT || "";
       document.getElementById("prefAlerts").checked = userProfile.alertsEnabled !== false;
     }
 
@@ -1431,7 +1387,6 @@
               <span class="text-[11px] px-2.5 py-0.5 rounded-full ${isFeatured ? "bg-amber-400/20 text-amber-200" : "bg-amber-500/15 text-amber-300"} font-extrabold">${daysTxt}</span>
             </div>
             <div class="text-2xl font-black text-amber-400">${priceTxt}</div>
-            ${p.price > 0 ? `<div class="text-[11px] text-amber-200/75 font-bold">${fmtEgp(p.price)}</div>` : ""}
             <div class="text-xs text-slate-300 space-y-1 bg-slate-950/65 p-3 rounded-2xl border border-white/5">
               <div>${t("calcDailyLbl")} <b class="text-emerald-400">${fmtMoney(p.dailyFixed)}</b></div>
               <div>${t("calcProfitLbl")} <b class="text-white">${fmtMoney(p.totalProfit)}</b></div>
@@ -1580,7 +1535,6 @@
       document.getElementById("walletBoxTitle").textContent = isDep ? t("walletDepositBtn") : t("walletWithdrawBtn");
       document.getElementById("depositDetails").classList.toggle("hidden", !isDep);
       document.getElementById("withdrawDetails").classList.toggle("hidden", isDep);
-      updateWalletAmountEgpPreview();
       if (isDep) {
         renderDepositInfo();
         startDepositTimer();
@@ -1595,21 +1549,15 @@
       clearInterval(depositInterval);
     }
 
-    function updateWalletAmountEgpPreview() {
-      const amt = Number(document.getElementById("txAmount")?.value || 0);
-      const el = document.getElementById("txAmountEgpPreview");
-      if (el) el.textContent = fmtEgp(amt);
-    }
-
     function renderDepositInfo() {
       const net = document.getElementById("txNetwork")?.value || "USDT_TRC20";
       document.getElementById("depositAddress").textContent = platformConfig.wallets?.[net] || t("notSetYet");
       const tip = document.getElementById("methodTipBanner");
       if (tip) {
-        if (net === "INSTAPAY") {
+        if (net === "BANK_ACCOUNT") {
           tip.textContent = currentLang === "en"
-            ? "InstaPay Egypt: Instant transfer supported; attach a clear transfer screenshot for review."
-            : "إنستا باي مصر: التحويل لحظي عبر التطبيق، يرجى إرفاق صورة واضحة لإثبات التحويل.";
+            ? "Bank Transfer: Send to the account number above and attach a clear transfer proof image."
+            : "تحويل بنكي: حوّل إلى رقم الحساب الموضح أعلاه وأرفق صورة واضحة لإثبات التحويل.";
           tip.classList.remove("hidden");
         } else {
           tip.classList.add("hidden");
@@ -1694,7 +1642,6 @@
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         document.getElementById("txAmount").value = "";
-        updateWalletAmountEgpPreview();
         clearDepositImage();
         closeWalletModal();
         showToast(currentLang === "en" ? "Deposit request submitted" : "تم إرسال طلب الإيداع والصورة بنجاح وجاري المراجعة", "success");
@@ -1708,7 +1655,7 @@
       const network = document.getElementById("txNetwork").value;
       const address = document.getElementById("withdrawAddress").value.trim();
       if (isNaN(amount) || amount < MIN_AMOUNT) return showToast(currentLang === "en" ? `Minimum withdrawal is ${fmtMoney(MIN_AMOUNT)}` : `الحد الأدنى للسحب ${fmtMoney(MIN_AMOUNT)}`, "error");
-      if (!address) return showToast(currentLang === "en" ? "Please enter destination address or InstaPay account" : "يرجى إدخال عنوان المحفظة أو حساب InstaPay", "error");
+      if (!address) return showToast(currentLang === "en" ? "Please enter USDT address or bank account number" : "يرجى إدخال عنوان USDT أو رقم الحساب البنكي", "error");
       try {
         await db.runTransaction(async (tx) => {
           const uRef = db.collection("users").doc(currentUser.uid);
@@ -1729,7 +1676,6 @@
         });
         document.getElementById("txAmount").value = "";
         document.getElementById("withdrawAddress").value = "";
-        updateWalletAmountEgpPreview();
         closeWalletModal();
         showToast(currentLang === "en" ? "Withdrawal request submitted" : "تم تسجيل طلب السحب وخصم المبلغ لحين الاعتماد", "success");
       } catch (e) {
@@ -1784,8 +1730,8 @@
           ? "text-sky-300"
           : "text-emerald-400";
         const prefix = isWithdraw ? "-" : isDeposit ? "+" : "";
-        const netLabel = currentLang === "en" ? "Method" : "الوسيلة / الشبكة";
-        const destLabel = currentLang === "en" ? "Destination" : "حساب / محفظة السحب";
+        const netLabel = currentLang === "en" ? "Method" : "وسيلة التعامل";
+        const destLabel = currentLang === "en" ? "Destination" : "عنوان / رقم حساب السحب";
 
         return `
           <div class="bg-slate-950/90 p-3.5 rounded-2xl border ${isWithdraw ? "border-rose-400/20" : isDeposit ? "border-sky-400/20" : "border-white/5"} space-y-2">
@@ -1794,10 +1740,7 @@
                 <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black border shrink-0 ${kindBadgeCls}">${r.kindLabel}</span>
                 <span class="text-white font-extrabold truncate">${r.title}</span>
               </div>
-              <div class="text-right shrink-0">
-                <div class="text-sm font-black ${amountCls}">${prefix}${fmtMoney(r.amount)}</div>
-                <div class="text-[10px] text-slate-400">${fmtEgp(r.amount)}</div>
-              </div>
+              <div class="text-sm font-black shrink-0 ${amountCls}">${prefix}${fmtMoney(r.amount)}</div>
             </div>
             <div class="flex items-center justify-between gap-2 text-[11px] text-slate-400">
               <span>${r.network ? `${netLabel}: <b class="text-slate-200">${r.network}</b>` : ""}</span>
@@ -1849,12 +1792,10 @@
         await db.collection("users").doc(currentUser.uid).update({
           savedWallets: {
             USDT_TRC20: document.getElementById("savedUsdtAddr").value.trim(),
-            BTC: document.getElementById("savedBtcAddr").value.trim(),
-            ETH: document.getElementById("savedEthAddr").value.trim(),
-            INSTAPAY: document.getElementById("savedInstapayAddr").value.trim()
+            BANK_ACCOUNT: document.getElementById("savedBankAddr").value.trim()
           }
         });
-        showToast(currentLang === "en" ? "Saved withdrawal addresses" : "تم حفظ عناوين السحب الافتراضية", "success");
+        showToast(currentLang === "en" ? "Saved withdrawal details" : "تم حفظ بيانات السحب الافتراضية", "success");
       } catch (e) {
         showToast("Error", "error");
       }
@@ -2121,7 +2062,6 @@
             <b class="text-amber-300">${String(r.type || "").toUpperCase()} ${r.amount ? fmtMoney(r.amount) : ""}</b>
             <span class="text-[11px] text-slate-400">${r.userEmail}</span>
           </div>
-          ${r.amount ? `<div class="text-[11px] text-emerald-300/90 font-bold">${fmtEgp(r.amount)}</div>` : ""}
           ${r.network ? `<div class="text-[11px] text-slate-300">${r.network}</div>` : ""}
           ${r.address ? `<div class="text-[11px] font-mono text-slate-300 break-all">${r.address}</div>` : ""}
           ${r.proofImage ? `<div class="space-y-1"><img src="${r.proofImage}" alt="Proof" class="max-h-52 rounded-xl border border-white/10 bg-slate-900 object-contain" /></div>` : ""}
