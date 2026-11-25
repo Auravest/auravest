@@ -9,6 +9,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     * { font-family: 'Cairo', sans-serif; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
@@ -59,6 +60,10 @@
     }
     .live-dot {
       animation: pulseSoft 1.8s infinite;
+    }
+    #depositQrCode img, #depositQrCode canvas {
+      margin: 0 auto;
+      border-radius: 10px;
     }
     ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-thumb { background: #334155; border-radius: 999px; }
@@ -306,6 +311,8 @@
               <label data-i18n="networkMethodLbl" class="text-slate-400 block mb-1">وسيلة التعامل</label>
               <select id="txNetwork" onchange="renderDepositInfo()" class="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2">
                 <option value="USDT_TRC20">USDT (TRC20)</option>
+                <option value="BTC">Bitcoin (SegWit)</option>
+                <option value="ETH_ERC20">Ethereum (ERC20)</option>
                 <option value="BANK_ACCOUNT">تحويل بنكي (رقم الحساب)</option>
               </select>
             </div>
@@ -317,11 +324,17 @@
 
           <div id="methodTipBanner" class="hidden bg-sky-500/10 border border-sky-400/30 rounded-xl px-3 py-2 text-[11px] text-sky-200 font-bold"></div>
 
-          <div id="depositDetails" class="space-y-2.5 bg-slate-950/90 p-3.5 rounded-2xl border border-amber-400/15 text-xs">
+          <div id="depositDetails" class="space-y-3 bg-slate-950/90 p-3.5 rounded-2xl border border-amber-400/15 text-xs">
             <div class="flex items-center justify-between">
               <span class="text-amber-300 font-extrabold"><span data-i18n="sessionTimerLbl">مدة جلسة الدفع:</span> <span id="depositTimer">15:00</span></span>
               <button type="button" onclick="copyText(document.getElementById('depositAddress').textContent)" data-i18n="copyAddressBtn" class="text-amber-400 font-bold underline">نسخ العنوان / رقم الحساب</button>
             </div>
+
+            <!-- باركود QR Code -->
+            <div id="depositQrWrap" class="bg-white p-3 rounded-2xl w-fit mx-auto text-center shadow-lg">
+              <div id="depositQrCode"></div>
+            </div>
+
             <div id="depositAddress" class="font-mono text-[11px] bg-slate-900 p-2.5 rounded-xl break-all text-slate-200 border border-white/5"></div>
 
             <div>
@@ -342,10 +355,10 @@
           <div id="withdrawDetails" class="hidden space-y-2.5 text-xs">
             <div>
               <div class="flex items-center justify-between mb-1">
-                <label data-i18n="withdrawDestLbl" class="text-slate-400">عنوان USDT أو رقم الحساب البنكي للاستلام</label>
+                <label data-i18n="withdrawDestLbl" class="text-slate-400">عنوان المحفظة أو رقم الحساب البنكي للاستلام</label>
                 <button type="button" onclick="fillSavedWallet()" data-i18n="useSavedBtn" class="text-amber-400 underline">استخدام المحفوظ</button>
               </div>
-              <input id="withdrawAddress" type="text" placeholder="عنوان USDT أو رقم الحساب البنكي" class="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2" />
+              <input id="withdrawAddress" type="text" placeholder="عنوان المحفظة أو رقم الحساب البنكي" class="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2" />
             </div>
             <button type="button" onclick="submitWithdraw()" data-i18n="submitWithdrawBtn" class="interactive-btn w-full py-2.5 rounded-xl emerald-grad text-slate-950 font-black">تأكيد طلب السحب</button>
           </div>
@@ -401,6 +414,8 @@
           <h3 data-i18n="savedWalletsTitle" class="text-sm font-black text-white">بيانات السحب الافتراضية المحفوظة</h3>
           <div class="space-y-2">
             <input id="savedUsdtAddr" type="text" placeholder="عنوان USDT (TRC20) الافتراضي" class="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2" />
+            <input id="savedBtcAddr" type="text" placeholder="عنوان Bitcoin الافتراضي" class="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2" />
+            <input id="savedEthAddr" type="text" placeholder="عنوان Ethereum (ERC20) الافتراضي" class="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2" />
             <input id="savedBankAddr" type="text" placeholder="رقم الحساب البنكي الافتراضي" class="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2" />
             <button type="button" onclick="saveDefaultWallets()" data-i18n="saveWalletsBtn" class="interactive-btn w-full py-2.5 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-300 font-extrabold">حفظ بيانات السحب</button>
           </div>
@@ -462,13 +477,15 @@
         </div>
 
         <div class="luxury-card rounded-3xl p-4 space-y-3 text-xs border border-amber-400/35">
-          <h3 data-i18n="admConfigTitle" class="text-sm font-black text-amber-400">إعدادات USDT، التحويل البنكي، والإعلان العام (مباشر)</h3>
+          <h3 data-i18n="admConfigTitle" class="text-sm font-black text-amber-400">إعدادات المحافظ، التحويل البنكي، والإعلان العام (مباشر)</h3>
           <div>
             <label data-i18n="admAnnLbl" class="text-slate-400 block mb-1">الإعلان العام أعلى المنصة (اتركه فارغاً لإخفائه)</label>
             <input id="admAnnouncement" type="text" placeholder="مثال: صرف العوائد اليومية مستمر ومؤتمت بالكامل" class="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2" />
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <input id="admAddrUsdt" type="text" placeholder="عنوان USDT (TRC20)" class="bg-slate-950 border border-white/10 rounded-xl px-3 py-2 font-mono text-[11px]" />
+            <input id="admAddrBtc" type="text" placeholder="عنوان Bitcoin" class="bg-slate-950 border border-white/10 rounded-xl px-3 py-2 font-mono text-[11px]" />
+            <input id="admAddrEth" type="text" placeholder="عنوان Ethereum (ERC20)" class="bg-slate-950 border border-white/10 rounded-xl px-3 py-2 font-mono text-[11px]" />
             <input id="admAddrBank" type="text" placeholder="رقم الحساب البنكي وبيانات التحويل" class="bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-[11px]" />
           </div>
           <button type="button" onclick="saveAdminPlatformConfig()" data-i18n="admSaveConfigBtn" class="interactive-btn w-full py-2.5 rounded-xl gold-grad text-slate-950 font-black">حفظ إعدادات المنصة</button>
@@ -601,9 +618,9 @@
         imageSelected: "تم اختيار الصورة",
         removeImageBtn: "إزالة الصورة",
         submitDepositBtn: "إرسال طلب الإيداع للمراجعة",
-        withdrawDestLbl: "عنوان USDT أو رقم الحساب البنكي للاستلام",
+        withdrawDestLbl: "عنوان المحفظة أو رقم الحساب البنكي للاستلام",
         useSavedBtn: "استخدام المحفوظ",
-        withdrawDestPh: "عنوان USDT أو رقم الحساب البنكي",
+        withdrawDestPh: "عنوان المحفظة أو رقم الحساب البنكي",
         submitWithdrawBtn: "تأكيد طلب السحب",
         txTableTitle: "جدول العمليات (إيداع • سحب • عقود)",
         txTableSub: "عرض واضح لحالة الإيداعات والسحوبات والعناوين والمبالغ",
@@ -618,6 +635,8 @@
         sendKycBtn: "إرسال KYC",
         savedWalletsTitle: "بيانات السحب الافتراضية المحفوظة",
         savedUsdtPh: "عنوان USDT (TRC20) الافتراضي",
+        savedBtcPh: "عنوان Bitcoin الافتراضي",
+        savedEthPh: "عنوان Ethereum (ERC20) الافتراضي",
         savedBankPh: "رقم الحساب البنكي الافتراضي",
         saveWalletsBtn: "حفظ بيانات السحب",
         securityTitle: "الأمان والتنبيهات",
@@ -635,10 +654,12 @@
         admActiveLbl: "عقود نشطة",
         admDepLbl: "إيداعات معتمدة",
         admWdLbl: "سحوبات معتمدة",
-        admConfigTitle: "إعدادات USDT، التحويل البنكي، والإعلان العام (مباشر)",
+        admConfigTitle: "إعدادات المحافظ، التحويل البنكي، والإعلان العام (مباشر)",
         admAnnLbl: "الإعلان العام أعلى المنصة (اتركه فارغاً لإخفائه)",
         admAnnPh: "مثال: صرف العوائد اليومية مستمر ومؤتمت بالكامل",
         admAddrUsdtPh: "عنوان USDT (TRC20)",
+        admAddrBtcPh: "عنوان Bitcoin",
+        admAddrEthPh: "عنوان Ethereum (ERC20)",
         admAddrBankPh: "رقم الحساب البنكي وبيانات التحويل",
         admSaveConfigBtn: "حفظ إعدادات المنصة",
         admContractsTitle: "إدارة العقود والعوائد اليومية",
@@ -710,9 +731,9 @@
         imageSelected: "Image selected",
         removeImageBtn: "Remove Image",
         submitDepositBtn: "Submit Deposit Request for Review",
-        withdrawDestLbl: "USDT Address or Bank Account Number",
+        withdrawDestLbl: "Wallet Address or Bank Account Number",
         useSavedBtn: "Use Saved",
-        withdrawDestPh: "USDT address or bank account number",
+        withdrawDestPh: "Wallet address or bank account number",
         submitWithdrawBtn: "Confirm Withdrawal Request",
         txTableTitle: "Transactions Table (Deposits • Withdrawals • Contracts)",
         txTableSub: "Clear status for deposits, withdrawals, destinations, and amounts",
@@ -727,6 +748,8 @@
         sendKycBtn: "Submit KYC",
         savedWalletsTitle: "Saved Default Withdrawal Details",
         savedUsdtPh: "Default USDT (TRC20) Address",
+        savedBtcPh: "Default Bitcoin Address",
+        savedEthPh: "Default Ethereum (ERC20) Address",
         savedBankPh: "Default Bank Account Number",
         saveWalletsBtn: "Save Withdrawal Details",
         securityTitle: "Security & Notifications",
@@ -744,10 +767,12 @@
         admActiveLbl: "Active Contracts",
         admDepLbl: "Approved Deposits",
         admWdLbl: "Approved Withdrawals",
-        admConfigTitle: "USDT, Bank Account & Global Announcement (Live)",
+        admConfigTitle: "Wallets, Bank Account & Global Announcement (Live)",
         admAnnLbl: "Top Global Banner (Leave empty to hide)",
         admAnnPh: "Example: Daily payouts are active and automated",
         admAddrUsdtPh: "USDT (TRC20) Address",
+        admAddrBtcPh: "Bitcoin Address",
+        admAddrEthPh: "Ethereum (ERC20) Address",
         admAddrBankPh: "Bank Account Number & Transfer Details",
         admSaveConfigBtn: "Save Platform Settings",
         admContractsTitle: "Contracts & Daily Payout Management",
@@ -825,7 +850,9 @@
     let platformConfig = {
       announcement: "",
       wallets: {
-        USDT_TRC20: "TExampleTRC20AddressHere123456789",
+        USDT_TRC20: "TJamY6Pcy8VVTB9BBvh7La42oeEL6Yhibf",
+        BTC: "bc1qnq0egs7qtf4xk084y3l5r9zgygsjar6q237a6m3gxgrq6dw5ya2swrg3qk",
+        ETH_ERC20: "0xc2099ebb0bc3c26de944cd10088bf910b31a29d3",
         BANK_ACCOUNT: "Account #: 0000-0000-0000"
       }
     };
@@ -870,12 +897,16 @@
         withdrawAddress: "withdrawDestPh",
         kycDocInput: "kycDocPh",
         savedUsdtAddr: "savedUsdtPh",
+        savedBtcAddr: "savedBtcPh",
+        savedEthAddr: "savedEthPh",
         savedBankAddr: "savedBankPh",
         newPassInput: "newPassPh",
         ticketSubject: "ticketSubPh",
         ticketMessage: "ticketMsgPh",
         admAnnouncement: "admAnnPh",
         admAddrUsdt: "admAddrUsdtPh",
+        admAddrBtc: "admAddrBtcPh",
+        admAddrEth: "admAddrEthPh",
         admAddrBank: "admAddrBankPh"
       };
       Object.entries(phMap).forEach(([id, k]) => {
@@ -887,9 +918,9 @@
       if (netSel) {
         const curNet = netSel.value || "USDT_TRC20";
         netSel.innerHTML = currentLang === "en"
-          ? `<option value="USDT_TRC20">USDT (TRC20)</option><option value="BANK_ACCOUNT">Bank Transfer (Account #)</option>`
-          : `<option value="USDT_TRC20">USDT (TRC20)</option><option value="BANK_ACCOUNT">تحويل بنكي (رقم الحساب)</option>`;
-        netSel.value = curNet === "BANK_ACCOUNT" ? "BANK_ACCOUNT" : "USDT_TRC20";
+          ? `<option value="USDT_TRC20">USDT (TRC20)</option><option value="BTC">Bitcoin (SegWit)</option><option value="ETH_ERC20">Ethereum (ERC20)</option><option value="BANK_ACCOUNT">Bank Transfer (Account #)</option>`
+          : `<option value="USDT_TRC20">USDT (TRC20)</option><option value="BTC">Bitcoin (SegWit)</option><option value="ETH_ERC20">Ethereum (ERC20)</option><option value="BANK_ACCOUNT">تحويل بنكي (رقم الحساب)</option>`;
+        netSel.value = ["USDT_TRC20", "BTC", "ETH_ERC20", "BANK_ACCOUNT"].includes(curNet) ? curNet : "USDT_TRC20";
       }
 
       const prevCalcVal = document.getElementById("calcPlanSelect")?.value || "p100";
@@ -967,7 +998,7 @@
             pendingProfit: 0,
             kycStatus: "unverified",
             kycDoc: "",
-            savedWallets: { USDT_TRC20: "", BANK_ACCOUNT: "" },
+            savedWallets: { USDT_TRC20: "", BTC: "", ETH_ERC20: "", BANK_ACCOUNT: "" },
             alertsEnabled: true,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           });
@@ -1010,7 +1041,7 @@
           pendingProfit: 0,
           kycStatus: "unverified",
           kycDoc: "",
-          savedWallets: { USDT_TRC20: "", BANK_ACCOUNT: "" },
+          savedWallets: { USDT_TRC20: "", BTC: "", ETH_ERC20: "", BANK_ACCOUNT: "" },
           alertsEnabled: true,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
@@ -1018,10 +1049,18 @@
 
       unsubs.push(db.collection("config").doc("platform").onSnapshot((doc) => {
         if (doc.exists) {
+          const d = doc.data() || {};
           platformConfig = {
             ...platformConfig,
-            ...doc.data(),
-            wallets: { ...platformConfig.wallets, ...(doc.data().wallets || {}) }
+            ...d,
+            wallets: {
+              ...platformConfig.wallets,
+              ...(d.wallets || {}),
+              USDT_TRC20: (d.wallets?.USDT_TRC20 || platformConfig.wallets.USDT_TRC20),
+              BTC: (d.wallets?.BTC || platformConfig.wallets.BTC),
+              ETH_ERC20: (d.wallets?.ETH_ERC20 || platformConfig.wallets.ETH_ERC20),
+              BANK_ACCOUNT: (d.wallets?.BANK_ACCOUNT || platformConfig.wallets.BANK_ACCOUNT)
+            }
           };
         }
         renderPlatformConfig();
@@ -1116,6 +1155,8 @@
       if ((currentUser?.email || "").toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
         document.getElementById("admAnnouncement").value = platformConfig.announcement || "";
         document.getElementById("admAddrUsdt").value = platformConfig.wallets?.USDT_TRC20 || "";
+        document.getElementById("admAddrBtc").value = platformConfig.wallets?.BTC || "";
+        document.getElementById("admAddrEth").value = platformConfig.wallets?.ETH_ERC20 || "";
         document.getElementById("admAddrBank").value = platformConfig.wallets?.BANK_ACCOUNT || "";
       }
       renderDepositInfo();
@@ -1127,6 +1168,8 @@
           announcement: document.getElementById("admAnnouncement").value.trim(),
           wallets: {
             USDT_TRC20: document.getElementById("admAddrUsdt").value.trim(),
+            BTC: document.getElementById("admAddrBtc").value.trim(),
+            ETH_ERC20: document.getElementById("admAddrEth").value.trim(),
             BANK_ACCOUNT: document.getElementById("admAddrBank").value.trim()
           },
           updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1273,6 +1316,8 @@
       document.getElementById("setEmail").textContent = userProfile.email || "";
       document.getElementById("setUid").textContent = currentUser.uid || "";
       document.getElementById("savedUsdtAddr").value = userProfile.savedWallets?.USDT_TRC20 || "";
+      document.getElementById("savedBtcAddr").value = userProfile.savedWallets?.BTC || "";
+      document.getElementById("savedEthAddr").value = userProfile.savedWallets?.ETH_ERC20 || "";
       document.getElementById("savedBankAddr").value = userProfile.savedWallets?.BANK_ACCOUNT || "";
       document.getElementById("prefAlerts").checked = userProfile.alertsEnabled !== false;
     }
@@ -1549,15 +1594,51 @@
       clearInterval(depositInterval);
     }
 
+    function renderQrCode(value) {
+      const wrap = document.getElementById("depositQrWrap");
+      const box = document.getElementById("depositQrCode");
+      if (!wrap || !box) return;
+      box.innerHTML = "";
+      const clean = (value || "").trim();
+      if (!clean || clean === t("notSetYet")) {
+        wrap.classList.add("hidden");
+        return;
+      }
+      wrap.classList.remove("hidden");
+      if (typeof QRCode !== "undefined") {
+        new QRCode(box, {
+          text: clean,
+          width: 156,
+          height: 156,
+          colorDark: "#050811",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      }
+    }
+
     function renderDepositInfo() {
       const net = document.getElementById("txNetwork")?.value || "USDT_TRC20";
-      document.getElementById("depositAddress").textContent = platformConfig.wallets?.[net] || t("notSetYet");
+      const addr = platformConfig.wallets?.[net] || t("notSetYet");
+      document.getElementById("depositAddress").textContent = addr;
+      renderQrCode(addr);
+
       const tip = document.getElementById("methodTipBanner");
       if (tip) {
         if (net === "BANK_ACCOUNT") {
           tip.textContent = currentLang === "en"
             ? "Bank Transfer: Send to the account number above and attach a clear transfer proof image."
             : "تحويل بنكي: حوّل إلى رقم الحساب الموضح أعلاه وأرفق صورة واضحة لإثبات التحويل.";
+          tip.classList.remove("hidden");
+        } else if (net === "BTC") {
+          tip.textContent = currentLang === "en"
+            ? "Bitcoin Network (SegWit): Send only BTC to this address and scan the QR code if needed."
+            : "شبكة Bitcoin (SegWit): أرسل عملة BTC فقط إلى هذا العنوان أو امسح الباركود مباشرة.";
+          tip.classList.remove("hidden");
+        } else if (net === "ETH_ERC20") {
+          tip.textContent = currentLang === "en"
+            ? "Ethereum Network (ERC20): Send via ERC20 network and attach transfer proof."
+            : "شبكة Ethereum (ERC20): أرسل عبر شبكة ERC20 وأرفق صورة إثبات التحويل.";
           tip.classList.remove("hidden");
         } else {
           tip.classList.add("hidden");
@@ -1655,7 +1736,7 @@
       const network = document.getElementById("txNetwork").value;
       const address = document.getElementById("withdrawAddress").value.trim();
       if (isNaN(amount) || amount < MIN_AMOUNT) return showToast(currentLang === "en" ? `Minimum withdrawal is ${fmtMoney(MIN_AMOUNT)}` : `الحد الأدنى للسحب ${fmtMoney(MIN_AMOUNT)}`, "error");
-      if (!address) return showToast(currentLang === "en" ? "Please enter USDT address or bank account number" : "يرجى إدخال عنوان USDT أو رقم الحساب البنكي", "error");
+      if (!address) return showToast(currentLang === "en" ? "Please enter wallet address or bank account number" : "يرجى إدخال عنوان المحفظة أو رقم الحساب البنكي", "error");
       try {
         await db.runTransaction(async (tx) => {
           const uRef = db.collection("users").doc(currentUser.uid);
@@ -1792,6 +1873,8 @@
         await db.collection("users").doc(currentUser.uid).update({
           savedWallets: {
             USDT_TRC20: document.getElementById("savedUsdtAddr").value.trim(),
+            BTC: document.getElementById("savedBtcAddr").value.trim(),
+            ETH_ERC20: document.getElementById("savedEthAddr").value.trim(),
             BANK_ACCOUNT: document.getElementById("savedBankAddr").value.trim()
           }
         });
