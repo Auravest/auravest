@@ -369,7 +369,7 @@
           <div class="flex items-center justify-between gap-2 flex-wrap">
             <div>
               <h3 data-i18n="txTableTitle" class="text-sm font-black text-white">جدول العمليات (إيداع • سحب • عقود)</h3>
-              <p data-i18n="txTableSub" class="text-[11px] text-slate-400">عرض واضح لحالة الإيداعات والسحوبات والعناوين والمبالغ</p>
+              <p data-i18n="txTableSub" class="text-[11px] text-slate-400">عرض واضح لحالة الإيداعات والسحوبات والمبالغ</p>
             </div>
             <span class="text-[11px] px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-300 font-extrabold" id="txTableCountBadge">0 عملية</span>
           </div>
@@ -472,7 +472,7 @@
           </div>
           <div class="luxury-card rounded-2xl p-3">
             <div data-i18n="admWdLbl" class="text-slate-400">سحوبات معتمدة</div>
-            <div id="admTotalWithdraws" class="text-lg font-black text-rose-400 mt-1">$0</div>
+            <div id="admTotalWithdraws" class="text-lg font-black text-violet-400 mt-1">$0</div>
           </div>
         </div>
 
@@ -623,7 +623,7 @@
         withdrawDestPh: "عنوان المحفظة أو رقم الحساب البنكي",
         submitWithdrawBtn: "تأكيد طلب السحب",
         txTableTitle: "جدول العمليات (إيداع • سحب • عقود)",
-        txTableSub: "عرض واضح لحالة الإيداعات والسحوبات والعناوين والمبالغ",
+        txTableSub: "عرض واضح لحالة الإيداعات والسحوبات والمبالغ",
         noTx: "لا توجد عمليات مسجلة بعد.",
         kycCardTitle: "توثيق الهوية (KYC) وبيانات الحساب",
         lblName: "الاسم:",
@@ -736,7 +736,7 @@
         withdrawDestPh: "Wallet address or bank account number",
         submitWithdrawBtn: "Confirm Withdrawal Request",
         txTableTitle: "Transactions Table (Deposits • Withdrawals • Contracts)",
-        txTableSub: "Clear status for deposits, withdrawals, destinations, and amounts",
+        txTableSub: "Clear status for deposits, withdrawals, and amounts",
         noTx: "No transactions recorded yet.",
         kycCardTitle: "Identity Verification (KYC) & Account Info",
         lblName: "Name:",
@@ -956,7 +956,7 @@
       const styles = {
         info: "bg-slate-900 text-amber-100 border-amber-400/30",
         success: "bg-emerald-950 text-emerald-200 border-emerald-500/40",
-        error: "bg-rose-950 text-rose-200 border-rose-500/40"
+        error: "bg-violet-950 text-violet-200 border-violet-500/40"
       };
       el.className = `fixed top-4 left-1/2 -translate-x-1/2 z-[100] px-4 py-2.5 rounded-2xl text-xs font-extrabold shadow-2xl border max-w-[92vw] text-center ${styles[type] || styles.info}`;
       el.textContent = msg;
@@ -1197,12 +1197,12 @@
             ? {
                 pending: { text: "Pending", cls: "bg-amber-500/20 text-amber-300 border-amber-400/35" },
                 approved: { text: "Approved", cls: "bg-emerald-500/20 text-emerald-300 border-emerald-400/35" },
-                rejected: { text: "Rejected", cls: "bg-rose-500/20 text-rose-300 border-rose-400/35" }
+                rejected: { text: "Rejected", cls: "bg-violet-500/20 text-violet-300 border-violet-400/35" }
               }
             : {
                 pending: { text: "قيد المراجعة", cls: "bg-amber-500/20 text-amber-300 border-amber-400/35" },
                 approved: { text: "معتمد", cls: "bg-emerald-500/20 text-emerald-300 border-emerald-400/35" },
-                rejected: { text: "مرفوض", cls: "bg-rose-500/20 text-rose-300 border-rose-400/35" }
+                rejected: { text: "مرفوض", cls: "bg-violet-500/20 text-violet-300 border-violet-400/35" }
               };
           const st = statusLabels[r.status] || statusLabels.pending;
           rows.push({
@@ -1210,7 +1210,6 @@
             kindLabel: isWithdraw ? (currentLang === "en" ? "WITHDRAW" : "سحب") : (currentLang === "en" ? "DEPOSIT" : "إيداع"),
             title: isWithdraw ? (currentLang === "en" ? "Withdrawal Request" : "طلب سحب رصيد") : (currentLang === "en" ? "Deposit Request" : "طلب إيداع رصيد"),
             network: r.network || "",
-            address: r.address || "",
             statusText: st.text,
             statusCls: st.cls,
             amount: Number(r.amount || 0),
@@ -1243,7 +1242,6 @@
           kindLabel: meta.kindLabel,
           title: t.note || meta.defaultTitle,
           network: t.network || "",
-          address: "",
           statusText: currentLang === "en" ? "Completed" : "مكتمل",
           statusCls: "bg-emerald-500/15 text-emerald-300 border-emerald-400/30",
           amount: Number(t.amount || 0),
@@ -1297,13 +1295,13 @@
         ? {
             verified: { text: "KYC Verified", cls: "bg-emerald-500/20 text-emerald-300" },
             pending: { text: "Pending", cls: "bg-amber-500/20 text-amber-300" },
-            rejected: { text: "Rejected", cls: "bg-rose-500/20 text-rose-300" },
+            rejected: { text: "Rejected", cls: "bg-violet-500/20 text-violet-300" },
             unverified: { text: "Unverified", cls: "bg-slate-800 text-slate-300" }
           }
         : {
             verified: { text: "موثق KYC", cls: "bg-emerald-500/20 text-emerald-300" },
             pending: { text: "قيد المراجعة", cls: "bg-amber-500/20 text-amber-300" },
-            rejected: { text: "مرفوض", cls: "bg-rose-500/20 text-rose-300" },
+            rejected: { text: "مرفوض", cls: "bg-violet-500/20 text-violet-300" },
             unverified: { text: "غير موثق", cls: "bg-slate-800 text-slate-300" }
           };
       const kyc = kycMap[userProfile.kycStatus] || kycMap.unverified;
@@ -1801,21 +1799,20 @@
         const isWithdraw = r.kind === "withdraw";
         const isDeposit = r.kind === "deposit";
         const kindBadgeCls = isWithdraw
-          ? "bg-rose-500/20 text-rose-300 border-rose-400/35"
+          ? "bg-violet-500/20 text-violet-300 border-violet-400/35"
           : isDeposit
           ? "bg-sky-500/20 text-sky-300 border-sky-400/35"
           : "bg-amber-500/15 text-amber-300 border-amber-400/30";
         const amountCls = isWithdraw
-          ? "text-rose-300"
+          ? "text-violet-300"
           : isDeposit
           ? "text-sky-300"
           : "text-emerald-400";
         const prefix = isWithdraw ? "-" : isDeposit ? "+" : "";
         const netLabel = currentLang === "en" ? "Method" : "وسيلة التعامل";
-        const destLabel = currentLang === "en" ? "Destination" : "عنوان / رقم حساب السحب";
 
         return `
-          <div class="bg-slate-950/90 p-3.5 rounded-2xl border ${isWithdraw ? "border-rose-400/20" : isDeposit ? "border-sky-400/20" : "border-white/5"} space-y-2">
+          <div class="bg-slate-950/90 p-3.5 rounded-2xl border ${isWithdraw ? "border-violet-400/25" : isDeposit ? "border-sky-400/20" : "border-white/5"} space-y-2">
             <div class="flex items-center justify-between gap-2">
               <div class="flex items-center gap-2 min-w-0">
                 <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black border shrink-0 ${kindBadgeCls}">${r.kindLabel}</span>
@@ -1827,7 +1824,6 @@
               <span>${r.network ? `${netLabel}: <b class="text-slate-200">${r.network}</b>` : ""}</span>
               <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${r.statusCls}">${r.statusText}</span>
             </div>
-            ${r.address ? `<div class="text-[11px] font-mono text-amber-200/90 bg-slate-900/90 px-2.5 py-1.5 rounded-xl break-all border border-white/5">${destLabel}: ${r.address}</div>` : ""}
           </div>
         `;
       }).join("");
@@ -1836,8 +1832,8 @@
     function exportTransactionsCSV() {
       const rowsData = getCombinedLedgerRows();
       if (!rowsData.length) return showToast(currentLang === "en" ? "No transactions to export" : "لا توجد عمليات لتصديرها", "info");
-      const rows = [["Kind", "Title", "Amount", "Method", "Status", "Destination"]];
-      rowsData.forEach((r) => rows.push([r.kindLabel, (r.title || "").replace(/,/g, " "), r.amount || 0, r.network || "", r.statusText || "", r.address || ""]));
+      const rows = [["Kind", "Title", "Amount", "Method", "Status"]];
+      rowsData.forEach((r) => rows.push([r.kindLabel, (r.title || "").replace(/,/g, " "), r.amount || 0, r.network || "", r.statusText || ""]));
       const csv = rows.map((r) => r.join(",")).join("\n");
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
@@ -2151,7 +2147,7 @@
           ${r.kycDoc ? `<div class="text-[11px] text-emerald-300 break-all">${r.kycDoc}</div>` : ""}
           <div class="flex gap-2 pt-1">
             <button type="button" onclick="reviewRequest('${r.id}', 'approve')" class="interactive-btn flex-1 py-1.5 rounded-xl emerald-grad text-slate-950 font-extrabold">✓</button>
-            <button type="button" onclick="reviewRequest('${r.id}', 'reject')" class="interactive-btn flex-1 py-1.5 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 font-bold">✕</button>
+            <button type="button" onclick="reviewRequest('${r.id}', 'reject')" class="interactive-btn flex-1 py-1.5 rounded-xl bg-violet-500/20 border border-violet-500/40 text-violet-300 font-bold">✕</button>
           </div>
         </div>
       `).join("");
