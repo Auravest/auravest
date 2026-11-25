@@ -90,7 +90,7 @@
       <form id="authForm" onsubmit="handleAuth(event)" class="space-y-3.5">
         <div id="nameField" class="hidden">
           <label class="block text-xs text-slate-300 font-bold mb-1">الاسم الكامل</label>
-          <input id="authName" type="text" placeholder="مثال: حسام صلاح" class="w-full bg-slate-950/90 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-amber-400 transition" />
+          <input id="authName" type="text" placeholder="مثال: أحمد محمود" class="w-full bg-slate-950/90 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-amber-400 transition" />
         </div>
         <div>
           <label class="block text-xs text-slate-300 font-bold mb-1">البريد الإلكتروني</label>
@@ -164,7 +164,6 @@
             </div>
           </div>
 
-          <!-- مؤشر دقيق لحالة السحب والتحصيل -->
           <div class="bg-slate-950/75 border border-white/5 rounded-2xl p-3 space-y-1.5 text-xs">
             <div class="flex items-center justify-between gap-2">
               <span class="text-slate-300 font-bold" id="homeWithdrawLabel">جاهزية السحب الفعلي (الحد الأدنى $10.00)</span>
@@ -308,7 +307,6 @@
             </div>
           </div>
 
-          <!-- إيداع بصورة فقط بدون رقم معاملة -->
           <div id="depositDetails" class="space-y-2.5 bg-slate-950/90 p-3.5 rounded-2xl border border-amber-400/15 text-xs">
             <div class="flex items-center justify-between">
               <span class="text-amber-300 font-extrabold">مدة جلسة الدفع: <span id="depositTimer">15:00</span></span>
@@ -343,9 +341,16 @@
           </div>
         </div>
 
-        <div class="luxury-card rounded-3xl p-4 space-y-2.5">
-          <h3 class="text-sm font-black text-white">سجل العمليات المالية</h3>
-          <div id="transactionsList" class="space-y-2 text-xs text-slate-400">لا توجد عمليات مسجلة بعد.</div>
+        <!-- جدول / سجل العمليات مع إبراز السحب والإيداع بوضوح -->
+        <div class="luxury-card rounded-3xl p-4 space-y-3">
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <h3 class="text-sm font-black text-white">جدول العمليات (إيداع • سحب • عقود)</h3>
+              <p class="text-[11px] text-slate-400">عرض واضح لحالة الإيداعات والسحوبات والعناوين والمبالغ</p>
+            </div>
+            <span class="text-[11px] px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-300 font-extrabold" id="txTableCountBadge">0 عملية</span>
+          </div>
+          <div id="transactionsList" class="space-y-2.5 text-xs text-slate-400">لا توجد عمليات مسجلة بعد.</div>
         </div>
       </section>
 
@@ -540,6 +545,7 @@
     };
     let userContracts = [];
     let userTransactions = [];
+    let userRequests = [];
     let userNotifications = [];
     let userTickets = [];
     let adminAllContracts = [];
@@ -675,6 +681,12 @@
         renderUserUI();
       }));
 
+      unsubs.push(db.collection("requests").where("userId", "==", user.uid).onSnapshot((qs) => {
+        userRequests = qs.docs.map((d) => ({ id: d.id, ...d.data() })).sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+        renderTransactionsUI();
+        renderUserUI();
+      }));
+
       unsubs.push(db.collection("notifications").where("userId", "==", user.uid).onSnapshot((qs) => {
         userNotifications = qs.docs.map((d) => ({ id: d.id, ...d.data() })).sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
         renderNotificationsUI();
@@ -762,10 +774,71 @@
       }
     }
 
+    function getCombinedLedgerRows() {
+      const pendingTxTypes = new Set(
+        userRequests
+          .filter((r) => (r.type === "deposit" || r.type === "withdraw") && r.status === "pending")
+          .map((r) => `${r.type}:${Number(r.amount || 0).toFixed(2)}:${r.network || ""}`)
+      );
+
+      const rows = [];
+
+      userRequests
+        .filter((r) => r.type === "deposit" || r.type === "withdraw")
+        .forEach((r) => {
+          const isWithdraw = r.type === "withdraw";
+          const statusLabels = {
+            pending: { text: "قيد المراجعة", cls: "bg-amber-500/20 text-amber-300 border-amber-400/35" },
+            approved: { text: "معتمد", cls: "bg-emerald-500/20 text-emerald-300 border-emerald-400/35" },
+            rejected: { text: "مرفوض", cls: "bg-rose-500/20 text-rose-300 border-rose-400/35" }
+          };
+          const st = statusLabels[r.status] || statusLabels.pending;
+          rows.push({
+            kind: isWithdraw ? "withdraw" : "deposit",
+            kindLabel: isWithdraw ? "سحب" : "إيداع",
+            title: isWithdraw ? "طلب سحب رصيد" : "طلب إيداع رصيد",
+            network: r.network || "محفظة",
+            address: r.address || "",
+            statusText: st.text,
+            statusCls: st.cls,
+            amount: Number(r.amount || 0),
+            sec: r.createdAt?.seconds || 0
+          });
+        });
+
+      userTransactions.forEach((t) => {
+        const key = `${t.type}:${Number(t.amount || 0).toFixed(2)}:${t.network || ""}`;
+        if ((t.type === "deposit" || t.type === "withdraw") && pendingTxTypes.has(key)) return;
+
+        const typeMap = {
+          deposit: { kind: "deposit", kindLabel: "إيداع", defaultTitle: "إيداع رصيد" },
+          withdraw: { kind: "withdraw", kindLabel: "سحب", defaultTitle: "سحب رصيد" },
+          invest: { kind: "invest", kindLabel: "عقد", defaultTitle: "تفعيل باقة" },
+          payout: { kind: "payout", kindLabel: "عائد", defaultTitle: "صرف عائد يومي" },
+          collect: { kind: "collect", kindLabel: "تحصيل", defaultTitle: "تحصيل أرباح" }
+        };
+        const meta = typeMap[t.type] || { kind: "other", kindLabel: "عملية", defaultTitle: t.note || "عملية مالية" };
+        rows.push({
+          kind: meta.kind,
+          kindLabel: meta.kindLabel,
+          title: t.note || meta.defaultTitle,
+          network: t.network || "",
+          address: "",
+          statusText: t.status === "approved" || t.status === "completed" ? "مكتمل" : (t.status || "مكتمل"),
+          statusCls: "bg-emerald-500/15 text-emerald-300 border-emerald-400/30",
+          amount: Number(t.amount || 0),
+          sec: t.createdAt?.seconds || 0
+        });
+      });
+
+      return rows.sort((a, b) => b.sec - a.sec);
+    }
+
     function renderUserUI() {
       if (!userProfile) return;
       const bal = Number(userProfile.balance || 0);
       const pending = Number(userProfile.pendingProfit || 0);
+      const ledgerRows = getCombinedLedgerRows();
 
       document.getElementById("hdrName").textContent = userProfile.name || "مستخدم";
       document.getElementById("hdrUidShort").textContent = `#${(currentUser.uid || "").slice(0, 6)}`;
@@ -773,7 +846,7 @@
       document.getElementById("walletBalance").textContent = fmtMoney(bal);
       document.getElementById("homePendingProfit").textContent = fmtMoney(pending);
       document.getElementById("collectBtn").disabled = pending <= 0;
-      document.getElementById("totalTxCount").textContent = userTransactions.length;
+      document.getElementById("totalTxCount").textContent = ledgerRows.length;
 
       const pct = Math.min(100, Math.round((bal / MIN_AMOUNT) * 100));
       document.getElementById("homeReadyPercent").textContent = `${pct}%`;
@@ -1124,25 +1197,54 @@
 
     function renderTransactionsUI() {
       const el = document.getElementById("transactionsList");
-      if (!userTransactions.length) {
+      const rows = getCombinedLedgerRows();
+      const badge = document.getElementById("txTableCountBadge");
+      if (badge) badge.textContent = `${rows.length} ${rows.length === 1 ? "عملية" : "عمليات"}`;
+
+      if (!rows.length) {
         el.innerHTML = `<div class="text-slate-400">لا توجد عمليات مسجلة بعد.</div>`;
         return;
       }
-      el.innerHTML = userTransactions.map((t) => `
-        <div class="flex items-center justify-between bg-slate-950/80 p-3 rounded-2xl border border-white/5">
-          <div>
-            <div class="text-white font-bold">${t.note || t.type}</div>
-            <div class="text-[11px] text-slate-400">${t.network || ""} • ${t.status || ""}</div>
+
+      el.innerHTML = rows.map((r) => {
+        const isWithdraw = r.kind === "withdraw";
+        const isDeposit = r.kind === "deposit";
+        const kindBadgeCls = isWithdraw
+          ? "bg-rose-500/20 text-rose-300 border-rose-400/35"
+          : isDeposit
+          ? "bg-sky-500/20 text-sky-300 border-sky-400/35"
+          : "bg-amber-500/15 text-amber-300 border-amber-400/30";
+        const amountCls = isWithdraw
+          ? "text-rose-300"
+          : isDeposit
+          ? "text-sky-300"
+          : "text-emerald-400";
+        const prefix = isWithdraw ? "-" : isDeposit ? "+" : "";
+
+        return `
+          <div class="bg-slate-950/90 p-3.5 rounded-2xl border ${isWithdraw ? "border-rose-400/20" : isDeposit ? "border-sky-400/20" : "border-white/5"} space-y-2">
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black border shrink-0 ${kindBadgeCls}">${r.kindLabel}</span>
+                <span class="text-white font-extrabold truncate">${r.title}</span>
+              </div>
+              <div class="text-sm font-black shrink-0 ${amountCls}">${prefix}${fmtMoney(r.amount)}</div>
+            </div>
+            <div class="flex items-center justify-between gap-2 text-[11px] text-slate-400">
+              <span>${r.network ? `الشبكة: <b class="text-slate-200">${r.network}</b>` : "سجل النظام"}</span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${r.statusCls}">${r.statusText}</span>
+            </div>
+            ${r.address ? `<div class="text-[11px] font-mono text-amber-200/90 bg-slate-900/90 px-2.5 py-1.5 rounded-xl break-all border border-white/5">محفظة السحب: ${r.address}</div>` : ""}
           </div>
-          <div class="font-extrabold ${t.type === "withdraw" || t.type === "invest" ? "text-amber-300" : "text-emerald-400"}">${fmtMoney(t.amount)}</div>
-        </div>
-      `).join("");
+        `;
+      }).join("");
     }
 
     function exportTransactionsCSV() {
-      if (!userTransactions.length) return showToast("لا توجد عمليات لتصديرها", "info");
-      const rows = [["Type", "Amount", "Network", "Status", "Note"]];
-      userTransactions.forEach((t) => rows.push([t.type || "", t.amount || 0, t.network || "", t.status || "", (t.note || "").replace(/,/g, " ")]));
+      const rowsData = getCombinedLedgerRows();
+      if (!rowsData.length) return showToast("لا توجد عمليات لتصديرها", "info");
+      const rows = [["Kind", "Title", "Amount", "Network", "Status", "Address"]];
+      rowsData.forEach((r) => rows.push([r.kindLabel, (r.title || "").replace(/,/g, " "), r.amount || 0, r.network || "", r.statusText || "", r.address || ""]));
       const csv = rows.map((r) => r.join(",")).join("\n");
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
